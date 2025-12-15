@@ -1,0 +1,90 @@
+import express, { Application } from "express";
+import cors from "cors";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import YAML from "yaml";
+import { errorHandler } from "./middlewares/error-handler.js";
+import { createAuthRouter } from "./routes/auth-routes.js";
+import { createIngestRouter } from "./routes/ingest-route.js";
+import { createAgentRouter } from "./routes/agent-route.js";
+import { createProfileRouter } from "./routes/profile-route.js";
+import { otelLoggingMiddleware } from "./middlewares/otel-logging-middleware.js";
+
+// Load OpenAPI spec
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const openApiPath = path.join(
+  __dirname,
+  "../../../infrastructure/openapi.yaml",
+);
+const openApiSpec = YAML.parse(fs.readFileSync(openApiPath, "utf8"));
+
+export const createApp = async (): Promise<Application> => {
+  const app = express();
+
+  // Middlewares
+  app.use(
+    cors({
+      origin: "*",
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"],
+      allowedHeaders: ["*"],
+      credentials: true,
+      optionsSuccessStatus: 204,
+    }),
+  );
+
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
+  // OpenTelemetry logging middleware
+  app.use(otelLoggingMiddleware);
+
+  // Request logging middleware
+  app.use((request, _response, next) => {
+    console.log(
+      `[${new Date().toISOString()}] ${request.method} ${request.path}`,
+    );
+    if (request.headers.authorization) {
+      console.log(
+        `  Authorization: ${request.headers.authorization.slice(0, 20)}...`,
+      );
+    }
+    next();
+  });
+
+  // Routes
+  app.use("/auth", createAuthRouter());
+  app.use("/api/v1", createIngestRouter());
+  app.use("/api/v1/agents", createAgentRouter());
+  app.use("/api/v1/profile", createProfileRouter());
+
+  // API Documentation with Scalar (dynamic import for ESM compatibility)
+  const { apiReference } = await import("@scalar/express-api-reference");
+  app.use(
+    "/docs",
+    apiReference({
+      spec: {
+        content: openApiSpec,
+      },
+      theme: "purple",
+    } as Parameters<typeof apiReference>[0]),
+  );
+
+  // Serve raw OpenAPI spec
+  app.get("/openapi.json", (_request, response) => {
+    response.json(openApiSpec);
+  });
+
+  // Health check
+  app.get("/health", (_request, response) => {
+    response
+      .status(200)
+      .json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+
+  // Error handler
+  app.use(errorHandler);
+
+  return app;
+};

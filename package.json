@@ -1,0 +1,41 @@
+{
+  "name": "echo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Echo - AI Career Agent & Personal Professional Assistant",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "dev:back": "pnpm --filter @echo/backend dev",
+    "dev:front": "pnpm --filter @echo/frontend dev",
+    "build": "pnpm -r build",
+    "build:back": "pnpm --filter @echo/backend build",
+    "build:front": "pnpm --filter @echo/frontend build",
+    "lint": "pnpm -r lint",
+    "lint:fix": "pnpm -r lint:fix",
+    "test": "pnpm -r test",
+    "test:back": "pnpm --filter @echo/backend test",
+    "clean": "pnpm -r exec rm -rf node_modules dist .turbo",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\""
+  },
+  "keywords": [
+    "ai",
+    "career",
+    "agent",
+    "llm",
+    "recruiter",
+    "cv",
+    "resume"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3"
+  }
+}
