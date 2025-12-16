@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { Container } from "typedi";
 import { SignUpUseCase } from "../../../../application/auth/sign-up.use-case.js";
 import { SignInUseCase } from "../../../../application/auth/sign-in.use-case.js";
-import { SIGN_IN_USE_CASE, SIGN_UP_USE_CASE } from "../../../../infrastructure/constants.js";
 
 interface AuthenticatedRequest extends Request {
   user?: unknown;
