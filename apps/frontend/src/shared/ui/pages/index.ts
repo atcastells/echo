@@ -1,9 +1,23 @@
 /**
  * Pages - Final assembled views
  *
- * Pages are specific instances of templates with real representative content.
- * They demonstrate the final UI with state management and data.
+ * Pages are specific instances of templates that show what a UI looks like
+ * with real representative content in place.
  */
 
-// Export pages here as they are created
-// export { ConversationApp } from './ConversationApp';
+// Conversation app shell
+export { ConversationApp } from './ConversationApp';
+export type { ConversationAppProps } from './ConversationApp';
+
+// Global state handlers
+export {
+    GlobalStates,
+    OfflineBanner,
+    RateLimitBanner,
+    ErrorBoundary,
+} from './GlobalStates';
+export type {
+    OfflineBannerProps,
+    RateLimitBannerProps,
+    ErrorBoundaryProps,
+} from './GlobalStates';

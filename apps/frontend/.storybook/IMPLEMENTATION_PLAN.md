@@ -344,64 +344,64 @@ This plan follows **Atomic Design** methodology to build a complete conversation
 
 ---
 
-## Phase 5: Templates
+## Phase 5: Templates ✅
 
 **Goal**: Create page-level layouts without data.
 
-### Task 5.1: ConversationViewport
+### Task 5.1: ConversationViewport ✅
 
-- [ ] Create `ConversationViewport` component
-- [ ] Implement scroll container
-- [ ] Add auto-scroll to bottom behavior
-- [ ] Add scroll-to-message functionality
-- [ ] Add "new messages" indicator
-- [ ] Handle ConversationEmptyState
-- [ ] Write stories with mock content
+- [x] Create `ConversationViewport` component
+- [x] Implement scroll container
+- [x] Add auto-scroll to bottom behavior
+- [x] Add scroll-to-message functionality
+- [x] Add "new messages" indicator
+- [x] Handle ConversationEmptyState
+- [x] Write stories with mock content
 
-### Task 5.2: ConversationEmptyState
+### Task 5.2: ConversationEmptyState ✅
 
-- [ ] Create `ConversationEmptyState` component
-- [ ] Show welcome message
-- [ ] Display suggested prompts
-- [ ] Write stories
+- [x] Create `ConversationEmptyState` component
+- [x] Show welcome message
+- [x] Display suggested prompts
+- [x] Write stories
 
-### Task 5.3: FirstRunExperience
+### Task 5.3: FirstRunExperience ✅
 
-- [ ] Create `FirstRunExperience` component
-- [ ] Explain product capabilities
-- [ ] Show example prompts
-- [ ] Add quick-start actions
-- [ ] Write stories
+- [x] Create `FirstRunExperience` component
+- [x] Explain product capabilities
+- [x] Show example prompts
+- [x] Add quick-start actions
+- [x] Write stories
 
-### Task 5.4: MainPanel
+### Task 5.4: MainPanel ✅
 
-- [ ] Create `MainPanel` component
-- [ ] Layout: ConversationHeader + ConversationViewport + Composer
-- [ ] Handle safe areas (mobile)
-- [ ] Handle resize behavior
-- [ ] Write stories
+- [x] Create `MainPanel` component
+- [x] Layout: ConversationHeader + ConversationViewport + Composer
+- [x] Handle safe areas (mobile)
+- [x] Handle resize behavior
+- [x] Write stories
 
 ---
 
-## Phase 6: Pages
+## Phase 6: Pages ✅
 
 **Goal**: Assemble final views with state management.
 
-### Task 6.1: ConversationApp
+### Task 6.1: ConversationApp ✅
 
-- [ ] Create `ConversationApp` shell component
-- [ ] Integrate Sidebar + MainPanel
-- [ ] Set up theme provider
-- [ ] Set up toast provider
-- [ ] Handle responsive layout (mobile: drawer sidebar)
-- [ ] Write stories showing full app
+- [x] Create `ConversationApp` shell component
+- [x] Integrate Sidebar + MainPanel
+- [x] Set up theme provider
+- [x] Set up toast provider
+- [x] Handle responsive layout (mobile: drawer sidebar)
+- [x] Write stories showing full app
 
-### Task 6.2: Global States
+### Task 6.2: Global States ✅
 
-- [ ] Implement offline state handling
-- [ ] Implement rate limit state handling
-- [ ] Add global error boundary
-- [ ] Write stories for global states
+- [x] Implement offline state handling
+- [x] Implement rate limit state handling
+- [x] Add global error boundary
+- [x] Write stories for global states
 
 ---
 
@@ -494,11 +494,11 @@ Use this for each component:
 | Phase 2: Atoms      | ✅ Completed   | 8/8 tasks  |
 | Phase 3: Molecules  | ✅ Completed   | 9/9 tasks  |
 | Phase 4: Organisms  | ✅ Completed   | 13/13 tasks|
-| Phase 5: Templates  | 🔴 Not Started | 0/4 tasks  |
-| Phase 6: Pages      | 🔴 Not Started | 0/2 tasks  |
+| Phase 5: Templates  | ✅ Completed   | 4/4 tasks  |
+| Phase 6: Pages      | ✅ Completed   | 2/2 tasks  |
 | Phase 7: Polish     | 🔴 Not Started | 0/5 tasks  |
 
-**Total: 33/44 tasks completed (75%)**
+**Total: 39/44 tasks completed (89%)**
 
 ---
 

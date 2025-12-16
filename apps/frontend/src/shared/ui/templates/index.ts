@@ -5,8 +5,17 @@
  * They articulate the design's underlying content structure.
  */
 
-// Export templates here as they are created
-// export { ConversationViewport } from './ConversationViewport';
-// export { ConversationEmptyState } from './ConversationEmptyState';
-// export { FirstRunExperience } from './FirstRunExperience';
-// export { MainPanel } from './MainPanel';
+// Conversation templates
+export { ConversationEmptyState } from './ConversationEmptyState';
+export type { ConversationEmptyStateProps, SuggestedPrompt } from './ConversationEmptyState';
+
+export { ConversationViewport } from './ConversationViewport';
+export type { ConversationViewportProps } from './ConversationViewport';
+
+// Onboarding templates
+export { FirstRunExperience } from './FirstRunExperience';
+export type { FirstRunExperienceProps, Capability } from './FirstRunExperience';
+
+// Layout templates
+export { MainPanel } from './MainPanel';
+export type { MainPanelProps } from './MainPanel';
