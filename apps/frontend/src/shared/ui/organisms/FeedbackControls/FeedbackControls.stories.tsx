@@ -97,7 +97,7 @@ export const WithoutRegenerate: Story = {
 // ------------------
 
 export const Interactive: Story = {
-  render: () => {
+  render: function Render() {
     const [feedback, setFeedback] = useState<FeedbackState>("none");
 
     return (
@@ -123,7 +123,7 @@ export const Interactive: Story = {
 // ------------------
 
 export const AfterAgentMessage: Story = {
-  render: () => {
+  render: function Render() {
     const [feedback, setFeedback] = useState<FeedbackState>("none");
 
     return (

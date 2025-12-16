@@ -101,7 +101,7 @@ export const Collapsed: Story = {
 };
 
 export const WithToggle: Story = {
-  render: () => {
+  render: function Render() {
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     return (
@@ -168,7 +168,7 @@ export const WithSearch: Story = {
 // ------------------
 
 export const Interactive: Story = {
-  render: () => {
+  render: function Render() {
     const [activeId, setActiveId] = useState("1");
     const [conversations, setConversations] = useState(sampleConversations);
     const [isCollapsed, setIsCollapsed] = useState(false);

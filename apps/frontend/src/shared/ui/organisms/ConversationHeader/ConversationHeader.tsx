@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { clsx } from 'clsx';
-import { Button } from '../../atoms/Button';
 import { Icon } from '../../atoms/Icon';
 import { Tooltip } from '../../atoms/Tooltip';
 import { AgentIdentity, type AgentStatus } from '../../molecules/AgentIdentity';

@@ -122,7 +122,7 @@ export const NoShortcuts: Story = {
 // ------------------
 
 export const Interactive: Story = {
-  render: () => {
+  render: function Render() {
     const [selectedPersona, setSelectedPersona] = useState("default");
     const [scopes, setScopes] = useState(sampleContextScopes);
 
@@ -152,7 +152,7 @@ export const Interactive: Story = {
 // ------------------
 
 export const WithComposer: Story = {
-  render: () => {
+  render: function Render() {
     const [selectedPersona, setSelectedPersona] = useState("default");
 
     return (

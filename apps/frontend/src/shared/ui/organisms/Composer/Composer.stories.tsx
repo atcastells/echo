@@ -183,7 +183,7 @@ export const DisabledWhileStreaming: Story = {
 // ------------------
 
 export const Interactive: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState("");
     const [attachments, setAttachments] = useState<AttachmentFile[]>([]);
 

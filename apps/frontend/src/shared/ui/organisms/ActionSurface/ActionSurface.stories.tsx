@@ -104,7 +104,7 @@ export const DestructiveExecuting: Story = {
 // ------------------
 
 export const InteractiveFlow: Story = {
-  render: () => {
+  render: function Render() {
     const [state, setState] = useState<ActionState>("pending");
 
     const handleConfirm = () => {
