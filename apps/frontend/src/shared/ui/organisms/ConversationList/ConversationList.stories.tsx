@@ -1,22 +1,22 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { ConversationList } from './ConversationList';
-import type { ConversationData } from '../../molecules/ConversationListItem';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { ConversationList } from "./ConversationList";
+import type { ConversationData } from "../../molecules/ConversationListItem";
 
 const meta = {
-  title: 'Organisms/ConversationList',
+  title: "Organisms/ConversationList",
   component: ConversationList,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     isLoading: {
-      control: 'boolean',
-      description: 'Loading state',
+      control: "boolean",
+      description: "Loading state",
     },
     enableKeyboardNav: {
-      control: 'boolean',
-      description: 'Enable keyboard navigation',
+      control: "boolean",
+      description: "Enable keyboard navigation",
     },
   },
   decorators: [
@@ -38,38 +38,38 @@ const day = 24 * hour;
 
 const sampleConversations: ConversationData[] = [
   {
-    id: '1',
-    title: 'Resume Review',
-    lastMessagePreview: 'Looking great! Just a few tweaks needed.',
+    id: "1",
+    title: "Resume Review",
+    lastMessagePreview: "Looking great! Just a few tweaks needed.",
     timestamp: new Date(now - 5 * minute),
     hasUnread: true,
     messageCount: 12,
   },
   {
-    id: '2',
-    title: 'Interview Prep',
+    id: "2",
+    title: "Interview Prep",
     lastMessagePreview: "Let's practice some common questions.",
     timestamp: new Date(now - 2 * hour),
     messageCount: 8,
   },
   {
-    id: '3',
-    title: 'Cover Letter Help',
-    lastMessagePreview: 'The introduction could be stronger.',
+    id: "3",
+    title: "Cover Letter Help",
+    lastMessagePreview: "The introduction could be stronger.",
     timestamp: new Date(now - 1 * day),
     messageCount: 5,
   },
   {
-    id: '4',
-    title: 'Salary Negotiation',
-    lastMessagePreview: 'Here are some key points to consider.',
+    id: "4",
+    title: "Salary Negotiation",
+    lastMessagePreview: "Here are some key points to consider.",
     timestamp: new Date(now - 3 * day),
     messageCount: 24,
   },
   {
-    id: '5',
-    title: 'Career Change Advice',
-    lastMessagePreview: 'Based on your skills, these fields might...',
+    id: "5",
+    title: "Career Change Advice",
+    lastMessagePreview: "Based on your skills, these fields might...",
     timestamp: new Date(now - 5 * day),
     messageCount: 16,
   },
@@ -82,7 +82,7 @@ const sampleConversations: ConversationData[] = [
 export const Default: Story = {
   args: {
     conversations: sampleConversations,
-    activeConversationId: '1',
+    activeConversationId: "1",
   },
 };
 
@@ -95,7 +95,7 @@ export const NoActiveConversation: Story = {
 export const SingleConversation: Story = {
   args: {
     conversations: [sampleConversations[0]],
-    activeConversationId: '1',
+    activeConversationId: "1",
   },
 };
 
@@ -127,8 +127,8 @@ export const Empty: Story = {
 export const Error: Story = {
   args: {
     conversations: [],
-    error: 'Network error. Please check your connection.',
-    onRetry: () => console.log('Retry'),
+    error: "Network error. Please check your connection.",
+    onRetry: () => console.log("Retry"),
   },
 };
 
@@ -139,20 +139,21 @@ export const Error: Story = {
 export const Interactive: Story = {
   args: {
     conversations: sampleConversations,
-    activeConversationId: '2',
+    activeConversationId: "2",
     enableKeyboardNav: true,
   },
   render: (args) => (
     <ConversationList
       {...args}
-      onSelect={(id) => console.log('Select:', id)}
-      onDelete={(id) => console.log('Delete:', id)}
+      onSelect={(id) => console.log("Select:", id)}
+      onDelete={(id) => console.log("Delete:", id)}
     />
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Use arrow keys to navigate, Enter to select, Cmd+Delete to delete.',
+        story:
+          "Use arrow keys to navigate, Enter to select, Cmd+Delete to delete.",
       },
     },
   },
@@ -167,35 +168,35 @@ export const ManyConversations: Story = {
     conversations: [
       ...sampleConversations,
       {
-        id: '6',
-        title: 'LinkedIn Profile Review',
-        lastMessagePreview: 'Your headline could be more impactful.',
+        id: "6",
+        title: "LinkedIn Profile Review",
+        lastMessagePreview: "Your headline could be more impactful.",
         timestamp: new Date(now - 7 * day),
         messageCount: 9,
       },
       {
-        id: '7',
-        title: 'Job Search Strategy',
-        lastMessagePreview: 'Here are some companies to target.',
+        id: "7",
+        title: "Job Search Strategy",
+        lastMessagePreview: "Here are some companies to target.",
         timestamp: new Date(now - 10 * day),
         messageCount: 14,
       },
       {
-        id: '8',
-        title: 'Skills Assessment',
-        lastMessagePreview: 'Based on your experience...',
+        id: "8",
+        title: "Skills Assessment",
+        lastMessagePreview: "Based on your experience...",
         timestamp: new Date(now - 14 * day),
         messageCount: 7,
       },
       {
-        id: '9',
-        title: 'Portfolio Review',
-        lastMessagePreview: 'Great projects! Consider adding...',
+        id: "9",
+        title: "Portfolio Review",
+        lastMessagePreview: "Great projects! Consider adding...",
         timestamp: new Date(now - 21 * day),
         messageCount: 11,
       },
     ],
-    activeConversationId: '1',
+    activeConversationId: "1",
   },
 };
 
@@ -228,8 +229,8 @@ export const InSidebar: Story = {
       <ConversationList
         conversations={sampleConversations}
         activeConversationId="1"
-        onSelect={(id) => console.log('Select:', id)}
-        onDelete={(id) => console.log('Delete:', id)}
+        onSelect={(id) => console.log("Select:", id)}
+        onDelete={(id) => console.log("Delete:", id)}
       />
     </div>
   ),

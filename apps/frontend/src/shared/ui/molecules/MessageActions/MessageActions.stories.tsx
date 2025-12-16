@@ -1,31 +1,31 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { MessageActions } from './MessageActions';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { MessageActions } from "./MessageActions";
 
 const meta = {
-  title: 'Molecules/MessageActions',
+  title: "Molecules/MessageActions",
   component: MessageActions,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     messageType: {
-      control: 'select',
-      options: ['user', 'agent'],
-      description: 'Type of message (affects default actions)',
+      control: "select",
+      options: ["user", "agent"],
+      description: "Type of message (affects default actions)",
     },
     showOnHover: {
-      control: 'boolean',
-      description: 'Show actions on hover only',
+      control: "boolean",
+      description: "Show actions on hover only",
     },
     feedback: {
-      control: 'select',
-      options: [null, 'positive', 'negative'],
-      description: 'Current feedback state',
+      control: "select",
+      options: [null, "positive", "negative"],
+      description: "Current feedback state",
     },
     isStreaming: {
-      control: 'boolean',
-      description: 'Whether the message is streaming',
+      control: "boolean",
+      description: "Whether the message is streaming",
     },
   },
   decorators: [
@@ -46,14 +46,14 @@ type Story = StoryObj<typeof meta>;
 
 export const AgentActions: Story = {
   args: {
-    messageType: 'agent',
+    messageType: "agent",
     showOnHover: false,
   },
 };
 
 export const UserActions: Story = {
   args: {
-    messageType: 'user',
+    messageType: "user",
     showOnHover: false,
   },
 };
@@ -64,13 +64,13 @@ export const UserActions: Story = {
 
 export const ShowOnHover: Story = {
   args: {
-    messageType: 'agent',
+    messageType: "agent",
     showOnHover: true,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Hover over this area to reveal the actions.',
+        story: "Hover over this area to reveal the actions.",
       },
     },
   },
@@ -78,7 +78,7 @@ export const ShowOnHover: Story = {
 
 export const AlwaysVisible: Story = {
   args: {
-    messageType: 'agent',
+    messageType: "agent",
     showOnHover: false,
   },
 };
@@ -89,23 +89,23 @@ export const AlwaysVisible: Story = {
 
 export const PositiveFeedback: Story = {
   args: {
-    messageType: 'agent',
+    messageType: "agent",
     showOnHover: false,
-    feedback: 'positive',
+    feedback: "positive",
   },
 };
 
 export const NegativeFeedback: Story = {
   args: {
-    messageType: 'agent',
+    messageType: "agent",
     showOnHover: false,
-    feedback: 'negative',
+    feedback: "negative",
   },
 };
 
 export const NoFeedback: Story = {
   args: {
-    messageType: 'agent',
+    messageType: "agent",
     showOnHover: false,
     feedback: null,
   },
@@ -117,14 +117,15 @@ export const NoFeedback: Story = {
 
 export const WhileStreaming: Story = {
   args: {
-    messageType: 'agent',
+    messageType: "agent",
     showOnHover: false,
     isStreaming: true,
   },
   parameters: {
     docs: {
       description: {
-        story: 'During streaming, only copy is enabled. Other actions are disabled.',
+        story:
+          "During streaming, only copy is enabled. Other actions are disabled.",
       },
     },
   },
@@ -136,25 +137,25 @@ export const WhileStreaming: Story = {
 
 export const CustomActions: Story = {
   args: {
-    messageType: 'agent',
+    messageType: "agent",
     showOnHover: false,
-    actions: ['copy', 'thumbsUp', 'thumbsDown', 'report'],
+    actions: ["copy", "thumbsUp", "thumbsDown", "report"],
   },
 };
 
 export const MinimalActions: Story = {
   args: {
-    messageType: 'agent',
+    messageType: "agent",
     showOnHover: false,
-    actions: ['copy'],
+    actions: ["copy"],
   },
 };
 
 export const AllActions: Story = {
   args: {
-    messageType: 'agent',
+    messageType: "agent",
     showOnHover: false,
-    actions: ['copy', 'regenerate', 'edit', 'thumbsUp', 'thumbsDown', 'report'],
+    actions: ["copy", "regenerate", "edit", "thumbsUp", "thumbsDown", "report"],
   },
 };
 
@@ -164,25 +165,25 @@ export const AllActions: Story = {
 
 export const Interactive: Story = {
   args: {
-    messageType: 'agent',
+    messageType: "agent",
     showOnHover: false,
   },
   render: (args) => {
     return (
       <MessageActions
         {...args}
-        onCopy={() => console.log('Copied!')}
-        onRegenerate={() => console.log('Regenerating...')}
-        onThumbsUp={() => console.log('Thumbs up!')}
-        onThumbsDown={() => console.log('Thumbs down!')}
-        onReport={() => console.log('Reported!')}
+        onCopy={() => console.log("Copied!")}
+        onRegenerate={() => console.log("Regenerating...")}
+        onThumbsUp={() => console.log("Thumbs up!")}
+        onThumbsDown={() => console.log("Thumbs down!")}
+        onReport={() => console.log("Reported!")}
       />
     );
   },
   parameters: {
     docs: {
       description: {
-        story: 'Click actions to see console logs.',
+        story: "Click actions to see console logs.",
       },
     },
   },
@@ -203,7 +204,7 @@ export const InMessageContext: Story = {
           <MessageActions messageType="agent" showOnHover={false} />
         </div>
       </div>
-      
+
       <div className="flex justify-end">
         <div className="bg-primary-600 text-white p-4 rounded-2xl rounded-br-md relative group">
           <p className="text-sm">This is my message that I want to edit.</p>

@@ -1,22 +1,22 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { AgentPrompt } from './AgentPrompt';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { AgentPrompt } from "./AgentPrompt";
 
 const meta = {
-  title: 'Organisms/AgentPrompt',
+  title: "Organisms/AgentPrompt",
   component: AgentPrompt,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: 'select',
-      options: ['clarifying', 'suggestion', 'confirmation', 'warning'],
-      description: 'Prompt variant',
+      control: "select",
+      options: ["clarifying", "suggestion", "confirmation", "warning"],
+      description: "Prompt variant",
     },
     disabled: {
-      control: 'boolean',
-      description: 'Disable actions',
+      control: "boolean",
+      description: "Disable actions",
     },
   },
   decorators: [
@@ -37,46 +37,50 @@ type Story = StoryObj<typeof meta>;
 
 export const ClarifyingQuestion: Story = {
   args: {
-    variant: 'clarifying',
-    content: 'I noticed you mentioned "project management experience." Could you tell me more about the size of teams you\'ve managed?',
-    onAccept: () => console.log('Answer'),
-    onReject: () => console.log('Skip'),
+    variant: "clarifying",
+    content:
+      'I noticed you mentioned "project management experience." Could you tell me more about the size of teams you\'ve managed?',
+    onAccept: () => console.log("Answer"),
+    onReject: () => console.log("Skip"),
   },
 };
 
 export const Suggestion: Story = {
   args: {
-    variant: 'suggestion',
+    variant: "suggestion",
     content: (
       <>
         <p className="font-medium mb-2">Suggested improvement:</p>
         <p>
-          Consider adding quantifiable metrics to your achievements. For example,
-          instead of "improved system performance," try "improved system performance by 40%."
+          Consider adding quantifiable metrics to your achievements. For
+          example, instead of "improved system performance," try "improved
+          system performance by 40%."
         </p>
       </>
     ),
-    onAccept: () => console.log('Accept'),
-    onReject: () => console.log('Decline'),
-    onModify: () => console.log('Modify'),
+    onAccept: () => console.log("Accept"),
+    onReject: () => console.log("Decline"),
+    onModify: () => console.log("Modify"),
   },
 };
 
 export const Confirmation: Story = {
   args: {
-    variant: 'confirmation',
-    content: 'I\'m about to update your resume summary. This will replace your current summary with the revised version. Do you want to continue?',
-    onAccept: () => console.log('Confirm'),
-    onReject: () => console.log('Cancel'),
+    variant: "confirmation",
+    content:
+      "I'm about to update your resume summary. This will replace your current summary with the revised version. Do you want to continue?",
+    onAccept: () => console.log("Confirm"),
+    onReject: () => console.log("Cancel"),
   },
 };
 
 export const Warning: Story = {
   args: {
-    variant: 'warning',
-    content: 'This action will permanently delete all conversation history. This cannot be undone.',
-    onAccept: () => console.log('Continue'),
-    onReject: () => console.log('Cancel'),
+    variant: "warning",
+    content:
+      "This action will permanently delete all conversation history. This cannot be undone.",
+    onAccept: () => console.log("Continue"),
+    onReject: () => console.log("Cancel"),
   },
 };
 
@@ -86,12 +90,13 @@ export const Warning: Story = {
 
 export const CustomLabels: Story = {
   args: {
-    variant: 'suggestion',
-    content: 'Would you like me to generate a cover letter based on your resume?',
-    acceptLabel: 'Yes, generate it',
-    rejectLabel: 'No thanks',
-    onAccept: () => console.log('Generate'),
-    onReject: () => console.log('Skip'),
+    variant: "suggestion",
+    content:
+      "Would you like me to generate a cover letter based on your resume?",
+    acceptLabel: "Yes, generate it",
+    rejectLabel: "No thanks",
+    onAccept: () => console.log("Generate"),
+    onReject: () => console.log("Skip"),
   },
 };
 
@@ -101,14 +106,15 @@ export const CustomLabels: Story = {
 
 export const WithModify: Story = {
   args: {
-    variant: 'suggestion',
-    content: 'Here\'s a revised version of your professional summary that highlights your leadership experience.',
-    acceptLabel: 'Use this',
-    rejectLabel: 'Discard',
-    modifyLabel: 'Edit first',
-    onAccept: () => console.log('Accept'),
-    onReject: () => console.log('Reject'),
-    onModify: () => console.log('Modify'),
+    variant: "suggestion",
+    content:
+      "Here's a revised version of your professional summary that highlights your leadership experience.",
+    acceptLabel: "Use this",
+    rejectLabel: "Discard",
+    modifyLabel: "Edit first",
+    onAccept: () => console.log("Accept"),
+    onReject: () => console.log("Reject"),
+    onModify: () => console.log("Modify"),
   },
 };
 
@@ -118,11 +124,11 @@ export const WithModify: Story = {
 
 export const Disabled: Story = {
   args: {
-    variant: 'confirmation',
-    content: 'Processing your request...',
+    variant: "confirmation",
+    content: "Processing your request...",
     disabled: true,
-    onAccept: () => console.log('Confirm'),
-    onReject: () => console.log('Cancel'),
+    onAccept: () => console.log("Confirm"),
+    onReject: () => console.log("Cancel"),
   },
 };
 
@@ -132,7 +138,7 @@ export const Disabled: Story = {
 
 export const RichContent: Story = {
   args: {
-    variant: 'suggestion',
+    variant: "suggestion",
     content: (
       <div className="space-y-3">
         <p className="font-medium">I found some potential improvements:</p>
@@ -144,8 +150,8 @@ export const RichContent: Story = {
         <p>Would you like me to help you make these changes?</p>
       </div>
     ),
-    onAccept: () => console.log('Accept'),
-    onReject: () => console.log('Decline'),
+    onAccept: () => console.log("Accept"),
+    onReject: () => console.log("Decline"),
   },
 };
 
@@ -154,6 +160,9 @@ export const RichContent: Story = {
 // ------------------
 
 export const AllVariants: Story = {
+  args: {
+    content: "This is a sample prompt content.",
+  },
   render: () => (
     <div className="space-y-4">
       <AgentPrompt
@@ -189,12 +198,16 @@ export const AllVariants: Story = {
 // ------------------
 
 export const InConversation: Story = {
+  args: {
+    content: "This is a sample prompt content.",
+  },
   render: () => (
     <div className="space-y-4">
       {/* Previous agent message */}
       <div className="bg-neutral-100 p-4 rounded-2xl rounded-bl-md max-w-sm">
         <p className="text-sm text-neutral-800">
-          I've reviewed your resume. Before I make suggestions, I have a quick question.
+          I've reviewed your resume. Before I make suggestions, I have a quick
+          question.
         </p>
       </div>
 
@@ -202,8 +215,8 @@ export const InConversation: Story = {
       <AgentPrompt
         variant="clarifying"
         content="Are you open to relocating for the right opportunity, or are you specifically looking for remote positions?"
-        onAccept={() => console.log('Answer')}
-        onReject={() => console.log('Skip')}
+        onAccept={() => console.log("Answer")}
+        onReject={() => console.log("Skip")}
       />
     </div>
   ),

@@ -1,31 +1,31 @@
-import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { Composer } from './Composer';
-import type { AttachmentFile } from '../../molecules/AttachmentPreview';
+import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Composer } from "./Composer";
+import type { AttachmentFile } from "../../molecules/AttachmentPreview";
 
 const meta = {
-  title: 'Organisms/Composer',
+  title: "Organisms/Composer",
   component: Composer,
   parameters: {
-    layout: 'padded',
+    layout: "padded",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     disabled: {
-      control: 'boolean',
-      description: 'Disable the composer',
+      control: "boolean",
+      description: "Disable the composer",
     },
     showAttachButton: {
-      control: 'boolean',
-      description: 'Show attach button',
+      control: "boolean",
+      description: "Show attach button",
     },
     showVoiceButton: {
-      control: 'boolean',
-      description: 'Show voice input button',
+      control: "boolean",
+      description: "Show voice input button",
     },
     maxLength: {
-      control: 'number',
-      description: 'Maximum character limit',
+      control: "number",
+      description: "Maximum character limit",
     },
   },
   decorators: [
@@ -46,19 +46,19 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    placeholder: 'Type your message...',
+    placeholder: "Type your message...",
   },
 };
 
 export const WithValue: Story = {
   args: {
-    value: 'Can you help me improve my resume?',
+    value: "Can you help me improve my resume?",
   },
 };
 
 export const CustomPlaceholder: Story = {
   args: {
-    placeholder: 'Ask me anything about your career...',
+    placeholder: "Ask me anything about your career...",
   },
 };
 
@@ -86,17 +86,17 @@ export const NoAttachButton: Story = {
 
 const sampleAttachments: AttachmentFile[] = [
   {
-    id: '1',
-    name: 'resume.pdf',
+    id: "1",
+    name: "resume.pdf",
     size: 245678,
-    type: 'application/pdf',
+    type: "application/pdf",
   },
 ];
 
 export const WithAttachments: Story = {
   args: {
     attachments: sampleAttachments,
-    onRemoveAttachment: (id) => console.log('Remove:', id),
+    onRemoveAttachment: (id) => console.log("Remove:", id),
   },
 };
 
@@ -104,19 +104,19 @@ export const WithMultipleAttachments: Story = {
   args: {
     attachments: [
       {
-        id: '1',
-        name: 'resume.pdf',
+        id: "1",
+        name: "resume.pdf",
         size: 245678,
-        type: 'application/pdf',
+        type: "application/pdf",
       },
       {
-        id: '2',
-        name: 'cover_letter.docx',
+        id: "2",
+        name: "cover_letter.docx",
         size: 34567,
-        type: 'application/msword',
+        type: "application/msword",
       },
     ],
-    onRemoveAttachment: (id) => console.log('Remove:', id),
+    onRemoveAttachment: (id) => console.log("Remove:", id),
   },
 };
 
@@ -124,14 +124,14 @@ export const WithUploadingAttachment: Story = {
   args: {
     attachments: [
       {
-        id: '1',
-        name: 'large_document.pdf',
+        id: "1",
+        name: "large_document.pdf",
         size: 5678901,
-        type: 'application/pdf',
+        type: "application/pdf",
         progress: 65,
       },
     ],
-    onRemoveAttachment: (id) => console.log('Remove:', id),
+    onRemoveAttachment: (id) => console.log("Remove:", id),
   },
 };
 
@@ -141,21 +141,21 @@ export const WithUploadingAttachment: Story = {
 
 export const NearCharacterLimit: Story = {
   args: {
-    value: 'A'.repeat(3800),
+    value: "A".repeat(3800),
     maxLength: 4000,
   },
 };
 
 export const OverCharacterLimit: Story = {
   args: {
-    value: 'A'.repeat(4100),
+    value: "A".repeat(4100),
     maxLength: 4000,
   },
 };
 
 export const ShortCharacterLimit: Story = {
   args: {
-    value: 'Hello there!',
+    value: "Hello there!",
     maxLength: 100,
   },
 };
@@ -167,14 +167,14 @@ export const ShortCharacterLimit: Story = {
 export const Disabled: Story = {
   args: {
     disabled: true,
-    value: 'This input is disabled',
+    value: "This input is disabled",
   },
 };
 
 export const DisabledWhileStreaming: Story = {
   args: {
     disabled: true,
-    placeholder: 'Echo is responding...',
+    placeholder: "Echo is responding...",
   },
 };
 
@@ -184,11 +184,11 @@ export const DisabledWhileStreaming: Story = {
 
 export const Interactive: Story = {
   render: () => {
-    const [value, setValue] = useState('');
+    const [value, setValue] = useState("");
     const [attachments, setAttachments] = useState<AttachmentFile[]>([]);
 
     const handleSubmit = (message: string, files?: AttachmentFile[]) => {
-      console.log('Submit:', message, files);
+      console.log("Submit:", message, files);
       setAttachments([]);
     };
 
@@ -239,7 +239,7 @@ export const InChatContext: Story = {
         placeholder="Type your message..."
         showAttachButton={true}
         showVoiceButton={true}
-        onSubmit={(msg) => console.log('Send:', msg)}
+        onSubmit={(msg) => console.log("Send:", msg)}
       />
     </div>
   ),
@@ -251,7 +251,7 @@ export const InChatContext: Story = {
 
 export const CompactWithText: Story = {
   args: {
-    value: 'This is a short message',
+    value: "This is a short message",
     showAttachButton: false,
     showVoiceButton: false,
   },
@@ -289,54 +289,53 @@ Here's another paragraph with some specific questions:
  */
 
 export const MachineStateIdle: Story = {
-  name: 'Machine: Idle',
+  name: "Machine: Idle",
   args: {
-    initialMachineState: 'idle',
-    placeholder: 'Ready for input...',
+    initialMachineState: "idle",
+    placeholder: "Ready for input...",
   },
 };
 
 export const MachineStateTyping: Story = {
-  name: 'Machine: Typing',
+  name: "Machine: Typing",
   args: {
-    initialMachineState: 'typing',
-    value: 'User is typing a message...',
+    initialMachineState: "typing",
+    value: "User is typing a message...",
   },
 };
 
 export const MachineStateSubmitting: Story = {
-  name: 'Machine: Submitting',
+  name: "Machine: Submitting",
   args: {
-    initialMachineState: 'submitting',
-    value: 'This message is being sent...',
+    initialMachineState: "submitting",
+    value: "This message is being sent...",
   },
 };
 
 export const MachineStateError: Story = {
-  name: 'Machine: Error',
+  name: "Machine: Error",
   args: {
-    initialMachineState: 'error',
-    value: 'Failed message content',
+    initialMachineState: "error",
+    value: "Failed message content",
     initialContext: {
-      errorMessage: 'Network error: Failed to send message. Please try again.',
+      errorMessage: "Network error: Failed to send message. Please try again.",
       retryCount: 1,
     },
   },
 };
 
 export const MachineStateDisabled: Story = {
-  name: 'Machine: Disabled',
+  name: "Machine: Disabled",
   args: {
-    initialMachineState: 'disabled',
-    placeholder: 'Echo is responding...',
+    initialMachineState: "disabled",
+    placeholder: "Echo is responding...",
   },
 };
 
 export const MachineStateBlocked: Story = {
-  name: 'Machine: Blocked',
+  name: "Machine: Blocked",
   args: {
-    initialMachineState: 'blocked',
-    placeholder: 'Rate limit exceeded. Please wait...',
+    initialMachineState: "blocked",
+    placeholder: "Rate limit exceeded. Please wait...",
   },
 };
-

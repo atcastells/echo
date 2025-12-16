@@ -1,29 +1,29 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { StreamingIndicator } from './StreamingIndicator';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { StreamingIndicator } from "./StreamingIndicator";
 
 const meta = {
-  title: 'Molecules/StreamingIndicator',
+  title: "Molecules/StreamingIndicator",
   component: StreamingIndicator,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     partialContent: {
-      control: 'text',
-      description: 'Partial content being streamed',
+      control: "text",
+      description: "Partial content being streamed",
     },
     showTyping: {
-      control: 'boolean',
-      description: 'Show typing animation',
+      control: "boolean",
+      description: "Show typing animation",
     },
     showStopButton: {
-      control: 'boolean',
-      description: 'Show stop button',
+      control: "boolean",
+      description: "Show stop button",
     },
     label: {
-      control: 'text',
-      description: 'Label text for streaming state',
+      control: "text",
+      description: "Label text for streaming state",
     },
   },
   decorators: [
@@ -46,7 +46,7 @@ export const Default: Story = {
   args: {
     showTyping: true,
     showStopButton: true,
-    label: 'Echo is typing',
+    label: "Echo is typing",
   },
 };
 
@@ -54,7 +54,7 @@ export const TypingOnly: Story = {
   args: {
     showTyping: true,
     showStopButton: false,
-    label: 'Echo is typing',
+    label: "Echo is typing",
   },
 };
 
@@ -62,8 +62,8 @@ export const WithStopButton: Story = {
   args: {
     showTyping: true,
     showStopButton: true,
-    label: 'Echo is responding',
-    onStop: () => console.log('Stopped!'),
+    label: "Echo is responding",
+    onStop: () => console.log("Stopped!"),
   },
 };
 
@@ -73,10 +73,11 @@ export const WithStopButton: Story = {
 
 export const WithPartialContent: Story = {
   args: {
-    partialContent: 'Based on your resume, I can see that you have extensive experience in',
+    partialContent:
+      "Based on your resume, I can see that you have extensive experience in",
     showTyping: true,
     showStopButton: true,
-    label: 'Echo is typing',
+    label: "Echo is typing",
   },
 };
 
@@ -91,7 +92,7 @@ export const LongPartialContent: Story = {
 Let me analyze your experience further and provide more specific recommendations for`,
     showTyping: true,
     showStopButton: true,
-    label: 'Echo is typing',
+    label: "Echo is typing",
   },
 };
 
@@ -103,7 +104,7 @@ export const CustomLabel: Story = {
   args: {
     showTyping: true,
     showStopButton: true,
-    label: 'Generating response',
+    label: "Generating response",
   },
 };
 
@@ -111,7 +112,7 @@ export const AnalyzingLabel: Story = {
   args: {
     showTyping: true,
     showStopButton: true,
-    label: 'Analyzing your documents',
+    label: "Analyzing your documents",
   },
 };
 
@@ -121,10 +122,11 @@ export const AnalyzingLabel: Story = {
 
 export const PartialNoStop: Story = {
   args: {
-    partialContent: 'Your experience with cloud technologies is particularly valuable because',
+    partialContent:
+      "Your experience with cloud technologies is particularly valuable because",
     showTyping: true,
     showStopButton: false,
-    label: 'Echo is responding',
+    label: "Echo is responding",
   },
 };
 
@@ -134,16 +136,13 @@ export const PartialNoStop: Story = {
 
 export const Interactive: Story = {
   args: {
-    partialContent: 'Here are my recommendations for improving your resume',
+    partialContent: "Here are my recommendations for improving your resume",
     showTyping: true,
     showStopButton: true,
-    label: 'Echo is typing',
+    label: "Echo is typing",
   },
   render: (args) => (
-    <StreamingIndicator
-      {...args}
-      onStop={() => alert('Generation stopped!')}
-    />
+    <StreamingIndicator {...args} onStop={() => alert("Generation stopped!")} />
   ),
 };
 
@@ -168,7 +167,7 @@ export const InMessageBubble: Story = {
           showTyping={true}
           showStopButton={true}
           label="Echo is typing"
-          onStop={() => console.log('Stopped')}
+          onStop={() => console.log("Stopped")}
         />
       </div>
     </div>

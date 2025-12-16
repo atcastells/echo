@@ -1,26 +1,26 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { MessageItem, type Message } from './MessageItem';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { MessageItem, type Message } from "./MessageItem";
 
 const meta = {
-  title: 'Organisms/MessageItem',
+  title: "Organisms/MessageItem",
   component: MessageItem,
   parameters: {
-    layout: 'padded',
+    layout: "padded",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     isStreaming: {
-      control: 'boolean',
-      description: 'Whether the message is streaming',
+      control: "boolean",
+      description: "Whether the message is streaming",
     },
     showActions: {
-      control: 'boolean',
-      description: 'Show message actions',
+      control: "boolean",
+      description: "Show message actions",
     },
     feedback: {
-      control: 'select',
-      options: [null, 'positive', 'negative'],
-      description: 'Current feedback state',
+      control: "select",
+      options: [null, "positive", "negative"],
+      description: "Current feedback state",
     },
   },
   decorators: [
@@ -36,31 +36,32 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const userMessage: Message = {
-  id: '1',
-  content: 'Can you help me improve my resume for a senior software engineering position?',
-  role: 'user',
+  id: "1",
+  content:
+    "Can you help me improve my resume for a senior software engineering position?",
+  role: "user",
   timestamp: new Date(Date.now() - 5 * 60 * 1000),
-  status: 'delivered',
+  status: "delivered",
 };
 
 const agentMessage: Message = {
-  id: '2',
+  id: "2",
   content: `Of course! I'd be happy to help you improve your resume for a senior software engineering position.
 
 To provide the most relevant advice, could you tell me:
 1. What's your current level of experience?
 2. What tech stack are you most experienced with?
 3. Are there specific companies or roles you're targeting?`,
-  role: 'agent',
+  role: "agent",
   timestamp: new Date(Date.now() - 4 * 60 * 1000),
-  status: 'delivered',
+  status: "delivered",
   isMarkdown: true,
 };
 
 const systemMessage: Message = {
-  id: '3',
-  content: 'Resume uploaded successfully. Context updated.',
-  role: 'system',
+  id: "3",
+  content: "Resume uploaded successfully. Context updated.",
+  role: "system",
   timestamp: new Date(Date.now() - 3 * 60 * 1000),
 };
 
@@ -71,14 +72,14 @@ const systemMessage: Message = {
 export const UserMessage: Story = {
   args: {
     message: userMessage,
-    userName: 'John Doe',
+    userName: "John Doe",
   },
 };
 
 export const AgentMessage: Story = {
   args: {
     message: agentMessage,
-    agentName: 'Echo',
+    agentName: "Echo",
   },
 };
 
@@ -95,30 +96,31 @@ export const SystemMessage: Story = {
 export const StreamingMessage: Story = {
   args: {
     message: {
-      id: '4',
-      content: '',
-      role: 'agent',
+      id: "4",
+      content: "",
+      role: "agent",
       timestamp: new Date(),
-      status: 'streaming',
+      status: "streaming",
     },
     isStreaming: true,
-    agentName: 'Echo',
+    agentName: "Echo",
   },
 };
 
 export const StreamingWithContent: Story = {
   args: {
     message: {
-      id: '4',
-      content: '',
-      role: 'agent',
+      id: "4",
+      content: "",
+      role: "agent",
       timestamp: new Date(),
-      status: 'streaming',
+      status: "streaming",
     },
     isStreaming: true,
-    streamingContent: 'Based on your experience, I recommend focusing on the following key areas for your resume:\n\n1. **Technical Leadership**',
-    agentName: 'Echo',
-    onStopStreaming: () => console.log('Stop streaming'),
+    streamingContent:
+      "Based on your experience, I recommend focusing on the following key areas for your resume:\n\n1. **Technical Leadership**",
+    agentName: "Echo",
+    onStopStreaming: () => console.log("Stop streaming"),
   },
 };
 
@@ -130,10 +132,10 @@ export const WithCostAndLatency: Story = {
   args: {
     message: {
       ...agentMessage,
-      cost: '$0.003',
+      cost: "$0.003",
       latencyMs: 1250,
     },
-    agentName: 'Echo',
+    agentName: "Echo",
   },
 };
 
@@ -141,13 +143,14 @@ export const WithCitations: Story = {
   args: {
     message: {
       ...agentMessage,
-      content: 'Based on your resume, I can see you have strong experience with cloud technologies.',
+      content:
+        "Based on your resume, I can see you have strong experience with cloud technologies.",
       citations: [
-        { id: '1', text: 'resume.pdf', url: '#' },
-        { id: '2', text: 'Job Requirements', url: '#' },
+        { id: "1", text: "resume.pdf", url: "#" },
+        { id: "2", text: "Job Requirements", url: "#" },
       ],
     },
-    agentName: 'Echo',
+    agentName: "Echo",
   },
 };
 
@@ -159,11 +162,11 @@ export const FailedMessage: Story = {
   args: {
     message: {
       ...userMessage,
-      status: 'failed',
-      error: 'Message failed to send',
+      status: "failed",
+      error: "Message failed to send",
     },
-    userName: 'John Doe',
-    onRetry: (id) => console.log('Retry:', id),
+    userName: "John Doe",
+    onRetry: (id) => console.log("Retry:", id),
   },
 };
 
@@ -174,16 +177,16 @@ export const FailedMessage: Story = {
 export const PositiveFeedback: Story = {
   args: {
     message: agentMessage,
-    feedback: 'positive',
-    agentName: 'Echo',
+    feedback: "positive",
+    agentName: "Echo",
   },
 };
 
 export const NegativeFeedback: Story = {
   args: {
     message: agentMessage,
-    feedback: 'negative',
-    agentName: 'Echo',
+    feedback: "negative",
+    agentName: "Echo",
   },
 };
 
@@ -194,16 +197,16 @@ export const NegativeFeedback: Story = {
 export const Interactive: Story = {
   args: {
     message: agentMessage,
-    agentName: 'Echo',
+    agentName: "Echo",
     showActions: true,
   },
   render: (args) => (
     <MessageItem
       {...args}
-      onCopy={(id) => console.log('Copy:', id)}
-      onRegenerate={(id) => console.log('Regenerate:', id)}
-      onThumbsUp={(id) => console.log('Thumbs up:', id)}
-      onThumbsDown={(id) => console.log('Thumbs down:', id)}
+      onCopy={(id) => console.log("Copy:", id)}
+      onRegenerate={(id) => console.log("Regenerate:", id)}
+      onThumbsUp={(id) => console.log("Thumbs up:", id)}
+      onThumbsDown={(id) => console.log("Thumbs down:", id)}
     />
   ),
 };
@@ -216,7 +219,7 @@ export const NoActions: Story = {
   args: {
     message: agentMessage,
     showActions: false,
-    agentName: 'Echo',
+    agentName: "Echo",
   },
 };
 
@@ -241,16 +244,15 @@ export const ConversationFlow: Story = {
         onThumbsUp={() => {}}
         onThumbsDown={() => {}}
       />
-      <MessageItem
-        message={systemMessage}
-      />
+      <MessageItem message={systemMessage} />
       <MessageItem
         message={{
-          id: '5',
-          content: 'Great, thanks for those suggestions! Can you also help me with the skills section?',
-          role: 'user',
+          id: "5",
+          content:
+            "Great, thanks for those suggestions! Can you also help me with the skills section?",
+          role: "user",
           timestamp: new Date(Date.now() - 2 * 60 * 1000),
-          status: 'delivered',
+          status: "delivered",
         }}
         userName="John Doe"
         onCopy={() => {}}
@@ -258,11 +260,11 @@ export const ConversationFlow: Story = {
       />
       <MessageItem
         message={{
-          id: '6',
-          content: '',
-          role: 'agent',
+          id: "6",
+          content: "",
+          role: "agent",
           timestamp: new Date(),
-          status: 'streaming',
+          status: "streaming",
         }}
         isStreaming={true}
         streamingContent="Absolutely! For the skills section, I recommend organizing your skills into categories"
@@ -280,7 +282,7 @@ export const ConversationFlow: Story = {
 export const LongAgentMessage: Story = {
   args: {
     message: {
-      id: '7',
+      id: "7",
       content: `# Resume Improvement Recommendations
 
 ## Professional Summary
@@ -313,10 +315,10 @@ For each role, use the **STAR** method:
 - **Result**: Quantifiable outcome
 
 Would you like me to help you rewrite any specific section?`,
-      role: 'agent',
+      role: "agent",
       timestamp: new Date(),
       isMarkdown: true,
     },
-    agentName: 'Echo',
+    agentName: "Echo",
   },
 };

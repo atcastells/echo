@@ -1,34 +1,34 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { MessageMeta } from './MessageMeta';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { MessageMeta } from "./MessageMeta";
 
 const meta = {
-  title: 'Molecules/MessageMeta',
+  title: "Molecules/MessageMeta",
   component: MessageMeta,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     timestamp: {
-      control: 'date',
-      description: 'Message timestamp',
+      control: "date",
+      description: "Message timestamp",
     },
     relativeTime: {
-      control: 'boolean',
+      control: "boolean",
       description: 'Show relative time (e.g., "2 min ago")',
     },
     status: {
-      control: 'select',
-      options: ['sending', 'sent', 'delivered', 'failed', 'streaming'],
-      description: 'Message delivery status',
+      control: "select",
+      options: ["sending", "sent", "delivered", "failed", "streaming"],
+      description: "Message delivery status",
     },
     cost: {
-      control: 'text',
+      control: "text",
       description: 'Cost display (e.g., "0.003 tokens")',
     },
     latencyMs: {
-      control: 'number',
-      description: 'Response latency in milliseconds',
+      control: "number",
+      description: "Response latency in milliseconds",
     },
   },
 } satisfies Meta<typeof MessageMeta>;
@@ -43,7 +43,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     timestamp: new Date(),
-    status: 'sent',
+    status: "sent",
   },
 };
 
@@ -89,35 +89,35 @@ export const Yesterday: Story = {
 export const Sending: Story = {
   args: {
     timestamp: new Date(),
-    status: 'sending',
+    status: "sending",
   },
 };
 
 export const Sent: Story = {
   args: {
     timestamp: new Date(),
-    status: 'sent',
+    status: "sent",
   },
 };
 
 export const Delivered: Story = {
   args: {
     timestamp: new Date(),
-    status: 'delivered',
+    status: "delivered",
   },
 };
 
 export const Failed: Story = {
   args: {
     timestamp: new Date(),
-    status: 'failed',
+    status: "failed",
   },
 };
 
 export const Streaming: Story = {
   args: {
     timestamp: new Date(),
-    status: 'streaming',
+    status: "streaming",
   },
 };
 
@@ -128,15 +128,15 @@ export const Streaming: Story = {
 export const WithCost: Story = {
   args: {
     timestamp: new Date(),
-    status: 'delivered',
-    cost: '$0.003',
+    status: "delivered",
+    cost: "$0.003",
   },
 };
 
 export const WithLatency: Story = {
   args: {
     timestamp: new Date(),
-    status: 'delivered',
+    status: "delivered",
     latencyMs: 450,
   },
 };
@@ -144,7 +144,7 @@ export const WithLatency: Story = {
 export const WithLatencyLong: Story = {
   args: {
     timestamp: new Date(),
-    status: 'delivered',
+    status: "delivered",
     latencyMs: 2500,
   },
 };
@@ -152,8 +152,8 @@ export const WithLatencyLong: Story = {
 export const WithAllMetrics: Story = {
   args: {
     timestamp: new Date(),
-    status: 'delivered',
-    cost: '150 tokens',
+    status: "delivered",
+    cost: "150 tokens",
     latencyMs: 1200,
   },
 };
@@ -170,13 +170,13 @@ export const TimestampOnly: Story = {
 
 export const StatusOnly: Story = {
   args: {
-    status: 'sent',
+    status: "sent",
   },
 };
 
 export const MetricsOnly: Story = {
   args: {
-    cost: '$0.005',
+    cost: "$0.005",
     latencyMs: 350,
   },
 };

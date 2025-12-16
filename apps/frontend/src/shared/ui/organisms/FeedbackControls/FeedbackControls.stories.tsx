@@ -1,28 +1,28 @@
-import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { FeedbackControls, type FeedbackState } from './FeedbackControls';
+import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { FeedbackControls, type FeedbackState } from "./FeedbackControls";
 
 const meta = {
-  title: 'Organisms/FeedbackControls',
+  title: "Organisms/FeedbackControls",
   component: FeedbackControls,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     feedback: {
-      control: 'select',
-      options: ['none', 'positive', 'negative'],
-      description: 'Current feedback state',
+      control: "select",
+      options: ["none", "positive", "negative"],
+      description: "Current feedback state",
     },
     showRegenerate: {
-      control: 'boolean',
-      description: 'Show regenerate button',
+      control: "boolean",
+      description: "Show regenerate button",
     },
     size: {
-      control: 'select',
-      options: ['sm', 'md'],
-      description: 'Size variant',
+      control: "select",
+      options: ["sm", "md"],
+      description: "Size variant",
     },
   },
   decorators: [
@@ -43,19 +43,19 @@ type Story = StoryObj<typeof meta>;
 
 export const NoFeedback: Story = {
   args: {
-    feedback: 'none',
+    feedback: "none",
   },
 };
 
 export const PositiveFeedback: Story = {
   args: {
-    feedback: 'positive',
+    feedback: "positive",
   },
 };
 
 export const NegativeFeedback: Story = {
   args: {
-    feedback: 'negative',
+    feedback: "negative",
   },
 };
 
@@ -65,13 +65,13 @@ export const NegativeFeedback: Story = {
 
 export const SmallSize: Story = {
   args: {
-    size: 'sm',
+    size: "sm",
   },
 };
 
 export const MediumSize: Story = {
   args: {
-    size: 'md',
+    size: "md",
   },
 };
 
@@ -82,7 +82,7 @@ export const MediumSize: Story = {
 export const WithRegenerate: Story = {
   args: {
     showRegenerate: true,
-    onRegenerate: () => console.log('Regenerate'),
+    onRegenerate: () => console.log("Regenerate"),
   },
 };
 
@@ -98,20 +98,20 @@ export const WithoutRegenerate: Story = {
 
 export const Interactive: Story = {
   render: () => {
-    const [feedback, setFeedback] = useState<FeedbackState>('none');
+    const [feedback, setFeedback] = useState<FeedbackState>("none");
 
     return (
       <FeedbackControls
         feedback={feedback}
-        onThumbsUp={() => setFeedback('positive')}
-        onThumbsDown={() => setFeedback('negative')}
+        onThumbsUp={() => setFeedback("positive")}
+        onThumbsDown={() => setFeedback("negative")}
         onSubmitFeedback={(text) => {
-          console.log('Feedback submitted:', text);
+          console.log("Feedback submitted:", text);
           alert(`Feedback: ${text}`);
         }}
         onRegenerate={() => {
-          console.log('Regenerate');
-          setFeedback('none');
+          console.log("Regenerate");
+          setFeedback("none");
         }}
       />
     );
@@ -124,23 +124,23 @@ export const Interactive: Story = {
 
 export const AfterAgentMessage: Story = {
   render: () => {
-    const [feedback, setFeedback] = useState<FeedbackState>('none');
+    const [feedback, setFeedback] = useState<FeedbackState>("none");
 
     return (
       <div className="space-y-3">
         <div className="bg-neutral-100 p-4 rounded-2xl rounded-bl-md">
           <p className="text-sm text-neutral-800">
-            Based on your resume, I recommend focusing on quantifiable achievements
-            in your work experience section.
+            Based on your resume, I recommend focusing on quantifiable
+            achievements in your work experience section.
           </p>
         </div>
 
         <FeedbackControls
           feedback={feedback}
-          onThumbsUp={() => setFeedback('positive')}
-          onThumbsDown={() => setFeedback('negative')}
-          onSubmitFeedback={(text) => console.log('Feedback:', text)}
-          onRegenerate={() => setFeedback('none')}
+          onThumbsUp={() => setFeedback("positive")}
+          onThumbsDown={() => setFeedback("negative")}
+          onSubmitFeedback={(text) => console.log("Feedback:", text)}
+          onRegenerate={() => setFeedback("none")}
           size="sm"
         />
       </div>
@@ -157,14 +157,20 @@ export const AllStates: Story = {
     <div className="space-y-6">
       <div>
         <p className="text-xs text-neutral-500 mb-2">No feedback</p>
-        <FeedbackControls feedback="none" onThumbsUp={() => {}} onThumbsDown={() => {}} />
+        <FeedbackControls
+          feedback="none"
+          onThumbsUp={() => {}}
+          onThumbsDown={() => {}}
+        />
       </div>
       <div>
         <p className="text-xs text-neutral-500 mb-2">Positive feedback</p>
         <FeedbackControls feedback="positive" />
       </div>
       <div>
-        <p className="text-xs text-neutral-500 mb-2">Negative feedback (with input)</p>
+        <p className="text-xs text-neutral-500 mb-2">
+          Negative feedback (with input)
+        </p>
         <FeedbackControls
           feedback="negative"
           onSubmitFeedback={(text) => console.log(text)}

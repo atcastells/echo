@@ -1,20 +1,20 @@
-import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   GlobalStates,
   OfflineBanner,
   RateLimitBanner,
   ErrorBoundary,
-} from './GlobalStates';
-import { Button } from '../../atoms/Button';
+} from "./GlobalStates";
+import { Button } from "../../atoms/Button";
 
 const meta = {
-  title: 'Pages/GlobalStates',
+  title: "Pages/GlobalStates",
   component: GlobalStates,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 } satisfies Meta<typeof GlobalStates>;
 
 export default meta;
@@ -27,7 +27,7 @@ type Story = StoryObj<typeof meta>;
 export const Offline: Story = {
   render: () => (
     <div className="min-h-screen bg-neutral-50">
-      <OfflineBanner isOffline={true} onRetry={() => console.log('Retry')} />
+      <OfflineBanner isOffline={true} onRetry={() => console.log("Retry")} />
       <div className="pt-16 p-8">
         <p className="text-neutral-600">App content would go here</p>
       </div>
@@ -45,9 +45,9 @@ export const OfflineToggle: Story = {
           isOffline={isOffline}
           onRetry={() => setIsOffline(false)}
         />
-        <div className={isOffline ? 'pt-16 p-8' : 'p-8'}>
+        <div className={isOffline ? "pt-16 p-8" : "p-8"}>
           <Button onClick={() => setIsOffline(!isOffline)}>
-            Toggle Offline: {isOffline ? 'ON' : 'OFF'}
+            Toggle Offline: {isOffline ? "ON" : "OFF"}
           </Button>
         </div>
       </div>
@@ -65,7 +65,7 @@ export const RateLimited: Story = {
       <RateLimitBanner
         isRateLimited={true}
         resetInSeconds={45}
-        onDismiss={() => console.log('Dismiss')}
+        onDismiss={() => console.log("Dismiss")}
       />
       <div className="pt-16 p-8">
         <p className="text-neutral-600">App content would go here</p>
@@ -90,12 +90,12 @@ export const RateLimitedLong: Story = {
 // ------------------
 
 const BuggyComponent = () => {
-  throw new Error('Test error: Something went wrong!');
+  throw new Error("Test error: Something went wrong!");
 };
 
 export const ErrorBoundaryDemo: Story = {
   render: () => (
-    <ErrorBoundary onError={(e) => console.log('Error caught:', e)}>
+    <ErrorBoundary onError={(e) => console.log("Error caught:", e)}>
       <BuggyComponent />
     </ErrorBoundary>
   ),
@@ -107,8 +107,8 @@ export const ErrorBoundaryWithChildren: Story = {
 
     return (
       <ErrorBoundary
-        key={shouldError ? 'error' : 'ok'}
-        onError={(e) => console.log('Error:', e)}
+        key={shouldError ? "error" : "ok"}
+        onError={(e) => console.log("Error:", e)}
         onReset={() => setShouldError(false)}
       >
         {shouldError ? (

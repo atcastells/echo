@@ -1,21 +1,24 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { ConversationListItem, type ConversationData } from './ConversationListItem';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import {
+  ConversationListItem,
+  type ConversationData,
+} from "./ConversationListItem";
 
 const meta = {
-  title: 'Molecules/ConversationListItem',
+  title: "Molecules/ConversationListItem",
   component: ConversationListItem,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     isActive: {
-      control: 'boolean',
-      description: 'Whether this item is selected',
+      control: "boolean",
+      description: "Whether this item is selected",
     },
     showDeleteOnHover: {
-      control: 'boolean',
-      description: 'Show delete button on hover',
+      control: "boolean",
+      description: "Show delete button on hover",
     },
   },
   decorators: [
@@ -31,9 +34,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const defaultConversation: ConversationData = {
-  id: '1',
-  title: 'Resume Review Session',
-  lastMessagePreview: 'I can help you optimize your professional summary.',
+  id: "1",
+  title: "Resume Review Session",
+  lastMessagePreview: "I can help you optimize your professional summary.",
   timestamp: new Date(Date.now() - 5 * 60 * 1000), // 5 minutes ago
 };
 
@@ -80,9 +83,9 @@ export const ActiveWithUnread: Story = {
 export const ShortTitle: Story = {
   args: {
     conversation: {
-      id: '1',
-      title: 'Help',
-      lastMessagePreview: 'Sure, what do you need?',
+      id: "1",
+      title: "Help",
+      lastMessagePreview: "Sure, what do you need?",
       timestamp: new Date(),
     },
   },
@@ -91,9 +94,10 @@ export const ShortTitle: Story = {
 export const LongTitle: Story = {
   args: {
     conversation: {
-      id: '1',
-      title: 'Comprehensive Review of My Software Engineering Resume for Senior Positions',
-      lastMessagePreview: 'I noticed several areas where we can improve...',
+      id: "1",
+      title:
+        "Comprehensive Review of My Software Engineering Resume for Senior Positions",
+      lastMessagePreview: "I noticed several areas where we can improve...",
       timestamp: new Date(),
     },
   },
@@ -102,8 +106,8 @@ export const LongTitle: Story = {
 export const NoPreview: Story = {
   args: {
     conversation: {
-      id: '1',
-      title: 'New Conversation',
+      id: "1",
+      title: "New Conversation",
       timestamp: new Date(),
     },
   },
@@ -184,12 +188,12 @@ export const WithDeleteOnHover: Story = {
   args: {
     conversation: defaultConversation,
     showDeleteOnHover: true,
-    onDelete: (id) => console.log('Delete:', id),
+    onDelete: (id) => console.log("Delete:", id),
   },
   parameters: {
     docs: {
       description: {
-        story: 'Hover to reveal the delete button.',
+        story: "Hover to reveal the delete button.",
       },
     },
   },
@@ -228,28 +232,28 @@ export const InSidebarList: Story = {
   render: () => {
     const conversations: ConversationData[] = [
       {
-        id: '1',
-        title: 'Resume Review',
-        lastMessagePreview: 'Looking great! Just a few tweaks needed.',
+        id: "1",
+        title: "Resume Review",
+        lastMessagePreview: "Looking great! Just a few tweaks needed.",
         timestamp: new Date(Date.now() - 5 * 60 * 1000),
         hasUnread: true,
       },
       {
-        id: '2',
-        title: 'Interview Prep',
+        id: "2",
+        title: "Interview Prep",
         lastMessagePreview: "Let's practice some common questions.",
         timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
       },
       {
-        id: '3',
-        title: 'Cover Letter Help',
-        lastMessagePreview: 'The introduction could be stronger.',
+        id: "3",
+        title: "Cover Letter Help",
+        lastMessagePreview: "The introduction could be stronger.",
         timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
       },
       {
-        id: '4',
-        title: 'Salary Negotiation',
-        lastMessagePreview: 'Here are some key points to consider.',
+        id: "4",
+        title: "Salary Negotiation",
+        lastMessagePreview: "Here are some key points to consider.",
         timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
         messageCount: 24,
       },
@@ -273,7 +277,9 @@ export const InSidebarList: Story = {
     (Story) => (
       <div className="w-80 bg-neutral-50 p-3 rounded-lg border border-neutral-200">
         <div className="mb-3 px-2">
-          <h2 className="text-sm font-medium text-neutral-600">Recent Conversations</h2>
+          <h2 className="text-sm font-medium text-neutral-600">
+            Recent Conversations
+          </h2>
         </div>
         <Story />
       </div>

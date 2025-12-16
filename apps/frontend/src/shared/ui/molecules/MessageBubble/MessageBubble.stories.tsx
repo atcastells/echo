@@ -1,30 +1,30 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { MessageBubble } from './MessageBubble';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { MessageBubble } from "./MessageBubble";
 
 const meta = {
-  title: 'Molecules/MessageBubble',
+  title: "Molecules/MessageBubble",
   component: MessageBubble,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: 'select',
-      options: ['user', 'agent', 'system'],
-      description: 'The sender type of the message',
+      control: "select",
+      options: ["user", "agent", "system"],
+      description: "The sender type of the message",
     },
     isMarkdown: {
-      control: 'boolean',
-      description: 'Whether to render content as Markdown',
+      control: "boolean",
+      description: "Whether to render content as Markdown",
     },
     isCode: {
-      control: 'boolean',
-      description: 'Whether to render content as a code block',
+      control: "boolean",
+      description: "Whether to render content as a code block",
     },
     maxLines: {
-      control: 'number',
-      description: 'Maximum lines before showing expand/collapse',
+      control: "number",
+      description: "Maximum lines before showing expand/collapse",
     },
   },
 } satisfies Meta<typeof MessageBubble>;
@@ -38,22 +38,24 @@ type Story = StoryObj<typeof meta>;
 
 export const UserMessage: Story = {
   args: {
-    content: 'Hi! Can you help me update my resume for a software engineering position?',
-    variant: 'user',
+    content:
+      "Hi! Can you help me update my resume for a software engineering position?",
+    variant: "user",
   },
 };
 
 export const AgentMessage: Story = {
   args: {
-    content: "Of course! I'd be happy to help you update your resume. To get started, could you tell me a bit about your current experience and the type of role you're targeting?",
-    variant: 'agent',
+    content:
+      "Of course! I'd be happy to help you update your resume. To get started, could you tell me a bit about your current experience and the type of role you're targeting?",
+    variant: "agent",
   },
 };
 
 export const SystemMessage: Story = {
   args: {
-    content: 'Your session will expire in 5 minutes. Please save your work.',
-    variant: 'system',
+    content: "Your session will expire in 5 minutes. Please save your work.",
+    variant: "system",
   },
 };
 
@@ -76,7 +78,7 @@ export const MarkdownContent: Story = {
 > Increased system performance by 40% through database optimization
 
 Remember to use *action verbs* and quantify your achievements!`,
-    variant: 'agent',
+    variant: "agent",
     isMarkdown: true,
   },
 };
@@ -102,7 +104,7 @@ function binarySearch(arr: number[], target: number): number {
 \`\`\`
 
 The time complexity is \`O(log n)\` which is very efficient!`,
-    variant: 'agent',
+    variant: "agent",
     isMarkdown: true,
   },
 };
@@ -119,7 +121,7 @@ export const CodeBlock: Story = {
 
 console.log(greeting('World'));`,
     isCode: true,
-    codeLanguage: 'typescript',
+    codeLanguage: "typescript",
   },
 };
 
@@ -133,7 +135,7 @@ export const CodeBlockPython: Story = {
 for i in range(10):
     print(fibonacci(i))`,
     isCode: true,
-    codeLanguage: 'python',
+    codeLanguage: "python",
   },
 };
 
@@ -144,12 +146,12 @@ for i in range(10):
 const longContent = Array.from(
   { length: 30 },
   (_, i) => `Line ${i + 1}: This is a sample line of text in the message.`
-).join('\n');
+).join("\n");
 
 export const LongContentCollapsed: Story = {
   args: {
     content: longContent,
-    variant: 'agent',
+    variant: "agent",
     maxLines: 10,
   },
 };
@@ -157,7 +159,7 @@ export const LongContentCollapsed: Story = {
 export const LongContentExpanded: Story = {
   args: {
     content: longContent,
-    variant: 'user',
+    variant: "user",
     maxLines: 10,
   },
   parameters: {
@@ -175,24 +177,26 @@ export const LongContentExpanded: Story = {
 
 export const WithCitations: Story = {
   args: {
-    content: 'Based on your resume, I recommend highlighting your experience with cloud technologies. Companies are increasingly looking for candidates with AWS or Azure certifications.',
-    variant: 'agent',
+    content:
+      "Based on your resume, I recommend highlighting your experience with cloud technologies. Companies are increasingly looking for candidates with AWS or Azure certifications.",
+    variant: "agent",
     citations: [
-      { id: '1', text: 'resume.pdf', url: '#resume' },
-      { id: '2', text: 'Job Requirements', url: '#job-req' },
+      { id: "1", text: "resume.pdf", url: "#resume" },
+      { id: "2", text: "Job Requirements", url: "#job-req" },
     ],
   },
 };
 
 export const WithMultipleCitations: Story = {
   args: {
-    content: 'Your experience aligns well with the requirements. Here are the key matches I found from your documents.',
-    variant: 'agent',
+    content:
+      "Your experience aligns well with the requirements. Here are the key matches I found from your documents.",
+    variant: "agent",
     citations: [
-      { id: '1', text: 'resume.pdf', url: '#resume' },
-      { id: '2', text: 'cover_letter.docx', url: '#cover' },
-      { id: '3', text: 'portfolio.pdf', url: '#portfolio' },
-      { id: '4', text: 'certifications.pdf' },
+      { id: "1", text: "resume.pdf", url: "#resume" },
+      { id: "2", text: "cover_letter.docx", url: "#cover" },
+      { id: "3", text: "portfolio.pdf", url: "#portfolio" },
+      { id: "4", text: "certifications.pdf" },
     ],
   },
 };
@@ -203,22 +207,23 @@ export const WithMultipleCitations: Story = {
 
 export const ShortMessage: Story = {
   args: {
-    content: 'OK',
-    variant: 'user',
+    content: "OK",
+    variant: "user",
   },
 };
 
 export const EmojiMessage: Story = {
   args: {
-    content: 'Great job! 🎉🚀✨',
-    variant: 'agent',
+    content: "Great job! 🎉🚀✨",
+    variant: "agent",
   },
 };
 
 export const UrlInMessage: Story = {
   args: {
-    content: 'Check out this resource: https://example.com/career-tips for more career advice.',
-    variant: 'agent',
+    content:
+      "Check out this resource: https://example.com/career-tips for more career advice.",
+    variant: "agent",
     isMarkdown: true,
   },
 };
@@ -243,10 +248,7 @@ export const AllVariants: Story = {
         />
       </div>
       <div className="flex justify-center">
-        <MessageBubble
-          content="Context loaded: resume.pdf"
-          variant="system"
-        />
+        <MessageBubble content="Context loaded: resume.pdf" variant="system" />
       </div>
     </div>
   ),

@@ -1,36 +1,36 @@
-import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { Modal, ConfirmModal } from './Modal';
-import { Button } from '../../atoms/Button';
+import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Modal, ConfirmModal } from "./Modal";
+import { Button } from "../../atoms/Button";
 
 const meta = {
-  title: 'Organisms/Modal',
+  title: "Organisms/Modal",
   component: Modal,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     size: {
-      control: 'select',
-      options: ['sm', 'md', 'lg', 'xl'],
-      description: 'Modal size',
+      control: "select",
+      options: ["sm", "md", "lg", "xl"],
+      description: "Modal size",
     },
     closeOnBackdropClick: {
-      control: 'boolean',
-      description: 'Close when clicking backdrop',
+      control: "boolean",
+      description: "Close when clicking backdrop",
     },
     closeOnEscape: {
-      control: 'boolean',
-      description: 'Close when pressing Escape',
+      control: "boolean",
+      description: "Close when pressing Escape",
     },
     showCloseButton: {
-      control: 'boolean',
-      description: 'Show close button',
+      control: "boolean",
+      description: "Show close button",
     },
     centered: {
-      control: 'boolean',
-      description: 'Center modal vertically',
+      control: "boolean",
+      description: "Center modal vertically",
     },
   },
 } satisfies Meta<typeof Modal>;
@@ -90,7 +90,9 @@ export const SmallSize: Story = {
           title="Small Modal"
           size="sm"
         >
-          <p className="text-neutral-600">A compact modal for simple confirmations.</p>
+          <p className="text-neutral-600">
+            A compact modal for simple confirmations.
+          </p>
         </Modal>
       </>
     );
@@ -111,7 +113,8 @@ export const LargeSize: Story = {
           size="lg"
         >
           <p className="text-neutral-600">
-            A larger modal for more complex content like forms or detailed information.
+            A larger modal for more complex content like forms or detailed
+            information.
           </p>
           <div className="mt-4 space-y-2">
             {Array.from({ length: 5 }).map((_, i) => (
@@ -194,8 +197,8 @@ export const NoFooter: Story = {
           title="Information"
         >
           <p className="text-neutral-600">
-            This modal has no footer. It's great for displaying information
-            that doesn't require any action.
+            This modal has no footer. It's great for displaying information that
+            doesn't require any action.
           </p>
         </Modal>
       </>
@@ -252,7 +255,7 @@ export const Confirmation: Story = {
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           onConfirm={() => {
-            console.log('Confirmed!');
+            console.log("Confirmed!");
             setIsOpen(false);
           }}
           title="Delete Conversation"

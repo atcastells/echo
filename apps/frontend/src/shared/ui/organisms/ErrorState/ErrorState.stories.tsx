@@ -1,27 +1,34 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { ErrorState } from './ErrorState';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { ErrorState } from "./ErrorState";
 
 const meta = {
-  title: 'Organisms/ErrorState',
+  title: "Organisms/ErrorState",
   component: ErrorState,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: 'select',
-      options: ['inline', 'card', 'fullPage'],
-      description: 'Error layout variant',
+      control: "select",
+      options: ["inline", "card", "fullPage"],
+      description: "Error layout variant",
     },
     errorType: {
-      control: 'select',
-      options: ['generic', 'network', 'permission', 'notFound', 'timeout', 'toolFailure'],
-      description: 'Error type for icon and defaults',
+      control: "select",
+      options: [
+        "generic",
+        "network",
+        "permission",
+        "notFound",
+        "timeout",
+        "toolFailure",
+      ],
+      description: "Error type for icon and defaults",
     },
     showRetry: {
-      control: 'boolean',
-      description: 'Show retry button',
+      control: "boolean",
+      description: "Show retry button",
     },
   },
   decorators: [
@@ -42,25 +49,25 @@ type Story = StoryObj<typeof meta>;
 
 export const InlineError: Story = {
   args: {
-    variant: 'inline',
-    errorType: 'generic',
-    onRetry: () => console.log('Retry'),
+    variant: "inline",
+    errorType: "generic",
+    onRetry: () => console.log("Retry"),
   },
 };
 
 export const CardError: Story = {
   args: {
-    variant: 'card',
-    errorType: 'generic',
-    onRetry: () => console.log('Retry'),
+    variant: "card",
+    errorType: "generic",
+    onRetry: () => console.log("Retry"),
   },
 };
 
 export const FullPageError: Story = {
   args: {
-    variant: 'fullPage',
-    errorType: 'generic',
-    onRetry: () => console.log('Retry'),
+    variant: "fullPage",
+    errorType: "generic",
+    onRetry: () => console.log("Retry"),
   },
   decorators: [
     (Story) => (
@@ -77,45 +84,45 @@ export const FullPageError: Story = {
 
 export const NetworkError: Story = {
   args: {
-    variant: 'card',
-    errorType: 'network',
-    onRetry: () => console.log('Retry'),
+    variant: "card",
+    errorType: "network",
+    onRetry: () => console.log("Retry"),
   },
 };
 
 export const PermissionError: Story = {
   args: {
-    variant: 'card',
-    errorType: 'permission',
+    variant: "card",
+    errorType: "permission",
     showRetry: false,
-    actionLabel: 'Request Access',
-    onAction: () => console.log('Request access'),
+    actionLabel: "Request Access",
+    onAction: () => console.log("Request access"),
   },
 };
 
 export const NotFoundError: Story = {
   args: {
-    variant: 'card',
-    errorType: 'notFound',
+    variant: "card",
+    errorType: "notFound",
     showRetry: false,
-    actionLabel: 'Go Home',
-    onAction: () => console.log('Go home'),
+    actionLabel: "Go Home",
+    onAction: () => console.log("Go home"),
   },
 };
 
 export const TimeoutError: Story = {
   args: {
-    variant: 'card',
-    errorType: 'timeout',
-    onRetry: () => console.log('Retry'),
+    variant: "card",
+    errorType: "timeout",
+    onRetry: () => console.log("Retry"),
   },
 };
 
 export const ToolFailureError: Story = {
   args: {
-    variant: 'card',
-    errorType: 'toolFailure',
-    onRetry: () => console.log('Retry'),
+    variant: "card",
+    errorType: "toolFailure",
+    onRetry: () => console.log("Retry"),
   },
 };
 
@@ -125,21 +132,22 @@ export const ToolFailureError: Story = {
 
 export const CustomTitle: Story = {
   args: {
-    variant: 'card',
-    title: 'Failed to load messages',
-    description: 'We couldn\'t load your conversation history. Please try again later.',
-    onRetry: () => console.log('Retry'),
+    variant: "card",
+    title: "Failed to load messages",
+    description:
+      "We couldn't load your conversation history. Please try again later.",
+    onRetry: () => console.log("Retry"),
   },
 };
 
 export const CustomAction: Story = {
   args: {
-    variant: 'card',
-    errorType: 'generic',
+    variant: "card",
+    errorType: "generic",
     showRetry: true,
-    actionLabel: 'Contact Support',
-    onRetry: () => console.log('Retry'),
-    onAction: () => console.log('Contact support'),
+    actionLabel: "Contact Support",
+    onRetry: () => console.log("Retry"),
+    onAction: () => console.log("Contact support"),
   },
 };
 
@@ -149,8 +157,8 @@ export const CustomAction: Story = {
 
 export const NoRetryButton: Story = {
   args: {
-    variant: 'card',
-    errorType: 'permission',
+    variant: "card",
+    errorType: "permission",
     showRetry: false,
   },
 };
@@ -183,7 +191,7 @@ export const InMessageList: Story = {
         variant="card"
         title="Failed to send message"
         description="Your message couldn't be delivered. Please check your connection and try again."
-        onRetry={() => console.log('Retry')}
+        onRetry={() => console.log("Retry")}
       />
     </div>
   ),
@@ -195,9 +203,9 @@ export const InFullPage: Story = {
       <ErrorState
         variant="fullPage"
         errorType="network"
-        onRetry={() => console.log('Retry')}
+        onRetry={() => console.log("Retry")}
         actionLabel="Go Offline"
-        onAction={() => console.log('Go offline')}
+        onAction={() => console.log("Go offline")}
       />
     </div>
   ),

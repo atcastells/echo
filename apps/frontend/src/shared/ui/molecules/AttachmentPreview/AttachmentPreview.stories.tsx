@@ -1,22 +1,22 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { AttachmentPreview, type AttachmentFile } from './AttachmentPreview';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { AttachmentPreview, type AttachmentFile } from "./AttachmentPreview";
 
 const meta = {
-  title: 'Molecules/AttachmentPreview',
+  title: "Molecules/AttachmentPreview",
   component: AttachmentPreview,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     size: {
-      control: 'select',
-      options: ['sm', 'md'],
-      description: 'Size variant',
+      control: "select",
+      options: ["sm", "md"],
+      description: "Size variant",
     },
     removable: {
-      control: 'boolean',
-      description: 'Whether the file can be removed',
+      control: "boolean",
+      description: "Whether the file can be removed",
     },
   },
   decorators: [
@@ -32,10 +32,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const defaultFile: AttachmentFile = {
-  id: '1',
-  name: 'resume.pdf',
+  id: "1",
+  name: "resume.pdf",
   size: 245678,
-  type: 'application/pdf',
+  type: "application/pdf",
 };
 
 // ------------------
@@ -45,10 +45,10 @@ const defaultFile: AttachmentFile = {
 export const PDFFile: Story = {
   args: {
     file: {
-      id: '1',
-      name: 'resume.pdf',
+      id: "1",
+      name: "resume.pdf",
       size: 245678,
-      type: 'application/pdf',
+      type: "application/pdf",
     },
   },
 };
@@ -56,10 +56,10 @@ export const PDFFile: Story = {
 export const WordDocument: Story = {
   args: {
     file: {
-      id: '2',
-      name: 'cover_letter.docx',
+      id: "2",
+      name: "cover_letter.docx",
       size: 34567,
-      type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     },
   },
 };
@@ -67,10 +67,10 @@ export const WordDocument: Story = {
 export const ImageFile: Story = {
   args: {
     file: {
-      id: '3',
-      name: 'profile_photo.jpg',
+      id: "3",
+      name: "profile_photo.jpg",
       size: 1234567,
-      type: 'image/jpeg',
+      type: "image/jpeg",
     },
   },
 };
@@ -78,10 +78,10 @@ export const ImageFile: Story = {
 export const TextFile: Story = {
   args: {
     file: {
-      id: '4',
-      name: 'notes.txt',
+      id: "4",
+      name: "notes.txt",
       size: 1234,
-      type: 'text/plain',
+      type: "text/plain",
     },
   },
 };
@@ -89,10 +89,10 @@ export const TextFile: Story = {
 export const GenericFile: Story = {
   args: {
     file: {
-      id: '5',
-      name: 'archive.zip',
+      id: "5",
+      name: "archive.zip",
       size: 5678901,
-      type: 'application/zip',
+      type: "application/zip",
     },
   },
 };
@@ -104,10 +104,10 @@ export const GenericFile: Story = {
 export const Uploading25: Story = {
   args: {
     file: {
-      id: '1',
-      name: 'large_document.pdf',
+      id: "1",
+      name: "large_document.pdf",
       size: 5678901,
-      type: 'application/pdf',
+      type: "application/pdf",
       progress: 25,
     },
   },
@@ -116,10 +116,10 @@ export const Uploading25: Story = {
 export const Uploading50: Story = {
   args: {
     file: {
-      id: '1',
-      name: 'large_document.pdf',
+      id: "1",
+      name: "large_document.pdf",
       size: 5678901,
-      type: 'application/pdf',
+      type: "application/pdf",
       progress: 50,
     },
   },
@@ -128,10 +128,10 @@ export const Uploading50: Story = {
 export const Uploading75: Story = {
   args: {
     file: {
-      id: '1',
-      name: 'large_document.pdf',
+      id: "1",
+      name: "large_document.pdf",
       size: 5678901,
-      type: 'application/pdf',
+      type: "application/pdf",
       progress: 75,
     },
   },
@@ -140,10 +140,10 @@ export const Uploading75: Story = {
 export const UploadComplete: Story = {
   args: {
     file: {
-      id: '1',
-      name: 'resume.pdf',
+      id: "1",
+      name: "resume.pdf",
       size: 245678,
-      type: 'application/pdf',
+      type: "application/pdf",
       progress: 100,
     },
   },
@@ -152,13 +152,13 @@ export const UploadComplete: Story = {
 export const UploadFailed: Story = {
   args: {
     file: {
-      id: '1',
-      name: 'resume.pdf',
+      id: "1",
+      name: "resume.pdf",
       size: 245678,
-      type: 'application/pdf',
-      error: 'Upload failed. Please try again.',
+      type: "application/pdf",
+      error: "Upload failed. Please try again.",
     },
-    onRetry: (id) => console.log('Retry:', id),
+    onRetry: (id) => console.log("Retry:", id),
   },
 };
 
@@ -169,14 +169,14 @@ export const UploadFailed: Story = {
 export const SmallSize: Story = {
   args: {
     file: defaultFile,
-    size: 'sm',
+    size: "sm",
   },
 };
 
 export const MediumSize: Story = {
   args: {
     file: defaultFile,
-    size: 'md',
+    size: "md",
   },
 };
 
@@ -188,7 +188,7 @@ export const WithRemoveButton: Story = {
   args: {
     file: defaultFile,
     removable: true,
-    onRemove: (id) => console.log('Remove:', id),
+    onRemove: (id) => console.log("Remove:", id),
   },
 };
 
@@ -206,10 +206,10 @@ export const NotRemovable: Story = {
 export const LongFileName: Story = {
   args: {
     file: {
-      id: '1',
-      name: 'very_long_file_name_that_should_be_truncated_in_the_display.pdf',
+      id: "1",
+      name: "very_long_file_name_that_should_be_truncated_in_the_display.pdf",
       size: 245678,
-      type: 'application/pdf',
+      type: "application/pdf",
     },
   },
 };
@@ -235,7 +235,7 @@ export const InteractiveWithError: Story = {
   args: {
     file: {
       ...defaultFile,
-      error: 'Network error',
+      error: "Network error",
     },
     removable: true,
   },
@@ -257,30 +257,30 @@ export const MultipleFiles: Story = {
     <div className="space-y-2">
       <AttachmentPreview
         file={{
-          id: '1',
-          name: 'resume.pdf',
+          id: "1",
+          name: "resume.pdf",
           size: 245678,
-          type: 'application/pdf',
+          type: "application/pdf",
         }}
         onRemove={() => {}}
       />
       <AttachmentPreview
         file={{
-          id: '2',
-          name: 'cover_letter.docx',
+          id: "2",
+          name: "cover_letter.docx",
           size: 34567,
-          type: 'application/msword',
+          type: "application/msword",
           progress: 65,
         }}
         onRemove={() => {}}
       />
       <AttachmentPreview
         file={{
-          id: '3',
-          name: 'portfolio.pdf',
+          id: "3",
+          name: "portfolio.pdf",
           size: 5678901,
-          type: 'application/pdf',
-          error: 'File too large',
+          type: "application/pdf",
+          error: "File too large",
         }}
         onRemove={() => {}}
         onRetry={() => {}}
@@ -300,20 +300,20 @@ export const InComposerContext: Story = {
       <div className="p-3 border-b border-neutral-200 space-y-2">
         <AttachmentPreview
           file={{
-            id: '1',
-            name: 'resume_2024.pdf',
+            id: "1",
+            name: "resume_2024.pdf",
             size: 245678,
-            type: 'application/pdf',
+            type: "application/pdf",
           }}
           size="sm"
           onRemove={() => {}}
         />
         <AttachmentPreview
           file={{
-            id: '2',
-            name: 'job_posting.txt',
+            id: "2",
+            name: "job_posting.txt",
             size: 5432,
-            type: 'text/plain',
+            type: "text/plain",
             progress: 45,
           }}
           size="sm"

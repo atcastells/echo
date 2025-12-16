@@ -1,30 +1,30 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { ConversationHeader } from './ConversationHeader';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { ConversationHeader } from "./ConversationHeader";
 
 const meta = {
-  title: 'Organisms/ConversationHeader',
+  title: "Organisms/ConversationHeader",
   component: ConversationHeader,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     agentStatus: {
-      control: 'select',
-      options: ['available', 'busy', 'restricted', 'offline'],
-      description: 'Agent availability status',
+      control: "select",
+      options: ["available", "busy", "restricted", "offline"],
+      description: "Agent availability status",
     },
     memoryEnabled: {
-      control: 'boolean',
-      description: 'Context memory enabled',
+      control: "boolean",
+      description: "Context memory enabled",
     },
     contextUsagePercent: {
-      control: { type: 'range', min: 0, max: 100 },
-      description: 'Context usage percentage',
+      control: { type: "range", min: 0, max: 100 },
+      description: "Context usage percentage",
     },
     sidebarOpen: {
-      control: 'boolean',
-      description: 'Sidebar visibility state',
+      control: "boolean",
+      description: "Sidebar visibility state",
     },
   },
 } satisfies Meta<typeof ConversationHeader>;
@@ -38,9 +38,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    agentName: 'Echo',
-    agentRole: 'AI Career Agent',
-    agentStatus: 'available',
+    agentName: "Echo",
+    agentRole: "AI Career Agent",
+    agentStatus: "available",
     memoryEnabled: true,
     contextUsagePercent: 35,
   },
@@ -48,9 +48,9 @@ export const Default: Story = {
 
 export const WithConversationTitle: Story = {
   args: {
-    agentName: 'Echo',
-    conversationTitle: 'Resume Review Session',
-    agentStatus: 'available',
+    agentName: "Echo",
+    conversationTitle: "Resume Review Session",
+    agentStatus: "available",
     memoryEnabled: true,
     contextUsagePercent: 45,
   },
@@ -62,17 +62,17 @@ export const WithConversationTitle: Story = {
 
 export const AgentAvailable: Story = {
   args: {
-    agentName: 'Echo',
-    agentRole: 'AI Career Agent',
-    agentStatus: 'available',
+    agentName: "Echo",
+    agentRole: "AI Career Agent",
+    agentStatus: "available",
   },
 };
 
 export const AgentBusy: Story = {
   args: {
-    agentName: 'Echo',
-    agentRole: 'AI Career Agent',
-    agentStatus: 'busy',
+    agentName: "Echo",
+    agentRole: "AI Career Agent",
+    agentStatus: "busy",
     memoryEnabled: true,
     contextUsagePercent: 75,
   },
@@ -80,17 +80,17 @@ export const AgentBusy: Story = {
 
 export const AgentRestricted: Story = {
   args: {
-    agentName: 'Echo',
-    agentRole: 'AI Career Agent',
-    agentStatus: 'restricted',
+    agentName: "Echo",
+    agentRole: "AI Career Agent",
+    agentStatus: "restricted",
   },
 };
 
 export const AgentOffline: Story = {
   args: {
-    agentName: 'Echo',
-    agentRole: 'AI Career Agent',
-    agentStatus: 'offline',
+    agentName: "Echo",
+    agentRole: "AI Career Agent",
+    agentStatus: "offline",
   },
 };
 
@@ -100,16 +100,16 @@ export const AgentOffline: Story = {
 
 export const MemoryOff: Story = {
   args: {
-    agentName: 'Echo',
-    agentRole: 'AI Career Agent',
+    agentName: "Echo",
+    agentRole: "AI Career Agent",
     memoryEnabled: false,
   },
 };
 
 export const LowContextUsage: Story = {
   args: {
-    agentName: 'Echo',
-    agentRole: 'AI Career Agent',
+    agentName: "Echo",
+    agentRole: "AI Career Agent",
     memoryEnabled: true,
     contextUsagePercent: 15,
   },
@@ -117,8 +117,8 @@ export const LowContextUsage: Story = {
 
 export const HighContextUsage: Story = {
   args: {
-    agentName: 'Echo',
-    agentRole: 'AI Career Agent',
+    agentName: "Echo",
+    agentRole: "AI Career Agent",
     memoryEnabled: true,
     contextUsagePercent: 85,
   },
@@ -126,8 +126,8 @@ export const HighContextUsage: Story = {
 
 export const CriticalContextUsage: Story = {
   args: {
-    agentName: 'Echo',
-    agentRole: 'AI Career Agent',
+    agentName: "Echo",
+    agentRole: "AI Career Agent",
     memoryEnabled: true,
     contextUsagePercent: 95,
   },
@@ -139,8 +139,8 @@ export const CriticalContextUsage: Story = {
 
 export const SidebarOpen: Story = {
   args: {
-    agentName: 'Echo',
-    agentRole: 'AI Career Agent',
+    agentName: "Echo",
+    agentRole: "AI Career Agent",
     showSidebarToggle: true,
     sidebarOpen: true,
   },
@@ -148,8 +148,8 @@ export const SidebarOpen: Story = {
 
 export const SidebarClosed: Story = {
   args: {
-    agentName: 'Echo',
-    agentRole: 'AI Career Agent',
+    agentName: "Echo",
+    agentRole: "AI Career Agent",
     showSidebarToggle: true,
     sidebarOpen: false,
   },
@@ -157,8 +157,8 @@ export const SidebarClosed: Story = {
 
 export const NoSidebarToggle: Story = {
   args: {
-    agentName: 'Echo',
-    agentRole: 'AI Career Agent',
+    agentName: "Echo",
+    agentRole: "AI Career Agent",
     showSidebarToggle: false,
   },
 };
@@ -169,9 +169,9 @@ export const NoSidebarToggle: Story = {
 
 export const Interactive: Story = {
   args: {
-    agentName: 'Echo',
-    agentRole: 'AI Career Agent',
-    agentStatus: 'available',
+    agentName: "Echo",
+    agentRole: "AI Career Agent",
+    agentStatus: "available",
     memoryEnabled: true,
     contextUsagePercent: 50,
     showSidebarToggle: true,
@@ -180,14 +180,14 @@ export const Interactive: Story = {
   render: (args) => (
     <ConversationHeader
       {...args}
-      onToggleSidebar={() => console.log('Toggle sidebar')}
-      onToggleMemory={() => console.log('Toggle memory')}
-      onResetContext={() => console.log('Reset context')}
-      onShare={() => console.log('Share')}
-      onExport={() => console.log('Export')}
-      onClear={() => console.log('Clear')}
-      onRename={() => console.log('Rename')}
-      onAgentClick={() => console.log('Agent clicked')}
+      onToggleSidebar={() => console.log("Toggle sidebar")}
+      onToggleMemory={() => console.log("Toggle memory")}
+      onResetContext={() => console.log("Reset context")}
+      onShare={() => console.log("Share")}
+      onExport={() => console.log("Export")}
+      onClear={() => console.log("Clear")}
+      onRename={() => console.log("Rename")}
+      onAgentClick={() => console.log("Agent clicked")}
     />
   ),
 };
@@ -198,15 +198,15 @@ export const Interactive: Story = {
 
 export const MinimalActions: Story = {
   args: {
-    agentName: 'Echo',
-    agentRole: 'AI Career Agent',
+    agentName: "Echo",
+    agentRole: "AI Career Agent",
     showSidebarToggle: false,
   },
   render: (args) => (
     <ConversationHeader
       {...args}
-      onToggleMemory={() => console.log('Toggle memory')}
-      onResetContext={() => console.log('Reset context')}
+      onToggleMemory={() => console.log("Toggle memory")}
+      onResetContext={() => console.log("Reset context")}
     />
   ),
 };

@@ -1,18 +1,22 @@
-import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { ComposerToolbar, type PersonaOption, type ContextScope } from './ComposerToolbar';
+import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import {
+  ComposerToolbar,
+  type PersonaOption,
+  type ContextScope,
+} from "./ComposerToolbar";
 
 const meta = {
-  title: 'Organisms/ComposerToolbar',
+  title: "Organisms/ComposerToolbar",
   component: ComposerToolbar,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     showShortcutHints: {
-      control: 'boolean',
-      description: 'Show keyboard shortcut hints',
+      control: "boolean",
+      description: "Show keyboard shortcut hints",
     },
   },
   decorators: [
@@ -28,15 +32,42 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const samplePersonas: PersonaOption[] = [
-  { id: 'default', name: 'Career Advisor', description: 'General career guidance' },
-  { id: 'resume', name: 'Resume Expert', description: 'Focus on resume optimization' },
-  { id: 'interview', name: 'Interview Coach', description: 'Interview preparation' },
+  {
+    id: "default",
+    name: "Career Advisor",
+    description: "General career guidance",
+  },
+  {
+    id: "resume",
+    name: "Resume Expert",
+    description: "Focus on resume optimization",
+  },
+  {
+    id: "interview",
+    name: "Interview Coach",
+    description: "Interview preparation",
+  },
 ];
 
 const sampleContextScopes: ContextScope[] = [
-  { id: 'resume', name: 'Resume', description: 'Use your uploaded resume', isActive: true },
-  { id: 'conversation', name: 'Conversation History', description: 'Previous messages', isActive: true },
-  { id: 'preferences', name: 'Preferences', description: 'Your saved preferences', isActive: false },
+  {
+    id: "resume",
+    name: "Resume",
+    description: "Use your uploaded resume",
+    isActive: true,
+  },
+  {
+    id: "conversation",
+    name: "Conversation History",
+    description: "Previous messages",
+    isActive: true,
+  },
+  {
+    id: "preferences",
+    name: "Preferences",
+    description: "Your saved preferences",
+    isActive: false,
+  },
 ];
 
 // ------------------
@@ -46,7 +77,7 @@ const sampleContextScopes: ContextScope[] = [
 export const Default: Story = {
   args: {
     personas: samplePersonas,
-    selectedPersonaId: 'default',
+    selectedPersonaId: "default",
     contextScopes: sampleContextScopes,
     showShortcutHints: true,
   },
@@ -55,7 +86,7 @@ export const Default: Story = {
 export const PersonasOnly: Story = {
   args: {
     personas: samplePersonas,
-    selectedPersonaId: 'resume',
+    selectedPersonaId: "resume",
     showShortcutHints: true,
   },
 };
@@ -80,7 +111,7 @@ export const ShortcutsOnly: Story = {
 export const NoShortcuts: Story = {
   args: {
     personas: samplePersonas,
-    selectedPersonaId: 'default',
+    selectedPersonaId: "default",
     contextScopes: sampleContextScopes,
     showShortcutHints: false,
   },
@@ -92,7 +123,7 @@ export const NoShortcuts: Story = {
 
 export const Interactive: Story = {
   render: () => {
-    const [selectedPersona, setSelectedPersona] = useState('default');
+    const [selectedPersona, setSelectedPersona] = useState("default");
     const [scopes, setScopes] = useState(sampleContextScopes);
 
     const handleToggleScope = (scopeId: string) => {
@@ -122,7 +153,7 @@ export const Interactive: Story = {
 
 export const WithComposer: Story = {
   render: () => {
-    const [selectedPersona, setSelectedPersona] = useState('default');
+    const [selectedPersona, setSelectedPersona] = useState("default");
 
     return (
       <div className="bg-white border border-neutral-200 rounded-xl overflow-hidden">
@@ -156,11 +187,11 @@ export const WithComposer: Story = {
 export const ManyContextScopes: Story = {
   args: {
     contextScopes: [
-      { id: '1', name: 'Resume', isActive: true },
-      { id: '2', name: 'Cover Letters', isActive: true },
-      { id: '3', name: 'Job Postings', isActive: true },
-      { id: '4', name: 'Conversation History', isActive: false },
-      { id: '5', name: 'Industry Data', isActive: false },
+      { id: "1", name: "Resume", isActive: true },
+      { id: "2", name: "Cover Letters", isActive: true },
+      { id: "3", name: "Job Postings", isActive: true },
+      { id: "4", name: "Conversation History", isActive: false },
+      { id: "5", name: "Industry Data", isActive: false },
     ],
     showShortcutHints: true,
   },
@@ -172,8 +203,8 @@ export const ManyContextScopes: Story = {
 
 export const SinglePersona: Story = {
   args: {
-    personas: [{ id: 'default', name: 'Echo', description: 'AI Career Agent' }],
-    selectedPersonaId: 'default',
+    personas: [{ id: "default", name: "Echo", description: "AI Career Agent" }],
+    selectedPersonaId: "default",
     showShortcutHints: true,
   },
 };

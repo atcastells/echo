@@ -1,30 +1,30 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { ContextIndicator } from './ContextIndicator';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { ContextIndicator } from "./ContextIndicator";
 
 const meta = {
-  title: 'Molecules/ContextIndicator',
+  title: "Molecules/ContextIndicator",
   component: ContextIndicator,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     isEnabled: {
-      control: 'boolean',
-      description: 'Whether memory/context is enabled',
+      control: "boolean",
+      description: "Whether memory/context is enabled",
     },
     usagePercent: {
-      control: { type: 'range', min: 0, max: 100 },
-      description: 'Current context usage percentage',
+      control: { type: "range", min: 0, max: 100 },
+      description: "Current context usage percentage",
     },
     showResetButton: {
-      control: 'boolean',
-      description: 'Show reset button',
+      control: "boolean",
+      description: "Show reset button",
     },
     size: {
-      control: 'select',
-      options: ['sm', 'md'],
-      description: 'Size variant',
+      control: "select",
+      options: ["sm", "md"],
+      description: "Size variant",
     },
   },
 } satisfies Meta<typeof ContextIndicator>;
@@ -122,7 +122,7 @@ export const SmallSize: Story = {
   args: {
     isEnabled: true,
     usagePercent: 35,
-    size: 'sm',
+    size: "sm",
   },
 };
 
@@ -130,7 +130,7 @@ export const MediumSize: Story = {
   args: {
     isEnabled: true,
     usagePercent: 35,
-    size: 'md',
+    size: "md",
   },
 };
 
@@ -147,8 +147,8 @@ export const Interactive: Story = {
   render: (args) => (
     <ContextIndicator
       {...args}
-      onToggle={() => alert('Toggle memory')}
-      onReset={() => alert('Reset context')}
+      onToggle={() => alert("Toggle memory")}
+      onReset={() => alert("Reset context")}
     />
   ),
 };
@@ -159,10 +159,7 @@ export const ToggleOnly: Story = {
     usagePercent: 0,
   },
   render: (args) => (
-    <ContextIndicator
-      {...args}
-      onToggle={() => alert('Toggle memory')}
-    />
+    <ContextIndicator {...args} onToggle={() => alert("Toggle memory")} />
   ),
 };
 
@@ -215,19 +212,35 @@ export const AllUsageLevels: Story = {
     <div className="space-y-3">
       <div className="flex items-center gap-4">
         <span className="text-sm text-neutral-500 w-24">Low (25%)</span>
-        <ContextIndicator isEnabled={true} usagePercent={25} onReset={() => {}} />
+        <ContextIndicator
+          isEnabled={true}
+          usagePercent={25}
+          onReset={() => {}}
+        />
       </div>
       <div className="flex items-center gap-4">
         <span className="text-sm text-neutral-500 w-24">Medium (55%)</span>
-        <ContextIndicator isEnabled={true} usagePercent={55} onReset={() => {}} />
+        <ContextIndicator
+          isEnabled={true}
+          usagePercent={55}
+          onReset={() => {}}
+        />
       </div>
       <div className="flex items-center gap-4">
         <span className="text-sm text-neutral-500 w-24">High (80%)</span>
-        <ContextIndicator isEnabled={true} usagePercent={80} onReset={() => {}} />
+        <ContextIndicator
+          isEnabled={true}
+          usagePercent={80}
+          onReset={() => {}}
+        />
       </div>
       <div className="flex items-center gap-4">
         <span className="text-sm text-neutral-500 w-24">Critical (95%)</span>
-        <ContextIndicator isEnabled={true} usagePercent={95} onReset={() => {}} />
+        <ContextIndicator
+          isEnabled={true}
+          usagePercent={95}
+          onReset={() => {}}
+        />
       </div>
     </div>
   ),
@@ -251,10 +264,7 @@ export const EnabledVsDisabled: Story = {
       </div>
       <div>
         <p className="text-xs text-neutral-500 mb-2">Memory Disabled</p>
-        <ContextIndicator
-          isEnabled={false}
-          onToggle={() => {}}
-        />
+        <ContextIndicator isEnabled={false} onToggle={() => {}} />
       </div>
     </div>
   ),

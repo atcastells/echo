@@ -1,13 +1,13 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { FirstRunExperience } from './FirstRunExperience';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { FirstRunExperience } from "./FirstRunExperience";
 
 const meta = {
-  title: 'Templates/FirstRunExperience',
+  title: "Templates/FirstRunExperience",
   component: FirstRunExperience,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 } satisfies Meta<typeof FirstRunExperience>;
 
 export default meta;
@@ -19,9 +19,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    onGetStarted: () => console.log('Get started'),
-    onExampleClick: (prompt) => console.log('Example:', prompt),
-    onSkip: () => console.log('Skip'),
+    onGetStarted: () => console.log("Get started"),
+    onExampleClick: (prompt) => console.log("Example:", prompt),
+    onSkip: () => console.log("Skip"),
   },
 };
 
@@ -31,9 +31,9 @@ export const Default: Story = {
 
 export const CustomBranding: Story = {
   args: {
-    productName: 'Career Coach',
-    tagline: 'Navigate your career journey with confidence',
-    onGetStarted: () => console.log('Get started'),
+    productName: "Career Coach",
+    tagline: "Navigate your career journey with confidence",
+    onGetStarted: () => console.log("Get started"),
   },
 };
 
@@ -44,10 +44,20 @@ export const CustomBranding: Story = {
 export const CustomCapabilities: Story = {
   args: {
     capabilities: [
-      { id: '1', title: 'Smart Analysis', description: 'AI-powered insights', icon: 'sparkles' },
-      { id: '2', title: '24/7 Support', description: 'Always available', icon: 'chat-bubble-left-right' },
+      {
+        id: "1",
+        title: "Smart Analysis",
+        description: "AI-powered insights",
+        icon: "sparkles",
+      },
+      {
+        id: "2",
+        title: "24/7 Support",
+        description: "Always available",
+        icon: "chat-bubble-left-right",
+      },
     ],
-    onGetStarted: () => console.log('Get started'),
+    onGetStarted: () => console.log("Get started"),
   },
 };
 
@@ -57,8 +67,8 @@ export const CustomCapabilities: Story = {
 
 export const NoSkip: Story = {
   args: {
-    onGetStarted: () => console.log('Get started'),
-    onExampleClick: (prompt) => console.log('Example:', prompt),
+    onGetStarted: () => console.log("Get started"),
+    onExampleClick: (prompt) => console.log("Example:", prompt),
     // No onSkip
   },
 };
@@ -71,6 +81,6 @@ export const Minimal: Story = {
   args: {
     capabilities: [],
     examplePrompts: [],
-    onGetStarted: () => console.log('Get started'),
+    onGetStarted: () => console.log("Get started"),
   },
 };

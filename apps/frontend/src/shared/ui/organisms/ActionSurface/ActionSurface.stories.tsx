@@ -1,23 +1,23 @@
-import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { ActionSurface, type ActionState } from './ActionSurface';
+import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { ActionSurface, type ActionState } from "./ActionSurface";
 
 const meta = {
-  title: 'Organisms/ActionSurface',
+  title: "Organisms/ActionSurface",
   component: ActionSurface,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     state: {
-      control: 'select',
-      options: ['pending', 'executing', 'done', 'failed'],
-      description: 'Action state',
+      control: "select",
+      options: ["pending", "executing", "done", "failed"],
+      description: "Action state",
     },
     isDestructive: {
-      control: 'boolean',
-      description: 'Destructive action styling',
+      control: "boolean",
+      description: "Destructive action styling",
     },
   },
   decorators: [
@@ -38,38 +38,39 @@ type Story = StoryObj<typeof meta>;
 
 export const Pending: Story = {
   args: {
-    title: 'Update Resume Summary',
-    description: 'This will replace your current professional summary with the revised version.',
-    state: 'pending',
-    onConfirm: () => console.log('Confirm'),
-    onCancel: () => console.log('Cancel'),
+    title: "Update Resume Summary",
+    description:
+      "This will replace your current professional summary with the revised version.",
+    state: "pending",
+    onConfirm: () => console.log("Confirm"),
+    onCancel: () => console.log("Cancel"),
   },
 };
 
 export const Executing: Story = {
   args: {
-    title: 'Updating Resume Summary',
-    description: 'Applying changes to your resume...',
-    state: 'executing',
+    title: "Updating Resume Summary",
+    description: "Applying changes to your resume...",
+    state: "executing",
   },
 };
 
 export const Done: Story = {
   args: {
-    title: 'Resume Summary Updated',
-    successMessage: 'Your professional summary has been successfully updated.',
-    state: 'done',
-    onUndo: () => console.log('Undo'),
+    title: "Resume Summary Updated",
+    successMessage: "Your professional summary has been successfully updated.",
+    state: "done",
+    onUndo: () => console.log("Undo"),
   },
 };
 
 export const Failed: Story = {
   args: {
-    title: 'Update Failed',
-    errorMessage: 'Unable to save changes. Please try again.',
-    state: 'failed',
-    onRetry: () => console.log('Retry'),
-    onCancel: () => console.log('Cancel'),
+    title: "Update Failed",
+    errorMessage: "Unable to save changes. Please try again.",
+    state: "failed",
+    onRetry: () => console.log("Retry"),
+    onCancel: () => console.log("Cancel"),
   },
 };
 
@@ -79,20 +80,21 @@ export const Failed: Story = {
 
 export const DestructivePending: Story = {
   args: {
-    title: 'Delete Conversation',
-    description: 'This action cannot be undone. All messages will be permanently deleted.',
-    state: 'pending',
+    title: "Delete Conversation",
+    description:
+      "This action cannot be undone. All messages will be permanently deleted.",
+    state: "pending",
     isDestructive: true,
-    confirmLabel: 'Delete',
-    onConfirm: () => console.log('Delete'),
-    onCancel: () => console.log('Cancel'),
+    confirmLabel: "Delete",
+    onConfirm: () => console.log("Delete"),
+    onCancel: () => console.log("Cancel"),
   },
 };
 
 export const DestructiveExecuting: Story = {
   args: {
-    title: 'Deleting Conversation',
-    state: 'executing',
+    title: "Deleting Conversation",
+    state: "executing",
     isDestructive: true,
   },
 };
@@ -103,40 +105,40 @@ export const DestructiveExecuting: Story = {
 
 export const InteractiveFlow: Story = {
   render: () => {
-    const [state, setState] = useState<ActionState>('pending');
+    const [state, setState] = useState<ActionState>("pending");
 
     const handleConfirm = () => {
-      setState('executing');
+      setState("executing");
       setTimeout(() => {
         // Simulate success or failure randomly
-        setState(Math.random() > 0.3 ? 'done' : 'failed');
+        setState(Math.random() > 0.3 ? "done" : "failed");
       }, 2000);
     };
 
     const handleRetry = () => {
-      setState('executing');
-      setTimeout(() => setState('done'), 1500);
+      setState("executing");
+      setTimeout(() => setState("done"), 1500);
     };
 
     const handleUndo = () => {
-      setState('pending');
+      setState("pending");
     };
 
     return (
       <ActionSurface
         title={
-          state === 'done'
-            ? 'Changes Applied'
-            : state === 'failed'
-            ? 'Action Failed'
-            : 'Apply Suggested Changes'
+          state === "done"
+            ? "Changes Applied"
+            : state === "failed"
+              ? "Action Failed"
+              : "Apply Suggested Changes"
         }
         description="Replace your current skills section with the AI-suggested improvements."
         state={state}
         successMessage="Your skills section has been updated successfully!"
         errorMessage="Could not apply changes. Network error occurred."
         onConfirm={handleConfirm}
-        onCancel={() => setState('pending')}
+        onCancel={() => setState("pending")}
         onRetry={handleRetry}
         onUndo={handleUndo}
       />
@@ -150,13 +152,13 @@ export const InteractiveFlow: Story = {
 
 export const CustomLabels: Story = {
   args: {
-    title: 'Export Resume',
-    description: 'Download your resume in PDF format.',
-    state: 'pending',
-    confirmLabel: 'Download',
-    cancelLabel: 'Not now',
-    onConfirm: () => console.log('Download'),
-    onCancel: () => console.log('Cancel'),
+    title: "Export Resume",
+    description: "Download your resume in PDF format.",
+    state: "pending",
+    confirmLabel: "Download",
+    cancelLabel: "Not now",
+    onConfirm: () => console.log("Download"),
+    onCancel: () => console.log("Cancel"),
   },
 };
 
@@ -166,7 +168,7 @@ export const CustomLabels: Story = {
 
 export const RichDescription: Story = {
   args: {
-    title: 'Optimize Resume for Job',
+    title: "Optimize Resume for Job",
     description: (
       <div className="space-y-2">
         <p>The following changes will be made:</p>
@@ -177,9 +179,9 @@ export const RichDescription: Story = {
         </ul>
       </div>
     ),
-    state: 'pending',
-    onConfirm: () => console.log('Confirm'),
-    onCancel: () => console.log('Cancel'),
+    state: "pending",
+    onConfirm: () => console.log("Confirm"),
+    onCancel: () => console.log("Cancel"),
   },
 };
 
@@ -228,7 +230,8 @@ export const InConversation: Story = {
     <div className="space-y-4">
       <div className="bg-neutral-100 p-4 rounded-2xl rounded-bl-md">
         <p className="text-sm text-neutral-800">
-          I've prepared an optimized version of your resume. Would you like me to apply these changes?
+          I've prepared an optimized version of your resume. Would you like me
+          to apply these changes?
         </p>
       </div>
 
@@ -236,8 +239,8 @@ export const InConversation: Story = {
         title="Apply Resume Optimizations"
         description="This will update your resume with improved formatting and keyword optimization."
         state="pending"
-        onConfirm={() => console.log('Apply')}
-        onCancel={() => console.log('Skip')}
+        onConfirm={() => console.log("Apply")}
+        onCancel={() => console.log("Skip")}
       />
     </div>
   ),

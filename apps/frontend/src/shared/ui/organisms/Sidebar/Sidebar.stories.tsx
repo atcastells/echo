@@ -1,23 +1,23 @@
-import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { Sidebar } from './Sidebar';
-import type { ConversationData } from '../../molecules/ConversationListItem';
+import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Sidebar } from "./Sidebar";
+import type { ConversationData } from "../../molecules/ConversationListItem";
 
 const meta = {
-  title: 'Organisms/Sidebar',
+  title: "Organisms/Sidebar",
   component: Sidebar,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     isCollapsed: {
-      control: 'boolean',
-      description: 'Collapsed state',
+      control: "boolean",
+      description: "Collapsed state",
     },
     isLoading: {
-      control: 'boolean',
-      description: 'Loading state',
+      control: "boolean",
+      description: "Loading state",
     },
   },
   decorators: [
@@ -42,31 +42,31 @@ const day = 24 * hour;
 
 const sampleConversations: ConversationData[] = [
   {
-    id: '1',
-    title: 'Resume Review',
-    lastMessagePreview: 'Looking great! Just a few tweaks needed.',
+    id: "1",
+    title: "Resume Review",
+    lastMessagePreview: "Looking great! Just a few tweaks needed.",
     timestamp: new Date(now - 5 * minute),
     hasUnread: true,
     messageCount: 12,
   },
   {
-    id: '2',
-    title: 'Interview Prep',
+    id: "2",
+    title: "Interview Prep",
     lastMessagePreview: "Let's practice some common questions.",
     timestamp: new Date(now - 2 * hour),
     messageCount: 8,
   },
   {
-    id: '3',
-    title: 'Cover Letter Help',
-    lastMessagePreview: 'The introduction could be stronger.',
+    id: "3",
+    title: "Cover Letter Help",
+    lastMessagePreview: "The introduction could be stronger.",
     timestamp: new Date(now - 1 * day),
     messageCount: 5,
   },
   {
-    id: '4',
-    title: 'Salary Negotiation',
-    lastMessagePreview: 'Here are some key points to consider.',
+    id: "4",
+    title: "Salary Negotiation",
+    lastMessagePreview: "Here are some key points to consider.",
     timestamp: new Date(now - 3 * day),
     messageCount: 24,
   },
@@ -79,7 +79,7 @@ const sampleConversations: ConversationData[] = [
 export const Default: Story = {
   args: {
     conversations: sampleConversations,
-    activeConversationId: '1',
+    activeConversationId: "1",
   },
 };
 
@@ -110,9 +110,9 @@ export const WithToggle: Story = {
         activeConversationId="1"
         isCollapsed={isCollapsed}
         onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
-        onNewConversation={() => console.log('New conversation')}
-        onSelectConversation={(id) => console.log('Select:', id)}
-        onDeleteConversation={(id) => console.log('Delete:', id)}
+        onNewConversation={() => console.log("New conversation")}
+        onSelectConversation={(id) => console.log("Select:", id)}
+        onDeleteConversation={(id) => console.log("Delete:", id)}
       />
     );
   },
@@ -146,8 +146,8 @@ export const Empty: Story = {
 export const Error: Story = {
   args: {
     conversations: [],
-    error: 'Failed to load conversations',
-    onRetry: () => console.log('Retry'),
+    error: "Failed to load conversations",
+    onRetry: () => console.log("Retry"),
   },
 };
 
@@ -158,8 +158,8 @@ export const Error: Story = {
 export const WithSearch: Story = {
   args: {
     conversations: sampleConversations,
-    activeConversationId: '1',
-    onSearch: (query) => console.log('Search:', query),
+    activeConversationId: "1",
+    onSearch: (query) => console.log("Search:", query),
   },
 };
 
@@ -169,7 +169,7 @@ export const WithSearch: Story = {
 
 export const Interactive: Story = {
   render: () => {
-    const [activeId, setActiveId] = useState('1');
+    const [activeId, setActiveId] = useState("1");
     const [conversations, setConversations] = useState(sampleConversations);
     const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -182,7 +182,7 @@ export const Interactive: Story = {
         onNewConversation={() => {
           const newConv: ConversationData = {
             id: String(Date.now()),
-            title: 'New Conversation',
+            title: "New Conversation",
             timestamp: new Date(),
           };
           setConversations([newConv, ...conversations]);
@@ -192,7 +192,7 @@ export const Interactive: Story = {
         onDeleteConversation={(id) => {
           setConversations(conversations.filter((c) => c.id !== id));
           if (activeId === id) {
-            setActiveId(conversations[0]?.id ?? '');
+            setActiveId(conversations[0]?.id ?? "");
           }
         }}
       />
@@ -209,41 +209,41 @@ export const ManyConversations: Story = {
     conversations: [
       ...sampleConversations,
       {
-        id: '5',
-        title: 'LinkedIn Profile Review',
-        lastMessagePreview: 'Your headline could be more impactful.',
+        id: "5",
+        title: "LinkedIn Profile Review",
+        lastMessagePreview: "Your headline could be more impactful.",
         timestamp: new Date(now - 7 * day),
         messageCount: 9,
       },
       {
-        id: '6',
-        title: 'Job Search Strategy',
-        lastMessagePreview: 'Here are some companies to target.',
+        id: "6",
+        title: "Job Search Strategy",
+        lastMessagePreview: "Here are some companies to target.",
         timestamp: new Date(now - 10 * day),
         messageCount: 14,
       },
       {
-        id: '7',
-        title: 'Skills Assessment',
-        lastMessagePreview: 'Based on your experience...',
+        id: "7",
+        title: "Skills Assessment",
+        lastMessagePreview: "Based on your experience...",
         timestamp: new Date(now - 14 * day),
         messageCount: 7,
       },
       {
-        id: '8',
-        title: 'Portfolio Review',
-        lastMessagePreview: 'Great projects! Consider adding...',
+        id: "8",
+        title: "Portfolio Review",
+        lastMessagePreview: "Great projects! Consider adding...",
         timestamp: new Date(now - 21 * day),
         messageCount: 11,
       },
       {
-        id: '9',
-        title: 'Mock Interview',
+        id: "9",
+        title: "Mock Interview",
         lastMessagePreview: "Let's go through a practice session.",
         timestamp: new Date(now - 28 * day),
         messageCount: 18,
       },
     ],
-    activeConversationId: '1',
+    activeConversationId: "1",
   },
 };
