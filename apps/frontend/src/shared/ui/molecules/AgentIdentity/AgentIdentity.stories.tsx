@@ -1,4 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj, Decorator } from '@storybook/react-vite';
+import type { ComponentProps } from 'react';
 import { AgentIdentity } from './AgentIdentity';
 
 const meta = {
@@ -38,7 +39,7 @@ const meta = {
         <Story />
       </div>
     ),
-  ],
+  ] satisfies Decorator<typeof AgentIdentity>[],
 } satisfies Meta<typeof AgentIdentity>;
 
 export default meta;
@@ -170,7 +171,7 @@ export const ClickableWithCallback: Story = {
     status: 'available',
     clickable: true,
   },
-  render: (args) => (
+  render: (args: ComponentProps<typeof AgentIdentity>) => (
     <AgentIdentity
       {...args}
       onClick={() => alert('Agent profile clicked!')}
@@ -183,6 +184,9 @@ export const ClickableWithCallback: Story = {
 // ------------------
 
 export const AllSizes: Story = {
+  args: {
+    name: 'Echo',
+  },
   render: () => (
     <div className="space-y-4">
       <div>
@@ -221,6 +225,9 @@ export const AllSizes: Story = {
 // ------------------
 
 export const AllStatuses: Story = {
+  args: {
+    name: 'Echo',
+  },
   render: () => (
     <div className="space-y-3">
       <AgentIdentity
@@ -252,6 +259,9 @@ export const AllStatuses: Story = {
 // ------------------
 
 export const InHeader: Story = {
+  args: {
+    name: 'Echo',
+  },
   render: () => (
     <div className="flex items-center justify-between p-4 bg-white border-b border-neutral-200 min-w-[400px]">
       <AgentIdentity
@@ -268,6 +278,9 @@ export const InHeader: Story = {
 };
 
 export const InSidebar: Story = {
+  args: {
+    name: 'Echo',
+  },
   render: () => (
     <div className="p-3 bg-neutral-50 border-r border-neutral-200 w-64">
       <AgentIdentity
