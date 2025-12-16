@@ -218,129 +218,129 @@ This plan follows **Atomic Design** methodology to build a complete conversation
 
 ---
 
-## Phase 4: Organisms
+## Phase 4: Organisms ✅
 
 **Goal**: Build complex, self-contained UI sections.
 
-### Task 4.1: MessageItem
+### Task 4.1: MessageItem ✅
 
-- [ ] Create `MessageItem` component
-- [ ] Compose MessageBubble + MessageMeta + MessageActions
-- [ ] Implement user variant layout
-- [ ] Implement agent variant layout
-- [ ] Implement system variant layout
-- [ ] Handle streaming state
-- [ ] Handle error state with retry
-- [ ] Write stories for all variants and states
+- [x] Create `MessageItem` component
+- [x] Compose MessageBubble + MessageMeta + MessageActions
+- [x] Implement user variant layout
+- [x] Implement agent variant layout
+- [x] Implement system variant layout
+- [x] Handle streaming state
+- [x] Handle error state with retry
+- [x] Write stories for all variants and states
 
-### Task 4.2: MessageList
+### Task 4.2: MessageList ✅
 
-- [ ] Create `MessageList` component
-- [ ] Render ordered messages
-- [ ] Handle message grouping (consecutive same sender)
-- [ ] Support streaming message insertion
-- [ ] Add date separators
-- [ ] Write stories with various message combinations
+- [x] Create `MessageList` component
+- [x] Render ordered messages
+- [x] Handle message grouping (consecutive same sender)
+- [x] Support streaming message insertion
+- [x] Add date separators
+- [x] Write stories with various message combinations
 
-### Task 4.3: Composer
+### Task 4.3: Composer ✅
 
-- [ ] Create `Composer` component
-- [ ] Integrate TextInput (multiline)
-- [ ] Add SendButton with loading state
-- [ ] Add AttachmentInput trigger
-- [ ] Add AttachmentPreview list
-- [ ] Add VoiceInput trigger (optional)
-- [ ] Implement keyboard shortcuts (Cmd+Enter)
-- [ ] Add character limit indicator
-- [ ] Handle disabled state (while streaming)
-- [ ] Write stories for all states
+- [x] Create `Composer` component
+- [x] Integrate TextInput (multiline)
+- [x] Add SendButton with loading state
+- [x] Add AttachmentInput trigger
+- [x] Add AttachmentPreview list
+- [x] Add VoiceInput trigger (optional)
+- [x] Implement keyboard shortcuts (Cmd+Enter)
+- [x] Add character limit indicator
+- [x] Handle disabled state (while streaming)
+- [x] Write stories for all states
 
-### Task 4.4: ComposerToolbar
+### Task 4.4: ComposerToolbar ✅
 
-- [ ] Create `ComposerToolbar` component
-- [ ] Add persona/mode selector
-- [ ] Add context scope selector
-- [ ] Show keyboard shortcut hints
-- [ ] Write stories
+- [x] Create `ComposerToolbar` component
+- [x] Add persona/mode selector
+- [x] Add context scope selector
+- [x] Show keyboard shortcut hints
+- [x] Write stories
 
-### Task 4.5: ConversationHeader
+### Task 4.5: ConversationHeader ✅
 
-- [ ] Create `ConversationHeader` component
-- [ ] Integrate AgentIdentity
-- [ ] Integrate ContextIndicator
-- [ ] Add ConversationActions (share, export, clear, rename)
-- [ ] Write stories
+- [x] Create `ConversationHeader` component
+- [x] Integrate AgentIdentity
+- [x] Integrate ContextIndicator
+- [x] Add ConversationActions (share, export, clear, rename)
+- [x] Write stories
 
-### Task 4.6: Sidebar
+### Task 4.6: Sidebar ✅
 
-- [ ] Create `Sidebar` component
-- [ ] Add search input
-- [ ] Add NewConversationButton
-- [ ] Integrate ConversationList
-- [ ] Handle collapsed/expanded states
-- [ ] Write stories for states
+- [x] Create `Sidebar` component
+- [x] Add search input
+- [x] Add NewConversationButton
+- [x] Integrate ConversationList
+- [x] Handle collapsed/expanded states
+- [x] Write stories for states
 
-### Task 4.7: ConversationList
+### Task 4.7: ConversationList ✅
 
-- [ ] Create `ConversationList` component
-- [ ] Render ConversationListItem components
-- [ ] Handle empty state
-- [ ] Handle loading state
-- [ ] Support keyboard navigation
-- [ ] Write stories
+- [x] Create `ConversationList` component
+- [x] Render ConversationListItem components
+- [x] Handle empty state
+- [x] Handle loading state
+- [x] Support keyboard navigation
+- [x] Write stories
 
-### Task 4.8: AgentPrompt
+### Task 4.8: AgentPrompt ✅
 
-- [ ] Create `AgentPrompt` component
-- [ ] Implement variants: clarifying question, suggestion, confirmation, warning
-- [ ] Add PromptContent area
-- [ ] Add PromptActions (accept, reject, modify)
-- [ ] Visually distinguish from regular messages
-- [ ] Write stories for all variants
+- [x] Create `AgentPrompt` component
+- [x] Implement variants: clarifying question, suggestion, confirmation, warning
+- [x] Add PromptContent area
+- [x] Add PromptActions (accept, reject, modify)
+- [x] Visually distinguish from regular messages
+- [x] Write stories for all variants
 
-### Task 4.9: ActionSurface
+### Task 4.9: ActionSurface ✅
 
-- [ ] Create `ActionSurface` component
-- [ ] Render actionable UI from agent
-- [ ] Add ActionButton, ActionConfirm, ActionCancel
-- [ ] Add ActionUndo, ActionRetry
-- [ ] Implement confirmation flows
-- [ ] Track action state (pending, executing, done, failed)
-- [ ] Write stories
+- [x] Create `ActionSurface` component
+- [x] Render actionable UI from agent
+- [x] Add ActionButton, ActionConfirm, ActionCancel
+- [x] Add ActionUndo, ActionRetry
+- [x] Implement confirmation flows
+- [x] Track action state (pending, executing, done, failed)
+- [x] Write stories
 
-### Task 4.10: ErrorState
+### Task 4.10: ErrorState ✅
 
-- [ ] Create `ErrorState` component
-- [ ] Implement variants: inline, global, permission denied, tool failure
-- [ ] Show error explanation
-- [ ] Provide recovery actions
-- [ ] Write stories for all variants
+- [x] Create `ErrorState` component
+- [x] Implement variants: inline, global, permission denied, tool failure
+- [x] Show error explanation
+- [x] Provide recovery actions
+- [x] Write stories for all variants
 
-### Task 4.11: FeedbackControls
+### Task 4.11: FeedbackControls ✅
 
-- [ ] Create `FeedbackControls` component
-- [ ] Add thumbs up/down buttons
-- [ ] Add freeform feedback input
-- [ ] Add regenerate action
-- [ ] Write stories
+- [x] Create `FeedbackControls` component
+- [x] Add thumbs up/down buttons
+- [x] Add freeform feedback input
+- [x] Add regenerate action
+- [x] Write stories
 
-### Task 4.12: TransparencyPanel
+### Task 4.12: TransparencyPanel ✅
 
-- [ ] Create `TransparencyPanel` component
-- [ ] Show "why this response" explanation
-- [ ] Display context used
-- [ ] List tools invoked
-- [ ] Show memory impact
-- [ ] Write stories
+- [x] Create `TransparencyPanel` component
+- [x] Show "why this response" explanation
+- [x] Display context used
+- [x] List tools invoked
+- [x] Show memory impact
+- [x] Write stories
 
-### Task 4.13: Modal
+### Task 4.13: Modal ✅
 
-- [ ] Create `Modal` component
-- [ ] Add header, body, footer sections
-- [ ] Implement close behavior (X, escape, backdrop)
-- [ ] Add focus trap
-- [ ] Create confirmation modal variant
-- [ ] Write stories
+- [x] Create `Modal` component
+- [x] Add header, body, footer sections
+- [x] Implement close behavior (X, escape, backdrop)
+- [x] Add focus trap
+- [x] Create confirmation modal variant
+- [x] Write stories
 
 ---
 
@@ -493,12 +493,12 @@ Use this for each component:
 | Phase 1: Foundation | ✅ Completed   | 3/3 tasks  |
 | Phase 2: Atoms      | ✅ Completed   | 8/8 tasks  |
 | Phase 3: Molecules  | ✅ Completed   | 9/9 tasks  |
-| Phase 4: Organisms  | 🔴 Not Started | 0/13 tasks |
+| Phase 4: Organisms  | ✅ Completed   | 13/13 tasks|
 | Phase 5: Templates  | 🔴 Not Started | 0/4 tasks  |
 | Phase 6: Pages      | 🔴 Not Started | 0/2 tasks  |
 | Phase 7: Polish     | 🔴 Not Started | 0/5 tasks  |
 
-**Total: 20/44 tasks completed**
+**Total: 33/44 tasks completed (75%)**
 
 ---
 
