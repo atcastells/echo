@@ -23,8 +23,10 @@ import {
   AGENT_REPOSITORY,
   CHAT_REPOSITORY,
   PROFILE_REPOSITORY,
+  SUPABASE_CLIENT,
 } from "./constants.js";
 import { config } from "./config.js";
+
 try {
   // Check required config
   if (!config.mongo.uri) {
@@ -66,7 +68,7 @@ try {
   );
 
   // Register external services
-  Container.set(SupabaseClient, supabaseClient);
+  Container.set(SUPABASE_CLIENT, supabaseClient);
 
   console.log("AI Service initialized with LangChain Gemini adapter");
   console.log("Supabase Client initialized");

@@ -1,19 +1,15 @@
 import "reflect-metadata";
-import { Service, Inject } from "typedi";
+import { Container, Service } from "typedi";
 import { User } from "../../domain/user/user.js";
 import { SupabaseClient } from "../../adapters/outbound/authentication/supabase-client.js";
 import { HttpError } from "../../adapters/inbound/http/errors/http-error.js";
 import { AuthRepository } from "../../domain/auth/auth-repository.js";
-import { AUTH_REPOSITORY } from "../../infrastructure/constants.js";
+import { AUTH_REPOSITORY, SUPABASE_CLIENT } from "../../infrastructure/constants.js";
 
 @Service()
 export class SignInUseCase {
-  constructor(
-    @Inject(AUTH_REPOSITORY)
-    private readonly authRepository: AuthRepository,
-    @Inject(() => SupabaseClient)
-    private readonly supabaseClient: SupabaseClient,
-  ) {}
+  private readonly authRepository: AuthRepository = Container.get(AUTH_REPOSITORY);
+  private readonly supabaseClient: SupabaseClient = Container.get(SUPABASE_CLIENT);
 
   async execute(
     email: string,

@@ -1,4 +1,4 @@
-import { Service, Inject } from "typedi";
+import { Service, Container } from "typedi";
 import {
   CHAT_REPOSITORY,
   AGENT_REPOSITORY,
@@ -12,12 +12,8 @@ import { HttpError } from "../../adapters/inbound/http/errors/http-error.js";
 
 @Service()
 export class CreateThreadUseCase {
-  constructor(
-    @Inject(CHAT_REPOSITORY)
-    private readonly chatRepository: ChatRepository,
-    @Inject(AGENT_REPOSITORY)
-    private readonly agentRepository: AgentRepository,
-  ) {}
+  private readonly chatRepository: ChatRepository = Container.get(CHAT_REPOSITORY);
+  private readonly agentRepository: AgentRepository = Container.get(AGENT_REPOSITORY);
 
   async execute(
     userId: string,

@@ -1,4 +1,4 @@
-import { Service, Inject } from "typedi";
+import { Service, Container } from "typedi";
 import { Profile } from "../../domain/entities/profile.js";
 import { ProfileRepository } from "../../domain/ports/outbound/profile-repository.js";
 import {
@@ -10,12 +10,8 @@ import { ProfileCompletenessService } from "../../domain/services/profile-comple
 
 @Service()
 export class EnsureMyProfileUseCase {
-  constructor(
-    @Inject(PROFILE_REPOSITORY)
-    private readonly profileRepository: ProfileRepository,
-    @Inject(AUTH_REPOSITORY)
-    private readonly authRepository: AuthRepository,
-  ) {}
+  private readonly profileRepository: ProfileRepository = Container.get(PROFILE_REPOSITORY);
+  private readonly authRepository: AuthRepository = Container.get(AUTH_REPOSITORY);
 
   async execute(userId: string): Promise<Profile> {
     // Try to find existing profile

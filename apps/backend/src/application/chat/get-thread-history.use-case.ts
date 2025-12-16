@@ -1,4 +1,4 @@
-import { Service, Inject } from "typedi";
+import { Service, Container } from "typedi";
 import { CHAT_REPOSITORY } from "../../infrastructure/constants.js";
 import { ChatRepository } from "../../domain/ports/outbound/chat-repository.js";
 import { ChatMessage } from "../../domain/entities/chat-message.js";
@@ -6,10 +6,7 @@ import { HttpError } from "../../adapters/inbound/http/errors/http-error.js";
 
 @Service()
 export class GetThreadHistoryUseCase {
-  constructor(
-    @Inject(CHAT_REPOSITORY)
-    private readonly chatRepository: ChatRepository,
-  ) {}
+  private readonly chatRepository: ChatRepository = Container.get(CHAT_REPOSITORY);
 
   async execute(userId: string, threadId: string): Promise<ChatMessage[]> {
     const thread = await this.chatRepository.getThreadById(threadId);

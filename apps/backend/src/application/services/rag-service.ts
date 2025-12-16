@@ -1,16 +1,12 @@
-import { Service, Inject } from "typedi";
+import { Service, Container } from "typedi";
 import { RetrieveContextUseCase } from "./retrieve-context.use-case.js";
 import { LangChainGeminiAdapter } from "../../adapters/outbound/external-services/lang-chain-gemini-adapter.js";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 
 @Service()
 export class RagService {
-  constructor(
-    @Inject(() => RetrieveContextUseCase)
-    private retrieveContext: RetrieveContextUseCase,
-    @Inject(() => LangChainGeminiAdapter)
-    private llm: LangChainGeminiAdapter,
-  ) {}
+  private readonly retrieveContext: RetrieveContextUseCase = Container.get(RetrieveContextUseCase);
+  private readonly llm: LangChainGeminiAdapter = Container.get(LangChainGeminiAdapter);
 
   async answerQuery(userId: string, query: string): Promise<string> {
     // 1. Retrieve relevant context

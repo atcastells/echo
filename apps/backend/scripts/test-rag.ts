@@ -19,7 +19,7 @@ async function main() {
     config.supabase.anonKey,
     config.supabase.serviceRoleKey,
   );
-  Container.set(SupabaseClient, supabaseClient);
+  Container.set(SUPABASE_CLIENT, supabaseClient);
 
   const geminiAdapter = new GeminiAdapter();
   Container.set(GeminiAdapter, geminiAdapter);

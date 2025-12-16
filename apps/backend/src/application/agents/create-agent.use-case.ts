@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Service, Inject } from "typedi";
+import  { Service, Container } from "typedi";
 import {
   Agent,
   AgentType,
@@ -17,10 +17,7 @@ interface CreateAgentInput {
 
 @Service()
 export class CreateAgentUseCase {
-  constructor(
-    @Inject(AGENT_REPOSITORY)
-    private readonly agentRepository: AgentRepository,
-  ) {}
+  private readonly agentRepository: AgentRepository = Container.get(AGENT_REPOSITORY);
 
   async execute(userId: string, input: CreateAgentInput): Promise<Agent> {
     const agent: Agent = {

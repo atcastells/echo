@@ -1,4 +1,4 @@
-import { Service, Inject } from "typedi";
+import { Service, Container } from "typedi";
 import { Profile, ProfileRole } from "../../domain/entities/profile.js";
 import { ProfileRepository } from "../../domain/ports/outbound/profile-repository.js";
 import { PROFILE_REPOSITORY } from "../../infrastructure/constants.js";
@@ -9,10 +9,7 @@ export type UpdateRoleInput = Partial<Omit<ProfileRole, "id">>;
 
 @Service()
 export class UpdateRoleUseCase {
-  constructor(
-    @Inject(PROFILE_REPOSITORY)
-    private readonly profileRepository: ProfileRepository,
-  ) {}
+  private readonly profileRepository: ProfileRepository = Container.get(PROFILE_REPOSITORY);
 
   async execute(
     userId: string,

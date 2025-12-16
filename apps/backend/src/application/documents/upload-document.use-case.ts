@@ -1,4 +1,4 @@
-import { Service, Inject } from "typedi";
+import { Service, Container } from "typedi";
 import { Document } from "../../domain/entities/document.js";
 import { DocumentRepository } from "../../domain/ports/outbound/document-repository.js";
 import { SupabaseStorageAdapter } from "../../adapters/outbound/external-services/supabase/storage-service.js";
@@ -23,20 +23,12 @@ interface MulterFile {
 
 @Service()
 export class UploadDocumentUseCase {
-  constructor(
-    @Inject(() => SupabaseStorageAdapter)
-    private readonly storageAdapter: SupabaseStorageAdapter,
-    @Inject(DOCUMENT_REPOSITORY)
-    private readonly documentRepository: DocumentRepository,
-    @Inject(() => PdfParserAdapter)
-    private readonly documentParser: DocumentParser,
-    @Inject(() => TextChunker)
-    private readonly textChunker: TextChunker,
-    @Inject(() => GeminiEmbeddingAdapter)
-    private readonly embeddingService: EmbeddingService,
-    @Inject(() => SupabaseVectorStore)
-    private readonly vectorStore: VectorStore,
-  ) {}
+  private readonly storageAdapter: SupabaseStorageAdapter = Container.get(SupabaseStorageAdapter);
+  private readonly documentRepository: DocumentRepository = Container.get(DOCUMENT_REPOSITORY);
+  private readonly documentParser: DocumentParser = Container.get(PdfParserAdapter);
+  private readonly textChunker: TextChunker = Container.get(TextChunker);
+  private readonly embeddingService: EmbeddingService = Container.get(GeminiEmbeddingAdapter);
+  private readonly vectorStore: VectorStore = Container.get(SupabaseVectorStore);
 
   async execute(
     userId: string,

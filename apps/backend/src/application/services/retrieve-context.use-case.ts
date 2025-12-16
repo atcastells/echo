@@ -1,4 +1,4 @@
-import { Service, Inject } from "typedi";
+import { Service, Container } from "typedi";
 import { VectorStore } from "../../domain/ports/outbound/vector-store.js";
 import { EmbeddingService } from "../../domain/ports/outbound/embedding-service.js";
 import { GeminiEmbeddingAdapter } from "../../adapters/outbound/external-services/gemini-embedding-adapter.js";
@@ -7,11 +7,8 @@ import { DocumentChunk } from "../../domain/entities/document-chunk.js";
 
 @Service()
 export class RetrieveContextUseCase {
-  constructor(
-    @Inject(() => GeminiEmbeddingAdapter)
-    private embeddingService: EmbeddingService,
-    @Inject(() => SupabaseVectorStore) private vectorStore: VectorStore,
-  ) {}
+  private readonly embeddingService: EmbeddingService = Container.get(GeminiEmbeddingAdapter);
+  private readonly vectorStore: VectorStore = Container.get(SupabaseVectorStore);
 
   async execute(
     userId: string,

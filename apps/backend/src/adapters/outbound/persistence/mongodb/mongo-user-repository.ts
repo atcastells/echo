@@ -1,4 +1,4 @@
-import { Service, Inject } from "typedi";
+import  { Service, Container } from "typedi";
 import { AuthRepository } from "../../../../domain/auth/auth-repository.js";
 import { User } from "../../../../domain/user/user.js";
 import { MongoDBAdapter } from "./mongo-database-adapter.js";
@@ -9,10 +9,7 @@ type UserDocument = Omit<User, "id">;
 
 @Service()
 export class MongoUserRepository implements AuthRepository {
-  constructor(
-    @Inject(() => MongoDBAdapter)
-    private readonly databaseConnection: MongoDBAdapter,
-  ) {}
+  private readonly databaseConnection: MongoDBAdapter = Container.get(MongoDBAdapter);
 
   private get collection() {
     return this.databaseConnection.getDb().collection<UserDocument>("users");

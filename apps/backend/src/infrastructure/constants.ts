@@ -4,3 +4,7 @@ export const DOCUMENT_REPOSITORY = "DocumentRepository";
 export const AGENT_REPOSITORY = "AgentRepository";
 export const CHAT_REPOSITORY = "ChatRepository";
 export const PROFILE_REPOSITORY = "ProfileRepository";
+
+// External services
+export const SUPABASE_CLIENT = "SupabaseClient";
+

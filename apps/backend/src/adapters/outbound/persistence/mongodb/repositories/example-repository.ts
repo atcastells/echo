@@ -1,15 +1,10 @@
 // Example of how to use the DatabaseConnection in a repository implementation
-import { Service, Inject } from "typedi";
+import { Service, Container } from "typedi";
 import { DatabaseConnection } from "../../../../../domain/services/database-connection.js";
 
 @Service()
 export class ExampleRepository {
-  constructor(
-    @Inject("DatabaseConnection")
-    private databaseConnection: DatabaseConnection,
-  ) {
-    console.log("ExampleRepository initialized with DatabaseConnection");
-  }
+  private readonly databaseConnection: DatabaseConnection = Container.get("DatabaseConnection");
 
   async findAll() {
     const database = this.databaseConnection.getDb();

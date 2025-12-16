@@ -1,4 +1,4 @@
-import { Service, Inject } from "typedi";
+import { Service, Container } from "typedi";
 import { DocumentRepository } from "../../domain/ports/outbound/document-repository.js";
 import { SupabaseStorageAdapter } from "../../adapters/outbound/external-services/supabase/storage-service.js";
 import { DOCUMENT_REPOSITORY } from "../../infrastructure/constants.js";
@@ -7,12 +7,8 @@ import { HttpError } from "../../adapters/inbound/http/errors/http-error.js";
 
 @Service()
 export class DeleteDocumentUseCase {
-  constructor(
-    @Inject(DOCUMENT_REPOSITORY)
-    private readonly documentRepository: DocumentRepository,
-    @Inject(() => SupabaseStorageAdapter)
-    private readonly storageAdapter: SupabaseStorageAdapter,
-  ) {}
+  private readonly documentRepository: DocumentRepository = Container.get(DOCUMENT_REPOSITORY);
+  private readonly storageAdapter: SupabaseStorageAdapter = Container.get(SupabaseStorageAdapter);
 
   async execute(id: string, userId: string): Promise<void> {
     const document = await this.documentRepository.findById(id);

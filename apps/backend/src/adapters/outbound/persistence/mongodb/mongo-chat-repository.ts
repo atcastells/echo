@@ -1,4 +1,4 @@
-import { Service, Inject } from "typedi";
+import { Service, Container } from "typedi";
 import { MongoDBAdapter } from "./mongo-database-adapter.js";
 import { ChatRepository } from "../../../../domain/ports/outbound/chat-repository.js";
 import { Thread } from "../../../../domain/entities/thread.js";
@@ -13,10 +13,7 @@ import { ObjectId, WithId, Filter } from "mongodb";
 
 @Service()
 export class MongoChatRepository implements ChatRepository {
-  constructor(
-    @Inject(() => MongoDBAdapter)
-    private readonly databaseConnection: MongoDBAdapter,
-  ) {}
+  private readonly databaseConnection: MongoDBAdapter = Container.get(MongoDBAdapter);
 
   private get threadCollection() {
     return this.databaseConnection.getDb().collection<ThreadSchema>("threads");

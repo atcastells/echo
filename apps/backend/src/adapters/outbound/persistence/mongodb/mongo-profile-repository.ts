@@ -1,4 +1,4 @@
-import { Service, Inject } from "typedi";
+import { Service, Container } from "typedi";
 import { Profile } from "../../../../domain/entities/profile.js";
 import { ProfileRepository } from "../../../../domain/ports/outbound/profile-repository.js";
 import { MongoDBAdapter } from "./mongo-database-adapter.js";
@@ -7,10 +7,7 @@ import { profileSchema, ProfileSchema } from "./schemas/profile.schema.js";
 
 @Service()
 export class MongoProfileRepository implements ProfileRepository {
-  constructor(
-    @Inject(() => MongoDBAdapter)
-    private readonly databaseConnection: MongoDBAdapter,
-  ) {}
+  private readonly databaseConnection: MongoDBAdapter = Container.get(MongoDBAdapter);
 
   private get collection() {
     return this.databaseConnection

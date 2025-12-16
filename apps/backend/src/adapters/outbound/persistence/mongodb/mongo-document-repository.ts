@@ -1,4 +1,4 @@
-import { Service, Inject } from "typedi";
+import { Service, Container } from "typedi";
 import { Document } from "../../../../domain/entities/document.js";
 import { DocumentRepository } from "../../../../domain/ports/outbound/document-repository.js";
 import { MongoDBAdapter } from "./mongo-database-adapter.js";
@@ -7,10 +7,7 @@ import { documentSchema, DocumentSchema } from "./schemas/document.schema.js";
 
 @Service()
 export class MongoDocumentRepository implements DocumentRepository {
-  constructor(
-    @Inject(() => MongoDBAdapter)
-    private readonly databaseConnection: MongoDBAdapter,
-  ) {}
+  private readonly databaseConnection: MongoDBAdapter = Container.get(MongoDBAdapter);
 
   private get collection() {
     return this.databaseConnection

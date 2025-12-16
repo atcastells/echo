@@ -2,9 +2,7 @@ import {
   createClient,
   SupabaseClient as SupabaseJsClient,
 } from "@supabase/supabase-js";
-import { Service } from "typedi";
 
-@Service()
 export class SupabaseClient {
   private client: SupabaseJsClient | undefined = undefined;
   private adminClient: SupabaseJsClient | undefined = undefined;

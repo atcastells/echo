@@ -1,4 +1,4 @@
-import { Service, Inject } from "typedi";
+import { Service, Inject, Container } from "typedi";
 import { AgentRepository } from "../../domain/ports/outbound/agent-repository.js";
 import { ChatRepository } from "../../domain/ports/outbound/chat-repository.js";
 import { ConversationAgentFactory } from "../../adapters/inbound/primary/agents/conversation-agent-factory.js";
@@ -27,14 +27,11 @@ export interface ChatWithAgentInput {
 
 @Service()
 export class ChatWithAgentUseCase {
-  constructor(
-    @Inject(AGENT_REPOSITORY)
-    private readonly agentRepository: AgentRepository,
-    @Inject(CHAT_REPOSITORY)
-    private readonly chatRepository: ChatRepository,
-    @Inject(() => ConversationAgentFactory)
-    private readonly conversationAgentFactory: ConversationAgentFactory,
-  ) {}
+  private readonly agentRepository: AgentRepository = Container.get(AGENT_REPOSITORY);
+  private readonly chatRepository: ChatRepository = Container.get(CHAT_REPOSITORY);
+  private readonly conversationAgentFactory: ConversationAgentFactory = Container.get(ConversationAgentFactory);
+
+
 
   async execute(input: ChatWithAgentInput): Promise<string> {
     const { agentId, userId, message, threadId } = input;

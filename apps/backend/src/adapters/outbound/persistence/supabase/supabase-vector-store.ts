@@ -1,13 +1,12 @@
-import { Service, Inject } from "typedi";
+import { Service, Container } from "typedi";
 import { SupabaseClient } from "../../authentication/supabase-client.js";
+import { SUPABASE_CLIENT } from "../../../../infrastructure/constants.js";
 import { DocumentChunk } from "../../../../domain/entities/document-chunk.js";
 import { VectorStore } from "../../../../domain/ports/outbound/vector-store.js";
 
 @Service()
 export class SupabaseVectorStore implements VectorStore {
-  constructor(
-    @Inject(() => SupabaseClient) private supabaseClient: SupabaseClient,
-  ) {}
+  private readonly supabaseClient: SupabaseClient = Container.get(SUPABASE_CLIENT);
 
   async addDocuments(documents: DocumentChunk[]): Promise<void> {
     const rows = documents.map((document) => ({
