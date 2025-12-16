@@ -1,5 +1,7 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { ComponentType } from "react";
+import type { SuggestedPrompt } from "../ConversationEmptyState";
 import { MainPanel } from "./MainPanel";
 import type { Message } from "../../organisms/MessageItem";
 
@@ -11,7 +13,7 @@ const meta = {
   },
   tags: ["autodocs"],
   decorators: [
-    (Story) => (
+    (Story: ComponentType) => (
       <div className="h-screen">
         <Story />
       </div>
@@ -67,7 +69,7 @@ export const Empty: Story = {
     agentName: "Echo",
     agentRole: "AI Career Agent",
     agentStatus: "available",
-    onPromptClick: (prompt) => console.log("Prompt:", prompt),
+    onPromptClick: (prompt: SuggestedPrompt) => console.log("Prompt:", prompt),
   },
 };
 
