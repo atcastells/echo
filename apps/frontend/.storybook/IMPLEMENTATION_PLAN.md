@@ -131,90 +131,90 @@ This plan follows **Atomic Design** methodology to build a complete conversation
 
 ---
 
-## Phase 3: Molecules
+## Phase 3: Molecules ✅
 
 **Goal**: Compose atoms into functional component groups.
 
-### Task 3.1: MessageBubble
+### Task 3.1: MessageBubble ✅
 
-- [ ] Create `MessageBubble` component
-- [ ] Implement variants: user, agent, system
-- [ ] Support plain text rendering
-- [ ] Support Markdown rendering
-- [ ] Support code blocks with syntax highlighting
-- [ ] Add expand/collapse for long content
-- [ ] Add citation/reference support
-- [ ] Write stories for all content types
+- [x] Create `MessageBubble` component
+- [x] Implement variants: user, agent, system
+- [x] Support plain text rendering
+- [x] Support Markdown rendering
+- [x] Support code blocks with syntax highlighting
+- [x] Add expand/collapse for long content
+- [x] Add citation/reference support
+- [x] Write stories for all content types
 
-### Task 3.2: MessageMeta
+### Task 3.2: MessageMeta ✅
 
-- [ ] Create `MessageMeta` component
-- [ ] Display timestamp (relative/absolute)
-- [ ] Display status: sending, sent, failed, streaming
-- [ ] Add optional cost/latency display
-- [ ] Write stories for all states
+- [x] Create `MessageMeta` component
+- [x] Display timestamp (relative/absolute)
+- [x] Display status: sending, sent, failed, streaming
+- [x] Add optional cost/latency display
+- [x] Write stories for all states
 
-### Task 3.3: MessageActions
+### Task 3.3: MessageActions ✅
 
-- [ ] Create `MessageActions` component
-- [ ] Add Copy action
-- [ ] Add Regenerate action
-- [ ] Add Edit action (user messages)
-- [ ] Add Feedback (👍/👎) actions
-- [ ] Add Report action
-- [ ] Implement hover reveal behavior
-- [ ] Write stories for user vs agent actions
+- [x] Create `MessageActions` component
+- [x] Add Copy action
+- [x] Add Regenerate action
+- [x] Add Edit action (user messages)
+- [x] Add Feedback (👍/👎) actions
+- [x] Add Report action
+- [x] Implement hover reveal behavior
+- [x] Write stories for user vs agent actions
 
-### Task 3.4: AgentIdentity
+### Task 3.4: AgentIdentity ✅
 
-- [ ] Create `AgentIdentity` component
-- [ ] Compose Avatar + Name + Role
-- [ ] Add status indicator (available, busy, restricted)
-- [ ] Add clickable variant for agent info
-- [ ] Write stories for all states
+- [x] Create `AgentIdentity` component
+- [x] Compose Avatar + Name + Role
+- [x] Add status indicator (available, busy, restricted)
+- [x] Add clickable variant for agent info
+- [x] Write stories for all states
 
-### Task 3.5: StreamingIndicator
+### Task 3.5: StreamingIndicator ✅
 
-- [ ] Create `StreamingIndicator` component
-- [ ] Implement typing animation (dots)
-- [ ] Add partial content state
-- [ ] Add interrupt/stop affordance
-- [ ] Write stories for streaming states
+- [x] Create `StreamingIndicator` component
+- [x] Implement typing animation (dots)
+- [x] Add partial content state
+- [x] Add interrupt/stop affordance
+- [x] Write stories for streaming states
 
-### Task 3.6: ThinkingIndicator
+### Task 3.6: ThinkingIndicator ✅
 
-- [ ] Create `ThinkingIndicator` component
-- [ ] Show "reasoning" state distinct from streaming
-- [ ] Add tool usage indication
-- [ ] Write stories
+- [x] Create `ThinkingIndicator` component
+- [x] Show "reasoning" state distinct from streaming
+- [x] Add tool usage indication
+- [x] Write stories
 
-### Task 3.7: AttachmentPreview
+### Task 3.7: AttachmentPreview ✅
 
-- [ ] Create `AttachmentPreview` component
-- [ ] Show file type icon
-- [ ] Display file name and size
-- [ ] Add remove action
-- [ ] Show upload progress state
-- [ ] Write stories for file types and states
+- [x] Create `AttachmentPreview` component
+- [x] Show file type icon
+- [x] Display file name and size
+- [x] Add remove action
+- [x] Show upload progress state
+- [x] Write stories for file types and states
 
-### Task 3.8: ContextIndicator
+### Task 3.8: ContextIndicator ✅
 
-- [ ] Create `ContextIndicator` component
-- [ ] Show memory on/off state
-- [ ] Display context usage level (progress)
-- [ ] Add privacy tooltip
-- [ ] Add context reset trigger
-- [ ] Write stories
+- [x] Create `ContextIndicator` component
+- [x] Show memory on/off state
+- [x] Display context usage level (progress)
+- [x] Add privacy tooltip
+- [x] Add context reset trigger
+- [x] Write stories
 
-### Task 3.9: ConversationListItem
+### Task 3.9: ConversationListItem ✅
 
-- [ ] Create `ConversationListItem` component
-- [ ] Display conversation title
-- [ ] Show last message preview
-- [ ] Show timestamp
-- [ ] Implement active/selected state
-- [ ] Add delete action
-- [ ] Write stories for all states
+- [x] Create `ConversationListItem` component
+- [x] Display conversation title
+- [x] Show last message preview
+- [x] Show timestamp
+- [x] Implement active/selected state
+- [x] Add delete action
+- [x] Write stories for all states
 
 ---
 
@@ -490,15 +490,15 @@ Use this for each component:
 
 | Phase               | Status         | Progress   |
 | ------------------- | -------------- | ---------- |
-| Phase 1: Foundation | � Completed    | 3/3 tasks  |
-| Phase 2: Atoms      | 🔴 Not Started | 0/8 tasks  |
-| Phase 3: Molecules  | 🔴 Not Started | 0/9 tasks  |
+| Phase 1: Foundation | ✅ Completed   | 3/3 tasks  |
+| Phase 2: Atoms      | ✅ Completed   | 8/8 tasks  |
+| Phase 3: Molecules  | ✅ Completed   | 9/9 tasks  |
 | Phase 4: Organisms  | 🔴 Not Started | 0/13 tasks |
 | Phase 5: Templates  | 🔴 Not Started | 0/4 tasks  |
 | Phase 6: Pages      | 🔴 Not Started | 0/2 tasks  |
 | Phase 7: Polish     | 🔴 Not Started | 0/5 tasks  |
 
-**Total: 3/44 tasks completed**
+**Total: 20/44 tasks completed**
 
 ---
 
