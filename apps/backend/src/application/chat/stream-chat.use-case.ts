@@ -187,7 +187,8 @@ export class StreamChatUseCase {
         return;
       }
 
-      const lastMessage = result.messages.at(-1);
+      // eslint-disable-next-line unicorn/prefer-at
+      const lastMessage = result.messages[result.messages.length - 1];
       const replyContent = lastMessage?.content?.toString() ?? "";
 
       // 7. Stream response tokens (simulated chunking for now)

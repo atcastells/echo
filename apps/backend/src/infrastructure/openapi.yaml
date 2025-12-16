@@ -24,6 +24,8 @@ tags:
     description: Agent configuration and management endpoints
   - name: Profile
     description: User profile management endpoints
+  - name: Chat
+    description: Conversational AI chat endpoints (v1 API)
 
 paths:
   /health:
@@ -602,6 +604,199 @@ paths:
         "404":
           description: Profile or role not found
 
+  # ============================================================================
+  # Chat API v1 - Conversational Agent Endpoints
+  # ============================================================================
+
+  /v1/conversations:
+    post:
+      tags:
+        - Chat
+      summary: Create Conversation
+      description: Create a new conversation with an agent.
+      operationId: createConversation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateConversationRequest"
+      responses:
+        "201":
+          description: Conversation created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+    get:
+      tags:
+        - Chat
+      summary: List Conversations
+      description: List all conversations for a specific agent.
+      operationId: listConversations
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: agent_id
+          required: true
+          schema:
+            type: string
+          description: Agent ID to filter conversations
+      responses:
+        "200":
+          description: List of conversations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Conversation"
+        "401":
+          description: Unauthorized
+
+  /v1/conversations/{id}/messages:
+    get:
+      tags:
+        - Chat
+      summary: Get Conversation Messages
+      description: Retrieve the complete message history for a conversation.
+      operationId: getConversationMessages
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Conversation ID
+      responses:
+        "200":
+          description: Conversation message history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ChatMessageV1"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden (Unauthorized access)
+        "404":
+          description: Conversation not found
+
+  /v1/chat:
+    post:
+      tags:
+        - Chat
+      summary: Chat (Non-Streaming)
+      description: Send a message and receive a complete response (non-streaming).
+      operationId: chatNonStreaming
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatRequestV1"
+      responses:
+        "200":
+          description: Chat response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatResponseV1"
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Conversation or agent not found
+
+  /v1/chat/stream:
+    post:
+      tags:
+        - Chat
+      summary: Chat (SSE Streaming)
+      description: |
+        Send a message and receive streaming response via Server-Sent Events (SSE).
+        The response is a stream of SSE events including:
+        - `chat.started` - Chat session started
+        - `agent.thinking` - Agent is processing
+        - `message.delta` - Partial message content
+        - `message.completed` - Full message completed
+        - `agent.action.proposed` - Action requiring confirmation
+        - `chat.completed` - Chat session completed
+        - `chat.failed` - Error occurred
+        - `chat.interrupted` - Chat was interrupted
+      operationId: chatStreaming
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatRequestV1"
+      responses:
+        "200":
+          description: SSE stream of chat events
+          content:
+            text/event-stream:
+              schema:
+                $ref: "#/components/schemas/SSEEvent"
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Conversation or agent not found
+
+  /v1/chat/control:
+    post:
+      tags:
+        - Chat
+      summary: Chat Control
+      description: |
+        Control an active chat session. Supports:
+        - Interrupting an ongoing stream
+        - Confirming, cancelling, or modifying proposed actions
+      operationId: chatControl
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatControlRequest"
+      responses:
+        "200":
+          description: Control command executed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatControlResponse"
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Conversation or action not found
+
 components:
   securitySchemes:
     bearerAuth:
@@ -1088,3 +1283,232 @@ components:
           type: array
           items:
             type: string
+
+    # ==========================================================================
+    # Chat API v1 Schemas
+    # ==========================================================================
+
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: string
+        agentId:
+          type: string
+        userId:
+          type: string
+        title:
+          type: string
+        contextPolicy:
+          $ref: "#/components/schemas/ContextPolicy"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ContextPolicy:
+      type: object
+      properties:
+        memory:
+          type: string
+          enum: [full, sliding_window, summarized]
+          description: Memory management strategy
+        max_tokens:
+          type: integer
+          description: Maximum tokens to retain in context
+        summarization:
+          type: string
+          enum: [disabled, auto]
+          description: Summarization strategy
+
+    CreateConversationRequest:
+      type: object
+      required:
+        - agent_id
+      properties:
+        agent_id:
+          type: string
+          description: Agent ID for the conversation
+        title:
+          type: string
+          description: Optional title for the conversation
+
+    ChatMessageV1:
+      type: object
+      properties:
+        id:
+          type: string
+        conversationId:
+          type: string
+        role:
+          type: string
+          enum: [user, assistant, system]
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContentBlock"
+        status:
+          type: string
+          enum: [streaming, complete, failed, interrupted]
+        metadata:
+          $ref: "#/components/schemas/MessageMetadata"
+        createdAt:
+          type: string
+          format: date-time
+
+    ContentBlock:
+      type: object
+      required:
+        - type
+        - value
+      properties:
+        type:
+          type: string
+          enum: [text, markdown, code, citation]
+        value:
+          type: string
+        language:
+          type: string
+          description: For code blocks, the programming language
+        source:
+          type: string
+          description: For citations, the source reference
+
+    MessageMetadata:
+      type: object
+      properties:
+        latency_ms:
+          type: integer
+        token_usage:
+          type: object
+          properties:
+            prompt:
+              type: integer
+            completion:
+              type: integer
+            total:
+              type: integer
+
+    ChatRequestV1:
+      type: object
+      required:
+        - conversation_id
+        - message
+      properties:
+        conversation_id:
+          type: string
+          description: Conversation ID
+        message:
+          type: object
+          required:
+            - role
+            - content
+          properties:
+            role:
+              type: string
+              enum: [user]
+            content:
+              type: array
+              items:
+                $ref: "#/components/schemas/ContentBlock"
+        agent:
+          type: object
+          properties:
+            persona:
+              type: string
+            tone:
+              type: string
+            mode:
+              type: string
+        capabilities:
+          type: object
+          properties:
+            tools_allowed:
+              type: array
+              items:
+                type: string
+            requires_confirmation:
+              type: array
+              items:
+                type: string
+        context:
+          type: object
+          properties:
+            include_memory:
+              type: boolean
+            max_tokens:
+              type: integer
+
+    ChatResponseV1:
+      type: object
+      properties:
+        message:
+          $ref: "#/components/schemas/ChatMessageV1"
+
+    ChatControlRequest:
+      type: object
+      required:
+        - conversation_id
+      properties:
+        conversation_id:
+          type: string
+        command:
+          type: string
+          enum: [interrupt]
+          description: Control command (e.g., interrupt)
+        message_id:
+          type: string
+          description: Message ID to interrupt
+        action_id:
+          type: string
+          description: Action ID to confirm/cancel
+        decision:
+          type: string
+          enum: [confirm, cancel, modify]
+          description: Decision for action confirmation
+        parameters_override:
+          type: object
+          additionalProperties: true
+          description: Modified parameters for action
+
+    ChatControlResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/SSEEvent"
+
+    SSEEvent:
+      type: object
+      description: Server-Sent Event for streaming chat
+      properties:
+        event:
+          type: string
+          enum:
+            - chat.started
+            - chat.completed
+            - chat.interrupted
+            - chat.failed
+            - agent.thinking
+            - message.delta
+            - message.completed
+            - agent.action.proposed
+            - agent.action.executing
+            - agent.action.completed
+            - agent.action.failed
+            - agent.prompt
+        conversation_id:
+          type: string
+        message_id:
+          type: string
+        payload:
+          type: object
+          additionalProperties: true
+          description: Event-specific payload data

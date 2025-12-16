@@ -91,7 +91,8 @@ export class ChatWithAgentUseCase {
       chat_history: chatHistory,
     });
 
-    const lastMessage = result.messages.at(-1);
+    // eslint-disable-next-line unicorn/prefer-at
+    const lastMessage = result.messages[result.messages.length - 1];
     const replyContent = lastMessage?.content?.toString() ?? "";
 
     // 5. Save Persistence (Async)
