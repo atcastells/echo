@@ -153,7 +153,7 @@ export const Mobile: Story = {
 // ------------------
 
 export const Interactive: Story = {
-  render: () => {
+  render: function Render() {
     const [conversations, setConversations] = useState(sampleConversations);
     const [activeId, setActiveId] = useState("1");
     const [messages, setMessages] = useState<Message[]>(sampleMessages);

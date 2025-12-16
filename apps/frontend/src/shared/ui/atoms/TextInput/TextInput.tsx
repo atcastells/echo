@@ -143,7 +143,7 @@ export const TextInput = forwardRef<
   const renderInput = () => {
     if (props.multiline) {
       const {
-        multiline,
+        multiline: _multiline,
         rows = 3,
         ...textareaProps
       } = rest as MultiLineInputProps;
@@ -170,7 +170,7 @@ export const TextInput = forwardRef<
       );
     }
 
-    const { multiline, ...inputProps } = rest as SingleLineInputProps;
+    const { multiline: _multiline, ...inputProps } = rest as SingleLineInputProps;
     return (
       <input
         ref={ref as React.Ref<HTMLInputElement>}

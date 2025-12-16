@@ -43,7 +43,7 @@ type Story = StoryObj<typeof meta>;
 // ------------------
 
 export const Default: Story = {
-  render: () => {
+  render: function Render() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -78,7 +78,7 @@ export const Default: Story = {
 // ------------------
 
 export const SmallSize: Story = {
-  render: () => {
+  render: function Render() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -100,7 +100,7 @@ export const SmallSize: Story = {
 };
 
 export const LargeSize: Story = {
-  render: () => {
+  render: function Render() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -130,7 +130,7 @@ export const LargeSize: Story = {
 };
 
 export const ExtraLargeSize: Story = {
-  render: () => {
+  render: function Render() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -156,7 +156,7 @@ export const ExtraLargeSize: Story = {
 // ------------------
 
 export const NoTitle: Story = {
-  render: () => {
+  render: function Render() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -185,7 +185,7 @@ export const NoTitle: Story = {
 // ------------------
 
 export const NoFooter: Story = {
-  render: () => {
+  render: function Render() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -211,7 +211,7 @@ export const NoFooter: Story = {
 // ------------------
 
 export const PreventClose: Story = {
-  render: () => {
+  render: function Render() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -245,7 +245,7 @@ export const PreventClose: Story = {
 // ------------------
 
 export const Confirmation: Story = {
-  render: () => {
+  render: function Render() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -269,7 +269,7 @@ export const Confirmation: Story = {
 };
 
 export const ConfirmationLoading: Story = {
-  render: () => {
+  render: function Render() {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -303,7 +303,7 @@ export const ConfirmationLoading: Story = {
 // ------------------
 
 export const WithForm: Story = {
-  render: () => {
+  render: function Render() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -347,7 +347,7 @@ export const WithForm: Story = {
 // ------------------
 
 export const LongContent: Story = {
-  render: () => {
+  render: function Render() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (

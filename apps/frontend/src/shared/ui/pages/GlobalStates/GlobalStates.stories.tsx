@@ -36,7 +36,7 @@ export const Offline: Story = {
 };
 
 export const OfflineToggle: Story = {
-  render: () => {
+  render: function Render() {
     const [isOffline, setIsOffline] = useState(true);
 
     return (
@@ -102,7 +102,7 @@ export const ErrorBoundaryDemo: Story = {
 };
 
 export const ErrorBoundaryWithChildren: Story = {
-  render: () => {
+  render: function Render() {
     const [shouldError, setShouldError] = useState(false);
 
     return (
