@@ -1,17 +1,17 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { ConversationEmptyState } from './ConversationEmptyState';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { ConversationEmptyState } from "./ConversationEmptyState";
 
 const meta = {
-  title: 'Templates/ConversationEmptyState',
+  title: "Templates/ConversationEmptyState",
   component: ConversationEmptyState,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     isAgentAvailable: {
-      control: 'boolean',
-      description: 'Whether agent is available',
+      control: "boolean",
+      description: "Whether agent is available",
     },
   },
   decorators: [
@@ -32,16 +32,17 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    agentName: 'Echo',
-    onPromptClick: (prompt) => console.log('Clicked:', prompt),
+    agentName: "Echo",
+    onPromptClick: (prompt) => console.log("Clicked:", prompt),
   },
 };
 
 export const CustomWelcome: Story = {
   args: {
-    agentName: 'Echo',
-    welcomeMessage: "Ready to take your career to the next level? I can help with resumes, interviews, and more!",
-    onPromptClick: (prompt) => console.log('Clicked:', prompt),
+    agentName: "Echo",
+    welcomeMessage:
+      "Ready to take your career to the next level? I can help with resumes, interviews, and more!",
+    onPromptClick: (prompt) => console.log("Clicked:", prompt),
   },
 };
 
@@ -51,7 +52,7 @@ export const CustomWelcome: Story = {
 
 export const AgentUnavailable: Story = {
   args: {
-    agentName: 'Echo',
+    agentName: "Echo",
     isAgentAvailable: false,
   },
 };
@@ -62,20 +63,24 @@ export const AgentUnavailable: Story = {
 
 export const CustomPrompts: Story = {
   args: {
-    agentName: 'Echo',
+    agentName: "Echo",
     suggestedPrompts: [
-      { id: '1', text: 'Analyze my LinkedIn profile', icon: 'user' },
-      { id: '2', text: 'Find jobs matching my skills', icon: 'magnifying-glass' },
-      { id: '3', text: 'Negotiate my salary', icon: 'currency-dollar' },
-      { id: '4', text: 'Plan my career path', icon: 'arrow-trending-up' },
+      { id: "1", text: "Analyze my LinkedIn profile", icon: "user" },
+      {
+        id: "2",
+        text: "Find jobs matching my skills",
+        icon: "magnifying-glass",
+      },
+      { id: "3", text: "Negotiate my salary", icon: "currency-dollar" },
+      { id: "4", text: "Plan my career path", icon: "arrow-trending-up" },
     ],
-    onPromptClick: (prompt) => console.log('Clicked:', prompt),
+    onPromptClick: (prompt) => console.log("Clicked:", prompt),
   },
 };
 
 export const NoPrompts: Story = {
   args: {
-    agentName: 'Echo',
+    agentName: "Echo",
     suggestedPrompts: [],
   },
 };
@@ -86,8 +91,9 @@ export const NoPrompts: Story = {
 
 export const DifferentAgent: Story = {
   args: {
-    agentName: 'Career Coach',
-    welcomeMessage: "I'm here to guide you through your career journey. What would you like to work on?",
+    agentName: "Career Coach",
+    welcomeMessage:
+      "I'm here to guide you through your career journey. What would you like to work on?",
   },
 };
 
@@ -119,7 +125,7 @@ export const InMainPanel: Story = {
     ),
   ],
   args: {
-    agentName: 'Echo',
-    onPromptClick: (prompt) => console.log('Clicked:', prompt),
+    agentName: "Echo",
+    onPromptClick: (prompt) => console.log("Clicked:", prompt),
   },
 };

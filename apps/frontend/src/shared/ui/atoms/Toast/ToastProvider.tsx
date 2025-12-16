@@ -1,37 +1,27 @@
 import {
-  createContext,
-  useContext,
   useState,
   useCallback,
   useEffect,
   useRef,
+  useMemo,
   type ReactNode,
 } from "react";
 import { Toast, type ToastData, type ToastVariant } from "./Toast";
+import { ToastContext } from "./hooks";
 
-interface ToastContextValue {
+type ToastHelperOptions = Partial<
+  Omit<ToastData, "id" | "message" | "variant">
+>;
+
+export interface ToastContextValue {
   toasts: ToastData[];
   addToast: (toast: Omit<ToastData, "id">) => string;
   removeToast: (id: string) => void;
-  success: (
-    message: string,
-    options?: Partial<Omit<ToastData, "id" | "message" | "variant">>
-  ) => string;
-  error: (
-    message: string,
-    options?: Partial<Omit<ToastData, "id" | "message" | "variant">>
-  ) => string;
-  warning: (
-    message: string,
-    options?: Partial<Omit<ToastData, "id" | "message" | "variant">>
-  ) => string;
-  info: (
-    message: string,
-    options?: Partial<Omit<ToastData, "id" | "message" | "variant">>
-  ) => string;
+  success: (message: string, options?: ToastHelperOptions) => string;
+  error: (message: string, options?: ToastHelperOptions) => string;
+  warning: (message: string, options?: ToastHelperOptions) => string;
+  info: (message: string, options?: ToastHelperOptions) => string;
 }
-
-const ToastContext = createContext<ToastContextValue | null>(null);
 
 export interface ToastProviderProps {
   children: ReactNode;
@@ -126,19 +116,17 @@ export const ToastProvider = ({
 
   // Cleanup all timers on unmount
   useEffect(() => {
+    const timers = timersRef.current;
     return () => {
-      timersRef.current.forEach((timer) => clearTimeout(timer));
-      timersRef.current.clear();
+      timers.forEach((timer) => clearTimeout(timer));
+      timers.clear();
     };
   }, []);
 
   // Helper methods for common toast types
   const createVariantHelper = useCallback(
     (variant: ToastVariant) =>
-      (
-        message: string,
-        options?: Partial<Omit<ToastData, "id" | "message" | "variant">>
-      ) =>
+      (message: string, options?: ToastHelperOptions) =>
         addToast({ ...options, message, variant }),
     [addToast]
   );
@@ -148,10 +136,13 @@ export const ToastProvider = ({
   const warning = createVariantHelper("warning");
   const info = createVariantHelper("info");
 
+  const contextValue = useMemo(
+    () => ({ toasts, addToast, removeToast, success, error, warning, info }),
+    [toasts, addToast, removeToast, success, error, warning, info]
+  );
+
   return (
-    <ToastContext.Provider
-      value={{ toasts, addToast, removeToast, success, error, warning, info }}
-    >
+    <ToastContext.Provider value={contextValue}>
       {children}
       {/* Toast Container */}
       {toasts.length > 0 && (
@@ -167,17 +158,4 @@ export const ToastProvider = ({
       )}
     </ToastContext.Provider>
   );
-};
-
-/**
- * Hook to access toast notifications.
- *
- * Must be used within a ToastProvider.
- */
-export const useToast = (): ToastContextValue => {
-  const context = useContext(ToastContext);
-  if (!context) {
-    throw new Error("useToast must be used within a ToastProvider");
-  }
-  return context;
 };

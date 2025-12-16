@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import type { ConversationTurn, ConversationState } from '../types';
 import type { ChatMessage, Agent } from '@/agents';
 import {
@@ -39,7 +39,7 @@ const mapChatMessageToTurn = (message: ChatMessage): ConversationTurn => ({
 const useEnsureAgent = (agents: Agent[] | undefined, isLoadingAgents: boolean) => {
   const [createdAgentId, setCreatedAgentId] = useState<string | null>(null);
   const [error, setError] = useState<string | undefined>(undefined);
-  const [isCreating, setIsCreating] = useState(false);
+  const isCreatingRef = useRef(false);
   const createAgentMutation = useCreateAgentMutation();
 
   const existingAgent = useMemo(() => {
@@ -51,20 +51,20 @@ const useEnsureAgent = (agents: Agent[] | undefined, isLoadingAgents: boolean) =
   }, [agents, isLoadingAgents]);
 
   useEffect(() => {
-    if (isLoadingAgents || existingAgent || createdAgentId || isCreating) return;
+    if (isLoadingAgents || existingAgent || createdAgentId || isCreatingRef.current) return;
 
-    setIsCreating(true);
+    isCreatingRef.current = true;
     createAgentMutation.mutate(PROFILE_BUILDER_AGENT_CONFIG, {
       onSuccess: (newAgent) => {
         setCreatedAgentId(newAgent.id);
-        setIsCreating(false);
+        isCreatingRef.current = false;
       },
       onError: (err) => {
         setError(`Failed to initialize agent: ${err.message}`);
-        setIsCreating(false);
+        isCreatingRef.current = false;
       },
     });
-  }, [isLoadingAgents, existingAgent, createdAgentId, isCreating, createAgentMutation]);
+  }, [isLoadingAgents, existingAgent, createdAgentId, createAgentMutation]);
 
   const agentId = existingAgent?.id || createdAgentId;
 
@@ -77,7 +77,7 @@ const useEnsureAgent = (agents: Agent[] | undefined, isLoadingAgents: boolean) =
 const useEnsureThread = (agentId: string | null) => {
   const [createdThreadId, setCreatedThreadId] = useState<string | null>(null);
   const [error, setError] = useState<string | undefined>(undefined);
-  const [isCreating, setIsCreating] = useState(false);
+  const isCreatingRef = useRef(false);
   const createThreadMutation = useCreateThreadMutation();
 
   const storedThreadId = useMemo(() => {
@@ -86,24 +86,24 @@ const useEnsureThread = (agentId: string | null) => {
   }, [agentId]);
 
   useEffect(() => {
-    if (!agentId || storedThreadId || createdThreadId || isCreating) return;
+    if (!agentId || storedThreadId || createdThreadId || isCreatingRef.current) return;
 
-    setIsCreating(true);
+    isCreatingRef.current = true;
     createThreadMutation.mutate(
       { agentId },
       {
         onSuccess: (newThread) => {
           setCreatedThreadId(newThread.id);
           localStorage.setItem(THREAD_STORAGE_KEY(agentId), newThread.id);
-          setIsCreating(false);
+          isCreatingRef.current = false;
         },
         onError: (err) => {
           setError(`Failed to create thread: ${err.message}`);
-          setIsCreating(false);
+          isCreatingRef.current = false;
         },
       }
     );
-  }, [agentId, storedThreadId, createdThreadId, isCreating, createThreadMutation]);
+  }, [agentId, storedThreadId, createdThreadId, createThreadMutation]);
 
   const threadId = storedThreadId || createdThreadId;
 
@@ -133,17 +133,16 @@ export const useConversationDriver = () => {
     !!(agentId && threadId)
   );
 
-  // Compute turns from thread history
-  const turnsFromHistory = threadHistory ? threadHistory.map(mapChatMessageToTurn) : [];
   // Merge optimistic turns (user message and placeholder) with fetched history
   const turns = useMemo(() => {
+    const turnsFromHistory = threadHistory ? threadHistory.map(mapChatMessageToTurn) : [];
     if (optimisticTurns.length === 0) return turnsFromHistory;
     // Avoid duplicates: filter out any history turn that matches optimistic ids
     const optimisticIds = new Set(optimisticTurns.map((t) => t.id));
     const merged = [...turnsFromHistory.filter((t) => !optimisticIds.has(t.id)), ...optimisticTurns];
     // Sort by timestamp to keep order
     return merged.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
-  }, [turnsFromHistory, optimisticTurns]);
+  }, [threadHistory, optimisticTurns]);
 
   // Compute loading state
   const isLoading = isLoadingAgents || isLoadingHistory || !agentId || !threadId || isSending;

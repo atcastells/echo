@@ -1,11 +1,17 @@
-import { useRef, useEffect, useState, useCallback, type ReactNode } from 'react';
-import { clsx } from 'clsx';
-import { Button } from '../../atoms/Button';
-import { Icon } from '../../atoms/Icon';
-import { MessageList } from '../../organisms/MessageList';
-import { ConversationEmptyState } from '../ConversationEmptyState';
-import type { Message } from '../../organisms/MessageItem';
-import type { SuggestedPrompt } from '../ConversationEmptyState';
+import {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  type ReactNode,
+} from "react";
+import { clsx } from "clsx";
+import { Button } from "../../atoms/Button";
+import { Icon } from "../../atoms/Icon";
+import { MessageList } from "../../organisms/MessageList";
+import { ConversationEmptyState } from "../ConversationEmptyState";
+import type { Message } from "../../organisms/MessageItem";
+import type { SuggestedPrompt } from "../ConversationEmptyState";
 
 export interface ConversationViewportProps {
   /** Array of messages to display */
@@ -15,7 +21,7 @@ export interface ConversationViewportProps {
   /** Partial content for streaming message */
   streamingContent?: string;
   /** Feedback state per message ID */
-  feedbackByMessageId?: Record<string, 'positive' | 'negative' | null>;
+  feedbackByMessageId?: Record<string, "positive" | "negative" | null>;
   /** Agent display name */
   agentName?: string;
   /** Agent avatar URL */
@@ -63,9 +69,9 @@ export const ConversationViewport = ({
   streamingMessageId,
   streamingContent,
   feedbackByMessageId,
-  agentName = 'Echo',
+  agentName = "Echo",
   agentAvatarUrl,
-  userName = 'You',
+  userName = "You",
   userAvatarUrl,
   autoScroll = true,
   suggestedPrompts,
@@ -84,6 +90,7 @@ export const ConversationViewport = ({
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [hasNewMessages, setHasNewMessages] = useState(false);
   const previousMessageCount = useRef(messages.length);
+  const hasNewMessagesRef = useRef(false);
 
   // Check if user is at bottom of scroll
   const checkScrollPosition = useCallback(() => {
@@ -99,63 +106,62 @@ export const ConversationViewport = ({
     const container = containerRef.current;
     if (!container) return;
 
-    container.addEventListener('scroll', checkScrollPosition);
-    return () => container.removeEventListener('scroll', checkScrollPosition);
+    container.addEventListener("scroll", checkScrollPosition);
+    return () => container.removeEventListener("scroll", checkScrollPosition);
   }, [checkScrollPosition]);
-
-  // Auto-scroll on new messages
-  useEffect(() => {
-    if (messages.length > previousMessageCount.current) {
-      if (isAtBottom && autoScroll) {
-        scrollToBottom();
-      } else {
-        setHasNewMessages(true);
-      }
-    }
-    previousMessageCount.current = messages.length;
-  }, [messages.length, isAtBottom, autoScroll]);
-
-  // Auto-scroll during streaming
-  useEffect(() => {
-    if (streamingContent && isAtBottom && autoScroll) {
-      scrollToBottom();
-    }
-  }, [streamingContent, isAtBottom, autoScroll]);
-
   const scrollToBottom = useCallback(() => {
     if (containerRef.current) {
       containerRef.current.scrollTo({
         top: containerRef.current.scrollHeight,
-        behavior: 'smooth',
+        behavior: "smooth",
       });
+      hasNewMessagesRef.current = false;
       setHasNewMessages(false);
     }
   }, []);
-
-  const scrollToMessage = useCallback((messageId: string) => {
-    const messageElement = document.getElementById(`message-${messageId}`);
-    if (messageElement && containerRef.current) {
-      messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // Auto-scroll on new messages
+  useEffect(() => {
+    if (messages.length > previousMessageCount.current) {
+      if (isAtBottom && autoScroll) {
+        queueMicrotask(() => {
+          scrollToBottom();
+        });
+      } else {
+        queueMicrotask(() => {
+          hasNewMessagesRef.current = true;
+          setHasNewMessages(true);
+        });
+      }
     }
-  }, []);
+    previousMessageCount.current = messages.length;
+  }, [messages.length, isAtBottom, autoScroll, scrollToBottom]);
+
+  // Auto-scroll during streaming
+  useEffect(() => {
+    if (streamingContent && isAtBottom && autoScroll) {
+      if (containerRef.current) {
+        containerRef.current.scrollTo({
+          top: containerRef.current.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    }
+  }, [streamingContent, isAtBottom, autoScroll]);
 
   const isEmpty = messages.length === 0;
 
   return (
-    <div className={clsx('relative flex flex-col h-full', className)}>
+    <div className={clsx("relative flex flex-col h-full", className)}>
       {/* Scrollable content */}
-      <div
-        ref={containerRef}
-        className="flex-1 overflow-y-auto px-4 py-6"
-      >
+      <div ref={containerRef} className="flex-1 overflow-y-auto px-4 py-6">
         {isEmpty ? (
-          emptyState ?? (
+          (emptyState ?? (
             <ConversationEmptyState
               agentName={agentName}
               suggestedPrompts={suggestedPrompts}
               onPromptClick={onPromptClick}
             />
-          )
+          ))
         ) : (
           <div className="max-w-3xl mx-auto">
             <MessageList
