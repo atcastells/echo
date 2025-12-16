@@ -862,17 +862,17 @@ Checklist:
 | -------------------------------------- | -------------- | --------- |
 | Phase 1: Strategy Decision             | ✅ Completed   | 2/2 tasks |
 | Phase 2: Canonical State Model         | ✅ Completed   | 1/1 tasks |
-| Phase 3: Implementation Priority       | � In Progress | 1/6 tasks |
+| Phase 3: Implementation Priority       | 🟡 In Progress | 4/6 tasks |
 | Phase 4: Composer Machine              | ✅ Completed   | 3/3 tasks |
 | Phase 5: Storybook Stories             | ✅ Completed   | 1/1 tasks |
-| Phase 6: MessageItem Machine           | 🔲 Not Started | 0/1 tasks |
-| Phase 7: ActionSurface Machine         | 🔲 Not Started | 0/1 tasks |
-| Phase 8: AgentPrompt Machine           | 🔲 Not Started | 0/1 tasks |
+| Phase 6: MessageItem Machine           | ✅ Completed   | 1/1 tasks |
+| Phase 7: ActionSurface Machine         | ✅ Completed   | 1/1 tasks |
+| Phase 8: AgentPrompt Machine           | ✅ Completed   | 1/1 tasks |
 | Phase 9: ConversationApp Orchestration | 🔲 Not Started | 0/1 tasks |
 | Phase 10: Documentation                | 🔲 Not Started | 0/1 tasks |
 | Phase 11: Migration Strategy           | 🔲 Not Started | 0/1 tasks |
 
-**Total: 8/19 tasks completed (42%)**
+**Total: 14/19 tasks completed (74%)**
 
 ---
 
@@ -881,7 +881,8 @@ Checklist:
 If you want to proceed, the recommended order is:
 
 1. ~~Composer machine **with context & guards**~~ ✅
-2. Full MessageItem machine
+2. ~~Full MessageItem machine~~ ✅
 3. Storybook + XState testing setup
 4. Mapping machines to analytics events
+
 
