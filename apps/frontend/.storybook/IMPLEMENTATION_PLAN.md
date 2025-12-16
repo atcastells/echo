@@ -488,15 +488,15 @@ Use this for each component:
 
 ## Progress Tracking
 
-| Phase               | Status         | Progress   |
-| ------------------- | -------------- | ---------- |
-| Phase 1: Foundation | ✅ Completed   | 3/3 tasks  |
-| Phase 2: Atoms      | ✅ Completed   | 8/8 tasks  |
-| Phase 3: Molecules  | ✅ Completed   | 9/9 tasks  |
-| Phase 4: Organisms  | ✅ Completed   | 13/13 tasks|
-| Phase 5: Templates  | ✅ Completed   | 4/4 tasks  |
-| Phase 6: Pages      | ✅ Completed   | 2/2 tasks  |
-| Phase 7: Polish     | ✅ Completed   | 5/5 tasks  |
+| Phase               | Status       | Progress    |
+| ------------------- | ------------ | ----------- |
+| Phase 1: Foundation | ✅ Completed | 3/3 tasks   |
+| Phase 2: Atoms      | ✅ Completed | 8/8 tasks   |
+| Phase 3: Molecules  | ✅ Completed | 9/9 tasks   |
+| Phase 4: Organisms  | ✅ Completed | 13/13 tasks |
+| Phase 5: Templates  | ✅ Completed | 4/4 tasks   |
+| Phase 6: Pages      | ✅ Completed | 2/2 tasks   |
+| Phase 7: Polish     | ✅ Completed | 5/5 tasks   |
 
 **Total: 44/44 tasks completed (100%) 🎉**
 
@@ -532,3 +532,356 @@ import { Button } from "@/shared/ui/atoms";
 import { MessageBubble } from "@/shared/ui/molecules";
 import { Composer } from "@/shared/ui/organisms";
 ```
+
+---
+
+# State Machines Implementation Plan
+
+## Goal
+
+Introduce **explicit, documented state machines** for critical organisms to:
+
+- Make conversational behavior predictable
+- Prevent invalid UI states
+- Decouple async logic from rendering
+- Improve Storybook coverage and testability
+
+---
+
+## Phase 1: Decide the State Machine Strategy
+
+### Task 1.1: Choose Representation (Do this first)
+
+You have three viable options:
+
+| Option                        | When to use                  | Recommendation     |
+| ----------------------------- | ---------------------------- | ------------------ |
+| **Explicit enums + reducers** | Simple, local state          | ❌ (too weak)      |
+| **XState**                    | Complex async, visualization | ✅ **Recommended** |
+| **Zustand + state enums**     | Lightweight, global          | ⚠️ acceptable      |
+
+**Decision**:
+✔ Use **XState** for organisms
+✔ Keep atoms/molecules stateless
+
+---
+
+### Task 1.2: Define the Scope
+
+State machines are **only allowed** in:
+
+- Organisms
+- Pages
+
+Explicitly **forbidden** in:
+
+- Atoms
+- Molecules
+
+Add this rule to CONTRIBUTING.md.
+
+---
+
+## Phase 2: Define the Canonical State Model
+
+Create a shared folder:
+
+```
+src/shared/state-machines/
+```
+
+### Task 2.1: Define Common State Concepts
+
+Create `common.types.ts`:
+
+```ts
+export type AsyncState = "idle" | "loading" | "success" | "error";
+
+export type StreamingState = "idle" | "thinking" | "streaming" | "interrupted";
+```
+
+These types ensure **state language consistency** across machines.
+
+---
+
+## Phase 3: Implement Machines Incrementally (Critical Path)
+
+### Priority Order (Do NOT do all at once)
+
+1. Composer
+2. MessageItem
+3. ActionSurface
+4. AgentPrompt
+5. MessageList
+6. ConversationApp
+
+---
+
+## Phase 4: Composer State Machine (First Implementation)
+
+### Task 4.1: Define States
+
+```
+idle
+ ├─ typing
+ ├─ submitting
+ │   ├─ success → idle
+ │   └─ error
+ ├─ disabled (agent streaming)
+ └─ blocked (rate limited)
+```
+
+---
+
+### Task 4.2: Create Machine File
+
+```
+src/shared/state-machines/composer.machine.ts
+```
+
+```ts
+import { createMachine } from "xstate";
+
+export const composerMachine = createMachine({
+  id: "composer",
+  initial: "idle",
+  states: {
+    idle: {
+      on: {
+        TYPE: "typing",
+        DISABLE: "disabled",
+        BLOCK: "blocked",
+      },
+    },
+    typing: {
+      on: {
+        SUBMIT: "submitting",
+        CLEAR: "idle",
+      },
+    },
+    submitting: {
+      on: {
+        SUCCESS: "idle",
+        ERROR: "error",
+      },
+    },
+    error: {
+      on: {
+        RETRY: "submitting",
+        TYPE: "typing",
+      },
+    },
+    disabled: {
+      on: {
+        ENABLE: "idle",
+      },
+    },
+    blocked: {
+      on: {
+        UNBLOCK: "idle",
+      },
+    },
+  },
+});
+```
+
+---
+
+### Task 4.3: Wire Machine into Composer
+
+Inside `Composer.tsx`:
+
+```ts
+import { useMachine } from "@xstate/react";
+import { composerMachine } from "@/shared/state-machines/composer.machine";
+
+const [state, send] = useMachine(composerMachine);
+
+const isDisabled = state.matches("disabled") || state.matches("blocked");
+```
+
+**Rule**
+
+- Component never sets booleans directly
+- Only `send(EVENT)` is allowed
+
+---
+
+## Phase 5: Storybook State Machine Stories
+
+### Task 5.1: Machine-Driven Stories
+
+Create stories that **force machine states**:
+
+```ts
+export const Submitting = {
+  render: () => (
+    <Composer initialState="submitting" />
+  ),
+};
+```
+
+Or using XState testing helpers:
+
+```ts
+composerMachine.withState("error");
+```
+
+Checklist:
+
+- [ ] One story per state
+- [ ] No mocked booleans
+- [ ] Machine controls rendering
+
+---
+
+## Phase 6: MessageItem Machine
+
+### States
+
+```
+idle
+ ├─ streaming
+ ├─ failed
+ ├─ regenerating
+ └─ interrupted
+```
+
+### Events
+
+- STREAM_START
+- STREAM_END
+- FAIL
+- RETRY
+- INTERRUPT
+
+**Rule**
+
+- Streaming UI must never depend on props like `isStreaming`
+- It must depend on `state.matches("streaming")`
+
+---
+
+## Phase 7: ActionSurface Machine
+
+### States
+
+```
+idle
+ ├─ proposed
+ ├─ confirming
+ ├─ executing
+ │   ├─ success
+ │   └─ failure
+```
+
+This prevents:
+
+- Double execution
+- Skipped confirmation
+- UI desync
+
+---
+
+## Phase 8: AgentPrompt Machine
+
+### States
+
+```
+visible
+ ├─ accepted
+ ├─ rejected
+ ├─ dismissed
+```
+
+This ensures prompts are **one-shot interactions**.
+
+---
+
+## Phase 9: ConversationApp Orchestration
+
+ConversationApp becomes the **machine coordinator**, not a logic blob.
+
+Responsibilities:
+
+- Forward events to child machines
+- Resolve conflicts (e.g. disable Composer while MessageItem streams)
+- Handle global states (offline, rate limit)
+
+---
+
+## Phase 10: Documentation & Enforcement
+
+### Required for Each Machine
+
+Create a standard doc block:
+
+```ts
+/**
+ * Component: Composer
+ * States:
+ * - idle
+ * - typing
+ * - submitting
+ * - error
+ * - disabled
+ * - blocked
+ *
+ * Invalid Transitions:
+ * - submit while disabled
+ * - submit while blocked
+ */
+```
+
+Checklist:
+
+- [ ] State diagram
+- [ ] Event list
+- [ ] Invalid transitions
+- [ ] Storybook coverage
+
+---
+
+## Phase 11: Migration Strategy (Low Risk)
+
+- Do **not** refactor existing components
+- Introduce machines behind feature flags
+- Replace boolean state incrementally
+
+---
+
+## Final Rule
+
+> **If a component has more than 3 states, it must use a state machine.**
+
+---
+
+## State Machines Progress Tracking
+
+| Phase                                  | Status         | Progress  |
+| -------------------------------------- | -------------- | --------- |
+| Phase 1: Strategy Decision             | ✅ Completed   | 2/2 tasks |
+| Phase 2: Canonical State Model         | ✅ Completed   | 1/1 tasks |
+| Phase 3: Implementation Priority       | � In Progress | 1/6 tasks |
+| Phase 4: Composer Machine              | ✅ Completed   | 3/3 tasks |
+| Phase 5: Storybook Stories             | ✅ Completed   | 1/1 tasks |
+| Phase 6: MessageItem Machine           | 🔲 Not Started | 0/1 tasks |
+| Phase 7: ActionSurface Machine         | 🔲 Not Started | 0/1 tasks |
+| Phase 8: AgentPrompt Machine           | 🔲 Not Started | 0/1 tasks |
+| Phase 9: ConversationApp Orchestration | 🔲 Not Started | 0/1 tasks |
+| Phase 10: Documentation                | 🔲 Not Started | 0/1 tasks |
+| Phase 11: Migration Strategy           | 🔲 Not Started | 0/1 tasks |
+
+**Total: 8/19 tasks completed (42%)**
+
+---
+
+## Next Steps
+
+If you want to proceed, the recommended order is:
+
+1. ~~Composer machine **with context & guards**~~ ✅
+2. Full MessageItem machine
+3. Storybook + XState testing setup
+4. Mapping machines to analytics events
+

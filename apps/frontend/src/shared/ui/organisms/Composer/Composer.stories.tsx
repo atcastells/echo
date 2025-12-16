@@ -273,3 +273,70 @@ Here's another paragraph with some specific questions:
 3. Is the submit button still accessible?`,
   },
 };
+
+// ------------------
+// Machine-Driven States
+// ------------------
+
+/**
+ * The Composer uses an XState machine with the following states:
+ * - idle: Default state, ready for input
+ * - typing: User is actively typing
+ * - submitting: Message is being sent
+ * - error: Submission failed
+ * - disabled: Composer disabled (e.g., agent streaming)
+ * - blocked: Composer blocked (e.g., rate limited)
+ */
+
+export const MachineStateIdle: Story = {
+  name: 'Machine: Idle',
+  args: {
+    initialMachineState: 'idle',
+    placeholder: 'Ready for input...',
+  },
+};
+
+export const MachineStateTyping: Story = {
+  name: 'Machine: Typing',
+  args: {
+    initialMachineState: 'typing',
+    value: 'User is typing a message...',
+  },
+};
+
+export const MachineStateSubmitting: Story = {
+  name: 'Machine: Submitting',
+  args: {
+    initialMachineState: 'submitting',
+    value: 'This message is being sent...',
+  },
+};
+
+export const MachineStateError: Story = {
+  name: 'Machine: Error',
+  args: {
+    initialMachineState: 'error',
+    value: 'Failed message content',
+    initialContext: {
+      errorMessage: 'Network error: Failed to send message. Please try again.',
+      retryCount: 1,
+    },
+  },
+};
+
+export const MachineStateDisabled: Story = {
+  name: 'Machine: Disabled',
+  args: {
+    initialMachineState: 'disabled',
+    placeholder: 'Echo is responding...',
+  },
+};
+
+export const MachineStateBlocked: Story = {
+  name: 'Machine: Blocked',
+  args: {
+    initialMachineState: 'blocked',
+    placeholder: 'Rate limit exceeded. Please wait...',
+  },
+};
+
