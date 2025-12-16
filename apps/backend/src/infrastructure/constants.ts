@@ -7,4 +7,3 @@ export const PROFILE_REPOSITORY = "ProfileRepository";
 
 // External services
 export const SUPABASE_CLIENT = "SupabaseClient";
-

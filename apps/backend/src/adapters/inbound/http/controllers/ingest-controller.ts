@@ -8,9 +8,14 @@ import { DocumentCategory } from "../../../../domain/entities/document.js";
 import { HttpError } from "../errors/http-error.js";
 
 export class IngestController {
-  private readonly uploadDocumentUseCase: UploadDocumentUseCase = Container.get(UploadDocumentUseCase);
-  private readonly listDocumentsUseCase: ListDocumentsUseCase = Container.get(ListDocumentsUseCase);
-  private readonly deleteDocumentUseCase: DeleteDocumentUseCase = Container.get(DeleteDocumentUseCase);
+  private readonly uploadDocumentUseCase: UploadDocumentUseCase = Container.get(
+    UploadDocumentUseCase,
+  );
+  private readonly listDocumentsUseCase: ListDocumentsUseCase =
+    Container.get(ListDocumentsUseCase);
+  private readonly deleteDocumentUseCase: DeleteDocumentUseCase = Container.get(
+    DeleteDocumentUseCase,
+  );
 
   async uploadDocument(
     request: Request,

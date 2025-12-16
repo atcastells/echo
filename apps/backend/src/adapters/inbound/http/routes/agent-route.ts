@@ -20,14 +20,16 @@ export const createAgentRouter = (): Router => {
   agentRoutes.post("/:id/chat", (request, response, next) =>
     agentController.chatWithAgent(request, response, next),
   );
-  agentRoutes.post("/:id/threads", (request, response, next) =>
-    agentController.createThread(request, response, next),
+  agentRoutes.post("/:id/conversations", (request, response, next) =>
+    agentController.createConversation(request, response, next),
   );
-  agentRoutes.get("/:id/threads", (request, response, next) =>
-    agentController.listThreads(request, response, next),
+  agentRoutes.get("/:id/conversations", (request, response, next) =>
+    agentController.listConversations(request, response, next),
   );
-  agentRoutes.get("/:id/threads/:threadId", (request, response, next) =>
-    agentController.getThreadHistory(request, response, next),
+  agentRoutes.get(
+    "/:id/conversations/:conversationId",
+    (request, response, next) =>
+      agentController.getConversationHistory(request, response, next),
   );
 
   return agentRoutes;

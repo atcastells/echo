@@ -8,11 +8,14 @@ interface AuthenticatedRequest extends Request {
 }
 
 export class AuthController {
-
   private readonly signUpUseCase: SignUpUseCase = Container.get(SignUpUseCase);
   private readonly signInUseCase: SignInUseCase = Container.get(SignInUseCase);
-  
-  signup = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+
+  signup = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
       const { email, password } = request.body;
       const user = await this.signUpUseCase.execute(email, password);
@@ -22,7 +25,11 @@ export class AuthController {
     }
   };
 
-  signin = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+  signin = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
       const { email, password } = request.body;
       const result = await this.signInUseCase.execute(email, password);
@@ -32,7 +39,11 @@ export class AuthController {
     }
   };
 
-  me = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+  me = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
       // User is attached by middleware
       const user = (request as AuthenticatedRequest).user;

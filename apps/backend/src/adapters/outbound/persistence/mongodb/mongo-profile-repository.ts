@@ -7,7 +7,8 @@ import { profileSchema, ProfileSchema } from "./schemas/profile.schema.js";
 
 @Service()
 export class MongoProfileRepository implements ProfileRepository {
-  private readonly databaseConnection: MongoDBAdapter = Container.get(MongoDBAdapter);
+  private readonly databaseConnection: MongoDBAdapter =
+    Container.get(MongoDBAdapter);
 
   private get collection() {
     return this.databaseConnection

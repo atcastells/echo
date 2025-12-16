@@ -11,16 +11,8 @@ export const createAuthRouter = (): Router => {
   const router: Router = Router();
   const authController = new AuthController();
 
-  router.post(
-    "/signup",
-    validateRequest(signupSchema),
-     authController.signup,
-  );
-  router.post(
-    "/signin",
-    validateRequest(signinSchema),
-    authController.signin,
-  );
+  router.post("/signup", validateRequest(signupSchema), authController.signup);
+  router.post("/signin", validateRequest(signinSchema), authController.signin);
   router.get("/me", authMiddleware.authenticate(), authController.me);
 
   return router;

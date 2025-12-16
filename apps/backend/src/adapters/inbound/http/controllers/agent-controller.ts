@@ -9,9 +9,9 @@ import { AgentType } from "../../../../domain/entities/agent.js";
 import { AuthenticatedRequest } from "../middlewares/auth-middleware.js";
 import { HttpError } from "../errors/http-error.js";
 
-import { CreateThreadUseCase } from "../../../../application/chat/create-thread.use-case.js";
-import { ListThreadsUseCase } from "../../../../application/chat/list-threads.use-case.js";
-import { GetThreadHistoryUseCase } from "../../../../application/chat/get-thread-history.use-case.js";
+import { CreateConversationUseCase } from "../../../../application/chat/create-conversation.use-case.js";
+import { ListConversationsUseCase } from "../../../../application/chat/list-conversations.use-case.js";
+import { GetConversationHistoryUseCase } from "../../../../application/chat/get-conversation-history.use-case.js";
 
 const createAgentSchema = z.object({
   name: z.string().min(1),
@@ -23,21 +23,28 @@ const createAgentSchema = z.object({
 
 const chatSchema = z.object({
   message: z.string().min(1),
-  threadId: z.string().optional(),
+  conversationId: z.string().optional(),
 });
 
-const createThreadSchema = z.object({
+const createConversationSchema = z.object({
   title: z.string().optional(),
 });
 
 export class AgentController {
-  private readonly createAgentUseCase: CreateAgentUseCase = Container.get(CreateAgentUseCase);
-  private readonly listAgentsUseCase: ListAgentsUseCase = Container.get(ListAgentsUseCase);
-  private readonly getAgentUseCase: GetAgentUseCase = Container.get(GetAgentUseCase);
-  private readonly chatWithAgentUseCase: ChatWithAgentUseCase = Container.get(ChatWithAgentUseCase);
-  private readonly createThreadUseCase: CreateThreadUseCase = Container.get(CreateThreadUseCase);
-  private readonly listThreadsUseCase: ListThreadsUseCase = Container.get(ListThreadsUseCase);
-  private readonly getThreadHistoryUseCase: GetThreadHistoryUseCase = Container.get(GetThreadHistoryUseCase);
+  private readonly createAgentUseCase: CreateAgentUseCase =
+    Container.get(CreateAgentUseCase);
+  private readonly listAgentsUseCase: ListAgentsUseCase =
+    Container.get(ListAgentsUseCase);
+  private readonly getAgentUseCase: GetAgentUseCase =
+    Container.get(GetAgentUseCase);
+  private readonly chatWithAgentUseCase: ChatWithAgentUseCase =
+    Container.get(ChatWithAgentUseCase);
+  private readonly createConversationUseCase: CreateConversationUseCase =
+    Container.get(CreateConversationUseCase);
+  private readonly listConversationsUseCase: ListConversationsUseCase =
+    Container.get(ListConversationsUseCase);
+  private readonly getConversationHistoryUseCase: GetConversationHistoryUseCase =
+    Container.get(GetConversationHistoryUseCase);
 
   async createAgent(
     request: Request,
@@ -123,12 +130,12 @@ export class AgentController {
       }
 
       const agentId = request.params.id;
-      const { message, threadId } = chatSchema.parse(request.body);
+      const { message, conversationId } = chatSchema.parse(request.body);
       const reply = await this.chatWithAgentUseCase.execute({
         agentId,
         userId: authRequest.user.id,
         message,
-        threadId,
+        conversationId,
       });
 
       response.json({ message: reply });
@@ -137,7 +144,7 @@ export class AgentController {
     }
   }
 
-  async createThread(
+  async createConversation(
     request: Request,
     response: Response,
     next: NextFunction,
@@ -148,19 +155,19 @@ export class AgentController {
         throw new HttpError(401, "Unauthorized");
       }
       const agentId = request.params.id;
-      const { title } = createThreadSchema.parse(request.body);
-      const thread = await this.createThreadUseCase.execute(
+      const { title } = createConversationSchema.parse(request.body);
+      const conversation = await this.createConversationUseCase.execute(
         authRequest.user.id,
         agentId,
         title,
       );
-      response.status(201).json(thread);
+      response.status(201).json(conversation);
     } catch (error) {
       next(error);
     }
   }
 
-  async listThreads(
+  async listConversations(
     request: Request,
     response: Response,
     next: NextFunction,
@@ -171,17 +178,17 @@ export class AgentController {
         throw new HttpError(401, "Unauthorized");
       }
       const agentId = request.params.id;
-      const threads = await this.listThreadsUseCase.execute(
+      const conversations = await this.listConversationsUseCase.execute(
         authRequest.user.id,
         agentId,
       );
-      response.json(threads);
+      response.json(conversations);
     } catch (error) {
       next(error);
     }
   }
 
-  async getThreadHistory(
+  async getConversationHistory(
     request: Request,
     response: Response,
     next: NextFunction,
@@ -191,10 +198,10 @@ export class AgentController {
       if (!authRequest.user) {
         throw new HttpError(401, "Unauthorized");
       }
-      const threadId = request.params.threadId;
-      const history = await this.getThreadHistoryUseCase.execute(
+      const conversationId = request.params.conversationId;
+      const history = await this.getConversationHistoryUseCase.execute(
         authRequest.user.id,
-        threadId,
+        conversationId,
       );
       response.json(history);
     } catch (error) {

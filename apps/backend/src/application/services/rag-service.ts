@@ -5,8 +5,12 @@ import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 
 @Service()
 export class RagService {
-  private readonly retrieveContext: RetrieveContextUseCase = Container.get(RetrieveContextUseCase);
-  private readonly llm: LangChainGeminiAdapter = Container.get(LangChainGeminiAdapter);
+  private readonly retrieveContext: RetrieveContextUseCase = Container.get(
+    RetrieveContextUseCase,
+  );
+  private readonly llm: LangChainGeminiAdapter = Container.get(
+    LangChainGeminiAdapter,
+  );
 
   async answerQuery(userId: string, query: string): Promise<string> {
     // 1. Retrieve relevant context

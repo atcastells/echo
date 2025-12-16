@@ -7,7 +7,8 @@ import { documentSchema, DocumentSchema } from "./schemas/document.schema.js";
 
 @Service()
 export class MongoDocumentRepository implements DocumentRepository {
-  private readonly databaseConnection: MongoDBAdapter = Container.get(MongoDBAdapter);
+  private readonly databaseConnection: MongoDBAdapter =
+    Container.get(MongoDBAdapter);
 
   private get collection() {
     return this.databaseConnection

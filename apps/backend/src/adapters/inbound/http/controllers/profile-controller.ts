@@ -57,11 +57,16 @@ const updateRoleSchema = z.object({
 });
 
 export class ProfileController {
-  private readonly ensureMyProfileUseCase: EnsureMyProfileUseCase = Container.get(EnsureMyProfileUseCase);
-  private readonly updateMyProfileUseCase: UpdateMyProfileUseCase = Container.get(UpdateMyProfileUseCase);
-  private readonly addRoleUseCase: AddRoleUseCase = Container.get(AddRoleUseCase);
-  private readonly updateRoleUseCase: UpdateRoleUseCase = Container.get(UpdateRoleUseCase);
-  private readonly deleteRoleUseCase: DeleteRoleUseCase = Container.get(DeleteRoleUseCase);
+  private readonly ensureMyProfileUseCase: EnsureMyProfileUseCase =
+    Container.get(EnsureMyProfileUseCase);
+  private readonly updateMyProfileUseCase: UpdateMyProfileUseCase =
+    Container.get(UpdateMyProfileUseCase);
+  private readonly addRoleUseCase: AddRoleUseCase =
+    Container.get(AddRoleUseCase);
+  private readonly updateRoleUseCase: UpdateRoleUseCase =
+    Container.get(UpdateRoleUseCase);
+  private readonly deleteRoleUseCase: DeleteRoleUseCase =
+    Container.get(DeleteRoleUseCase);
 
   async getMyProfile(
     request: Request,

@@ -7,8 +7,8 @@ import { agentSchema, AgentSchema } from "./schemas/agent.schema.js";
 
 @Service()
 export class MongoAgentRepository implements AgentRepository {
-  private readonly databaseConnection: MongoDBAdapter = Container.get(MongoDBAdapter);
-
+  private readonly databaseConnection: MongoDBAdapter =
+    Container.get(MongoDBAdapter);
 
   private get collection() {
     return this.databaseConnection.getDb().collection<AgentSchema>("agents");
