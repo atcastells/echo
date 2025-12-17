@@ -9,7 +9,7 @@ import {
   AttachmentPreview,
   type AttachmentFile,
 } from "../../molecules/AttachmentPreview";
-import { composerMachine, type ComposerContext } from "../../../state-machines";
+import { composerMachine, type ComposerContext } from "../../state-machines";
 
 /** Machine states for external control */
 export type ComposerMachineState =

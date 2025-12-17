@@ -1,5 +1,4 @@
 import type { Preview } from "@storybook/react-vite";
-
 // Import global styles including Tailwind CSS
 import "../src/index.css";
 

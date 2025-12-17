@@ -1,7 +1,12 @@
 import { type ButtonHTMLAttributes, type ReactNode, forwardRef } from "react";
 import { clsx } from "clsx";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost" | "destructive";
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "ghost"
+  | "destructive"
+  | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -42,6 +47,13 @@ const variantStyles: Record<ButtonVariant, string> = {
     "disabled:text-neutral-400 disabled:hover:bg-transparent disabled:cursor-not-allowed",
   ),
   destructive: clsx(
+    "bg-error-600 text-white",
+    "hover:bg-error-700",
+    "focus-visible:ring-error-500",
+    "active:bg-error-800",
+    "disabled:bg-error-300 disabled:cursor-not-allowed",
+  ),
+  danger: clsx(
     "bg-error-600 text-white",
     "hover:bg-error-700",
     "focus-visible:ring-error-500",
