@@ -7,7 +7,7 @@
 
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ConversationApp } from "@echo/storybook";
+import { ConversationApp, ConfirmModal } from "@echo/storybook";
 import type { Message, ConversationData, SuggestedPrompt } from "@echo/storybook";
 import { useAuth } from "@/auth";
 import {
@@ -26,27 +26,27 @@ const DEFAULT_AGENT_ID = import.meta.env.VITE_DEFAULT_AGENT_ID || "default";
 const SUGGESTED_PROMPTS: SuggestedPrompt[] = [
   {
     id: "1",
-    icon: "💬",
-    title: "Start a conversation",
-    description: "Ask me anything to get started",
+    icon: "chat-bubble-left-right",
+    text: "Start a conversation",
+    category: "General",
   },
   {
     id: "2",
-    icon: "📝",
-    title: "Help me write",
-    description: "Draft emails, documents, or creative content",
+    icon: "document",
+    text: "Help me write",
+    category: "Writing",
   },
   {
     id: "3",
-    icon: "💡",
-    title: "Brainstorm ideas",
-    description: "Explore new concepts and possibilities",
+    icon: "sparkles",
+    text: "Brainstorm ideas",
+    category: "Creative",
   },
   {
     id: "4",
-    icon: "🔍",
-    title: "Analyze something",
-    description: "Break down complex topics or data",
+    icon: "pencil",
+    text: "Analyze something",
+    category: "Analysis",
   },
 ];
 
@@ -82,10 +82,13 @@ export const ChatPage = () => {
   const {
     sendMessage,
     interrupt,
+    confirmAction,
+    cancelAction,
     isStreaming,
     streamingContent,
     streamingMessageId,
     isThinking,
+    pendingAction,
   } = useChat({
     conversationId: conversationId || "",
     onMessage: () => {
@@ -112,10 +115,10 @@ export const ChatPage = () => {
   const transformedMessages: Message[] = useMemo(() => {
     return messages.map((msg: ChatMessage) => ({
       id: msg.id,
-      role: msg.role as "user" | "assistant",
+      role: msg.role === "assistant" ? "agent" : (msg.role as "user" | "system" | "agent"),
       content: msg.content.map((block) => block.value).join("\n"),
       timestamp: new Date(msg.createdAt),
-      status: msg.status === "failed" ? ("error" as const) : ("sent" as const),
+      status: msg.status === "failed" ? ("failed" as const) : ("sent" as const),
     }));
   }, [messages]);
 
@@ -172,10 +175,10 @@ export const ChatPage = () => {
       if (!conversationId) {
         // Create new conversation first
         handleNewConversation().then(() => {
-          setComposerValue(prompt.description || prompt.title);
+          setComposerValue(prompt.text);
         });
       } else {
-        setComposerValue(prompt.description || prompt.title);
+        setComposerValue(prompt.text);
       }
     },
     [conversationId, handleNewConversation],
@@ -222,50 +225,78 @@ export const ChatPage = () => {
     [messages, sendMessage],
   );
 
+  const handleConfirmAction = useCallback(() => {
+    if (pendingAction) {
+      confirmAction(pendingAction.action_id);
+    }
+  }, [pendingAction, confirmAction]);
+
+  const handleCancelAction = useCallback(() => {
+    if (pendingAction) {
+      cancelAction(pendingAction.action_id);
+    }
+  }, [pendingAction, cancelAction]);
+
   // Determine agent status
   const agentStatus = isThinking
-    ? ("thinking" as const)
+    ? "busy"
     : isStreaming
-      ? ("typing" as const)
-      : ("available" as const);
+      ? "available"
+      : "available";
 
   return (
-    <ConversationApp
-      // Conversation data
-      conversations={transformedConversations}
-      activeConversationId={conversationId}
-      messages={transformedMessages}
-      // Loading states
-      isLoadingConversations={isLoadingConversations || isLoadingMessages}
-      conversationsError={conversationsError?.message}
-      // Streaming state
-      streamingMessageId={streamingMessageId || undefined}
-      streamingContent={streamingContent}
-      feedbackByMessageId={feedbackByMessageId}
-      // Agent info
-      agentName="Echo"
-      agentRole="AI Assistant"
-      agentStatus={agentStatus}
-      // User info
-      userName={user?.email || "You"}
-      // Composer state
-      composerValue={composerValue}
-      suggestedPrompts={SUGGESTED_PROMPTS}
-      // Conversation callbacks
-      onSelectConversation={handleSelectConversation}
-      onDeleteConversation={handleDeleteConversation}
-      onNewConversation={handleNewConversation}
-      onRetryLoadConversations={handleRetryLoadConversations}
-      // Composer callbacks
-      onComposerChange={setComposerValue}
-      onComposerSubmit={handleComposerSubmit}
-      onStopStreaming={interrupt}
-      onPromptClick={handlePromptClick}
-      // Message callbacks
-      onCopy={handleCopy}
-      onRegenerate={handleRegenerate}
-      onThumbsUp={handleThumbsUp}
-      onThumbsDown={handleThumbsDown}
-    />
+    <>
+      <ConversationApp
+        // Conversation data
+        conversations={transformedConversations}
+        activeConversationId={conversationId}
+        messages={transformedMessages}
+        // Loading states
+        isLoadingConversations={isLoadingConversations || isLoadingMessages}
+        conversationsError={conversationsError?.message}
+        // Streaming state
+        streamingMessageId={streamingMessageId || undefined}
+        streamingContent={streamingContent}
+        feedbackByMessageId={feedbackByMessageId}
+        // Agent info
+        agentName="Echo"
+        agentRole="AI Assistant"
+        agentStatus={agentStatus}
+        // User info
+        userName={user?.email || "You"}
+        // Composer state
+        composerValue={composerValue}
+        suggestedPrompts={SUGGESTED_PROMPTS}
+        // Conversation callbacks
+        onSelectConversation={handleSelectConversation}
+        onDeleteConversation={handleDeleteConversation}
+        onNewConversation={handleNewConversation}
+        onRetryLoadConversations={handleRetryLoadConversations}
+        // Composer callbacks
+        onComposerChange={setComposerValue}
+        onComposerSubmit={handleComposerSubmit}
+        onStopStreaming={interrupt}
+        onPromptClick={handlePromptClick}
+        // Message callbacks
+        onCopy={handleCopy}
+        onRegenerate={handleRegenerate}
+        onThumbsUp={handleThumbsUp}
+        onThumbsDown={handleThumbsDown}
+      />
+
+      {/* Action Confirmation Modal */}
+      {pendingAction && (
+        <ConfirmModal
+          isOpen={true}
+          onClose={handleCancelAction}
+          onConfirm={handleConfirmAction}
+          title="Confirm Action"
+          message={pendingAction.description}
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
+          variant="default"
+        />
+      )}
+    </>
   );
 };

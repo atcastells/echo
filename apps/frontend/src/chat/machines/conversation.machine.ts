@@ -5,7 +5,12 @@
  */
 
 import { setup, assign } from "xstate";
-import type { Conversation, ChatMessage, SSEEvent } from "../types/chat.types";
+import type {
+  Conversation,
+  ChatMessage,
+  SSEEvent,
+  AgentActionProposedPayload,
+} from "../types/chat.types";
 
 // ============================================================================
 // Types
@@ -26,6 +31,8 @@ export interface ConversationContext {
   error: string | null;
   /** Whether data is being loaded */
   isLoading: boolean;
+  /* Pending action requiring confirmation */
+  pendingAction: AgentActionProposedPayload | null;
   /** Current agent ID */
   agentId: string | null;
 }
@@ -46,7 +53,10 @@ export type ConversationEvent =
   | { type: "CLEAR_ERROR" }
   | { type: "INTERRUPT" }
   | { type: "NEW_CONVERSATION" }
-  | { type: "CONVERSATION_CREATED"; conversation: Conversation };
+  | { type: "CONVERSATION_CREATED"; conversation: Conversation }
+  | { type: "ACTION_PROPOSED"; action: AgentActionProposedPayload }
+  | { type: "CONFIRM_ACTION"; actionId: string }
+  | { type: "CANCEL_ACTION"; actionId: string };
 
 // ============================================================================
 // Initial Context
@@ -61,6 +71,7 @@ const initialContext: ConversationContext = {
   error: null,
   isLoading: false,
   agentId: null,
+  pendingAction: null,
 };
 
 // ============================================================================
@@ -90,6 +101,7 @@ export const conversationMachine = setup({
       messages: [], // Clear messages when switching conversations
       streamingContent: "",
       streamingMessageId: null,
+      pendingAction: null,
     }),
     setMessages: assign({
       messages: (_, params: { messages: ChatMessage[] }) => params.messages,
@@ -142,6 +154,13 @@ export const conversationMachine = setup({
       activeConversationId: (_, params: { conversation: Conversation }) =>
         params.conversation.id,
       messages: [],
+    }),
+    setPendingAction: assign({
+      pendingAction: (_, params: { action: AgentActionProposedPayload }) =>
+        params.action,
+    }),
+    clearPendingAction: assign({
+      pendingAction: null,
     }),
   },
   guards: {
@@ -303,12 +322,38 @@ export const conversationMachine = setup({
           target: "ready",
           actions: ["clearStreaming"],
         },
+        ACTION_PROPOSED: {
+          target: "confirmingAction",
+          actions: [
+            {
+              type: "setPendingAction",
+              params: ({ event }) => ({ action: event.action }),
+            },
+          ],
+        },
         ERROR: {
           target: "ready",
           actions: [
             "clearStreaming",
             { type: "setError", params: ({ event }) => ({ error: event.error }) },
           ],
+        },
+      },
+    },
+
+    confirmingAction: {
+      on: {
+        CONFIRM_ACTION: {
+          target: "streaming", // Return to streaming as agent continues after confirmation
+          actions: ["clearPendingAction"],
+        },
+        CANCEL_ACTION: {
+          target: "streaming", // Return to streaming as agent handles cancellation
+          actions: ["clearPendingAction"],
+        },
+        INTERRUPT: {
+          target: "ready",
+          actions: ["clearPendingAction", "clearStreaming"],
         },
       },
     },
