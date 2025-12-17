@@ -1,0 +1,14 @@
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+storybook-static
+
+# Logs
+*.log
+*storybook.log
+
+# Editor
+.DS_Store
+*.sw?

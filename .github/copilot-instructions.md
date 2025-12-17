@@ -1,370 +1,196 @@
 # GitHub Copilot Instructions for Echo
 
-This is a **pnpm monorepo** containing a full-stack AI Career Agent application.
+> **AI Career Agent** - Full-stack pnpm monorepo with RAG-powered chat for recruiters.
 
-## Repository Structure
-
-```
-echo/
-├── apps/
-│   ├── backend/     # @echo/backend - Node.js API server
-│   └── frontend/    # @echo/frontend - React + Vite application
-├── package.json     # Root workspace configuration
-└── pnpm-workspace.yaml
-```
-
-## Project Overview
-
-**Purpose**: A personal AI agent that presents professional history, answers recruiters' questions, and adapts to context and style.
-
-**Key Features**:
-
-- Knowledge Base: Upload CVs and documents
-- RAG Pipeline: Vector search with Supabase pgvector
-- Contextual AI Chat: Natural-language Q&A for recruiters
-- Authentication: Supabase Auth
-- Vector embeddings: Gemini text-embedding-004 (768-dimensional)
-
----
-
-# Backend (`apps/backend`)
-
-## Architecture
-
-The backend follows **Hexagonal Architecture (Ports & Adapters)**:
-
-```
-apps/backend/src/
-├── adapters/         # Interface adapters (controllers, repositories)
-│   ├── inbound/      # HTTP controllers, middlewares, routes
-│   └── outbound/     # External services (Supabase, Gemini, MongoDB)
-├── domain/           # Business logic, entities, and port interfaces
-├── application/      # Use cases (orchestration layer)
-└── infrastructure/   # Configuration, server setup, DI container
-```
-
-**Key Principles**:
-
-- Domain logic is isolated from infrastructure concerns
-- Dependencies flow inward (domain has no dependencies on outer layers)
-- Use ports (interfaces) in domain, adapters implement them
-- Business logic lives in use cases, not controllers
-
----
-
-# Frontend (`apps/frontend`)
-
-## Architecture
-
-The frontend uses a **feature-based architecture**:
-
-```
-apps/frontend/src/
-├── agents/      # Agent management features
-├── auth/        # Authentication (context, hooks, components)
-├── chat/        # Chat interface
-├── profile/     # Profile management
-├── shared/      # Shared utilities, UI components, types
-└── app/         # App shell, routing, providers
-```
-
-**Tech Stack**: React 19, TypeScript, Vite, Tailwind CSS, TanStack Query, React Router
-
----
-
-## Development Setup
-
-### Package Manager
-
-**ALWAYS use `pnpm`** for all package operations:
+## Quick Reference
 
 ```bash
-pnpm install          # Install all workspace dependencies
-pnpm add <pkg> --filter @echo/backend    # Add to backend
-pnpm add <pkg> --filter @echo/frontend   # Add to frontend
-```
-
-### Commands (from root)
-
-```bash
-# Development
-pnpm dev              # Start both frontend & backend
-pnpm dev:back         # Start backend only (http://localhost:3000)
-pnpm dev:front        # Start frontend only (http://localhost:5173)
-
-# Building
-pnpm build            # Build all packages
-pnpm build:back       # Build backend only
-pnpm build:front      # Build frontend only
-
-# Quality
-pnpm lint             # Lint all packages
-pnpm lint:fix         # Fix lint issues
+pnpm dev              # Start all (backend :3000, frontend :5173)
+pnpm dev:back         # Backend only
+pnpm dev:front        # Frontend only
 pnpm test             # Run all tests
-pnpm test:back        # Run backend tests only
+pnpm lint && pnpm build  # Pre-commit checks
 ```
 
-### Environment Setup
+---
 
-1. Copy `apps/backend/.env.example` to `apps/backend/.env`
-2. Copy `apps/frontend/.env.example` to `apps/frontend/.env`
-3. Configure required variables
-4. Run `pnpm install`
+## Architecture Overview
 
-## Code Style & Conventions
+### Backend (`apps/backend`) - Hexagonal Architecture
 
-### General
+```
+src/
+├── adapters/inbound/http/     # Controllers, routes, middlewares
+├── adapters/outbound/         # Repositories, external services (Supabase, Gemini, MongoDB)
+├── application/               # Use cases (one per file: *.use-case.ts)
+├── domain/                    # Entities, ports (interfaces)
+└── infrastructure/            # Config, DI constants, server setup
+```
 
-- Use TypeScript strict mode
-- Use ES modules (`import`/`export`, not `require`)
-- File extensions: Use `.js` in imports (TypeScript ESM convention)
-- No default exports; use named exports
-- Run `pnpm lint` and `pnpm format` before committing
+**Data Flow**: Controller → Use Case → Repository (via port interface) → External Service
 
-### Naming Conventions
+### Frontend (`apps/frontend`) - Screaming Architecture
 
-- Use PascalCase for classes, interfaces, types
-- Use camelCase for functions, variables
-- Use SCREAMING_SNAKE_CASE for constants
-- Suffix use case files with `.use-case.ts`
-- Suffix test files with `.test.ts`
+```
+src/
+├── auth/      # Feature: Authentication (components/, hooks/, api/, types/)
+├── agents/    # Feature: Agent management
+├── chat/      # Feature: Chat interface
+├── profile/   # Feature: Profile management
+├── shared/    # Shared utilities, UI components (NO business logic)
+└── app/       # App shell, routing, providers
+```
 
-### Dependency Injection
+**Import Rule**: Features import from `@/shared` or other features' `index.ts` barrel exports only.
 
-- Use TypeDI `@Service()` decorator for injectable classes
-- Mark injected dependencies as `readonly` in constructor parameters
-- Controllers inject use cases **directly** (no string constants)
-- Use cases inject repositories using string constants from `infrastructure/constants.ts`
-- Example:
-  ```typescript
-  @Service()
-  export class MyUseCase {
-    constructor(
-      @Inject(REPOSITORY_TOKEN)
-      private readonly repository: MyRepository,
-    ) {}
-  }
-  ```
+---
 
-## Error Handling
+## Critical Patterns
 
-### Use HttpError for All Service-Level Errors
-
-- **ALWAYS** use `HttpError` class for errors in use cases and controllers
-- Pass errors to `next()` in controllers for centralized error handling
-- Common status codes:
-  - 400: Bad request / validation errors
-  - 401: Unauthorized (missing/invalid auth)
-  - 403: Forbidden (insufficient permissions)
-  - 404: Not found
-  - 500: Internal server error
-
-### Example Pattern
+### Backend: Dependency Injection (TypeDI)
 
 ```typescript
-// In use cases
-if (!resource) {
-  throw new HttpError(404, "Resource not found");
+// Use cases get repositories via Container.get() with string constants
+@Service()
+export class ListDocumentsUseCase {
+  private readonly documentRepository: DocumentRepository =
+    Container.get(DOCUMENT_REPOSITORY); // from infrastructure/constants.ts
 }
 
-if (resource.userId !== userId) {
-  throw new HttpError(403, "Unauthorized to access this resource");
-}
-
-// In controllers
-try {
-  const result = await this.useCase.execute(data);
-  response.status(200).json(result);
-} catch (error) {
-  next(error); // Centralized error handler will process it
+// Controllers get use cases directly via Container.get()
+export class MyController {
+  private readonly myUseCase = Container.get(MyUseCase);
 }
 ```
 
-## Authentication & Authorization
+### Backend: Authentication Pattern
 
-- Use `AuthenticatedRequest` type for authenticated routes
-- **ALWAYS** verify `userId` ownership when retrieving individual resources
-- Throw `HttpError(403)` for unauthorized access
-- Example:
-  ```typescript
-  const user = (request as AuthenticatedRequest).user;
-  if (!user) {
-    throw new HttpError(401, "Unauthorized");
-  }
-  const userId = user.id;
-  ```
+```typescript
+const user = (request as AuthenticatedRequest).user;
+if (!user) throw new HttpError(401, "Unauthorized");
+// ALWAYS verify ownership for user-specific resources
+if (resource.userId !== user.id) throw new HttpError(403, "Forbidden");
+```
 
-## Validation
+### Backend: Validation with Zod
 
-- Use **Zod** for input validation
-- Define schemas in `src/adapters/inbound/http/middlewares/validation-schemas.ts`
-- Apply validation middleware before controllers
-- ValidationError returns 400 status with structured field-level errors array
+Define schemas in controllers, validate request bodies:
+
+```typescript
+const schema = z.object({ agent_id: z.string(), title: z.string().optional() });
+const parsed = schema.parse(request.body);
+```
+
+### Frontend: TanStack Query Pattern
+
+```typescript
+// Centralized query keys in shared/api/queryKeys.ts
+export const userKeys = {
+  all: ["users"] as const,
+  detail: (id: string) => [...userKeys.all, "detail", id] as const,
+};
+
+// Feature-specific hooks wrap queries
+export const useGetUser = (id: string) =>
+  useQuery({ queryKey: userKeys.detail(id), queryFn: () => fetchUser(id) });
+```
+
+---
+
+## RAG Pipeline (Vector Search)
+
+1. **Upload**: PDF → chunk (1000 chars, 200 overlap) → Gemini embeddings (768-dim)
+2. **Store**: Supabase pgvector (`document_chunks` table)
+3. **Search**: Query → embedding → `match_documents` RPC
+
+**CRITICAL**: Always filter by `user_id` for data isolation:
+
+```typescript
+await supabase.rpc("match_documents", {
+  query_embedding: embedding,
+  filter_user_id: userId, // REQUIRED
+  match_threshold: 0.5,
+  match_count: k,
+});
+```
+
+---
+
+## File Naming & Conventions
+
+| Type           | Pattern                  | Example                                        |
+| -------------- | ------------------------ | ---------------------------------------------- |
+| Use case       | `kebab-case.use-case.ts` | `upload-document.use-case.ts`                  |
+| Test           | `*.test.ts` (colocated)  | `upload-document.use-case.test.ts`             |
+| Component      | `PascalCase.tsx`         | `ChatMessage.tsx`                              |
+| Port interface | Domain folder            | `domain/ports/outbound/document-repository.ts` |
+
+- **ES Modules**: Use `.js` extensions in imports (TypeScript ESM)
+- **Named exports only**: No default exports
+- **Strict TypeScript**: Explicit types for props, return values
+
+---
+
+## OpenAPI Sync
+
+When modifying routes in `apps/backend/src/adapters/inbound/http/`:
+
+1. Update `src/infrastructure/openapi.yaml`
+2. Verify at `http://localhost:3000/docs`
+
+---
+
+## UI Component Library (`apps/storybook`)
+
+Atomic Design methodology - compose up from atoms:
+
+```
+atoms → molecules → organisms → templates → pages
+```
+
+| Level     | Examples                                               |
+| --------- | ------------------------------------------------------ |
+| Atoms     | `Button`, `Icon`, `Avatar`, `Badge`, `Spinner`         |
+| Molecules | `MessageBubble`, `AgentIdentity`, `StreamingIndicator` |
+| Organisms | `Composer`, `Sidebar`, `Modal`, `MessageList`          |
+| Templates | `MainPanel`, `FirstRunExperience`                      |
+
+```bash
+cd apps/frontend && pnpm storybook  # http://localhost:6006
+```
+
+**Usage Rules**:
+
+- Import from atomic level: `import { Button } from "@/shared/ui/atoms"`
+- Use semantic variants (`primary`, `success`, `error`) - never hardcode colors
+- Compose organisms from molecules/atoms - don't bypass hierarchy
+
+---
 
 ## Testing
 
-### Principles
-
-- Write tests for all use cases in `src/application/`
-- Place test files alongside source: `*.test.ts`
-- Use Jest for testing
-- Mock external dependencies (repositories, adapters)
-- Test configuration: `jest.config.cjs` (CommonJS format for ESM project)
-
-### Example Pattern
-
 ```typescript
+// Mock repositories, test use case logic
 describe("MyUseCase", () => {
   let useCase: MyUseCase;
-  let mockRepository: jest.Mocked<Repository>;
+  let mockRepo: jest.Mocked<Repository>;
 
   beforeEach(() => {
-    mockRepository = {
-      method: jest.fn(),
-    } as jest.Mocked<Repository>;
-
-    useCase = new MyUseCase(mockRepository);
-  });
-
-  it("should do something", async () => {
-    mockRepository.method.mockResolvedValue(expectedValue);
-    const result = await useCase.execute(input);
-    expect(result).toEqual(expected);
+    mockRepo = { findById: jest.fn() } as jest.Mocked<Repository>;
+    useCase = new MyUseCase(mockRepo);
   });
 });
 ```
 
-## RAG & Vector Store
+---
 
-### Pipeline
+## Don't
 
-1. Parse document (PDF, text)
-2. Chunk text (1000 characters with 200 character overlap)
-3. Generate embeddings (Gemini text-embedding-004, 768-dimensional)
-4. Store in Supabase pgvector
-
-### Security
-
-- **ALWAYS** filter vector similarity searches by `user_id` for data isolation
-- Example:
-  ```typescript
-  const { data } = await supabase.rpc("match_documents", {
-    query_embedding: embedding,
-    match_threshold: 0.7,
-    match_count: 5,
-    user_id: userId, // CRITICAL: Always include
-  });
-  ```
-
-### Embeddings
-
-- Model: `text-embedding-004`
-- Dimensions: 768
-- Provider: Google Gemini
-
-## Observability
-
-- Use OpenTelemetry for distributed tracing
-- Initialize telemetry (startTelemetry) **before** all other imports in `server.ts`
-- Example:
-  ```typescript
-  import { startTelemetry } from "./telemetry.js";
-  startTelemetry();
-  // ... other imports
-  ```
-
-## Database
-
-### Document Store
-
-- MongoDB Atlas for document metadata
-- Use Drizzle ORM for queries
-
-### Vector Store
-
-- Supabase pgvector for embeddings
-- Migration files in `supabase/migrations/`
-
-## Common Patterns
-
-### Use Case Structure
-
-```typescript
-@Service()
-export class MyUseCase {
-  constructor(
-    @Inject(REPOSITORY_TOKEN)
-    private readonly repository: Repository,
-  ) {}
-
-  async execute(input: InputType): Promise<OutputType> {
-    // 1. Validate input
-    // 2. Fetch data
-    // 3. Business logic
-    // 4. Return result or throw HttpError
-  }
-}
-```
-
-### Controller Structure
-
-```typescript
-@Service()
-export class MyController {
-  constructor(private readonly useCase: UseCase) {}
-
-  async handler(
-    request: Request,
-    response: Response,
-    next: NextFunction,
-  ): Promise<void> {
-    try {
-      // 1. Extract data from request
-      // 2. Validate auth
-      // 3. Call use case
-      // 4. Return response
-      response.status(200).json(result);
-    } catch (error) {
-      next(error);
-    }
-  }
-}
-```
-
-## What NOT to Do
-
-- ❌ Don't use default exports
-- ❌ Don't put business logic in controllers
-- ❌ Don't access external services directly from use cases (use adapters/repositories)
-- ❌ Don't forget to filter by `user_id` in vector searches
-- ❌ Don't use `require()` (use ES modules)
-- ❌ Don't skip error handling (always use try-catch in controllers)
-- ❌ Don't forget readonly on injected dependencies
-- ❌ Don't use npm or yarn (use pnpm only)
-
-## Task Management
-
-This project uses Linear for task tracking. When working on tasks:
-
-1. Always work towards an existing Linear task
-2. Verify task status before starting work
-3. Update task status as work progresses
-4. Mark tasks as Done only after verification and user approval
-
-## Getting Help
-
-- Check `AGENTS.md` for extended agent-specific instructions
-- Review existing code in similar modules for patterns
-- API documentation available at `/docs` when server is running
-- OpenAPI spec at `/openapi.json`
-
-## Before Committing
-
-Run these checks:
-
-```bash
-pnpm lint        # Fix any linting errors
-pnpm format      # Format code
-pnpm test        # Ensure tests pass
-pnpm build       # Verify TypeScript compiles
-```
+- ❌ Import between features directly (use barrel exports)
+- ❌ Put business logic in controllers
+- ❌ Skip `user_id` filter in vector searches
+- ❌ Use `npm`/`yarn` (pnpm only)
+- ❌ Use `React.FC` (use explicit props interfaces)
+- ❌ Use default exports
+- ❌ Hardcode colors - use design tokens
+- ❌ Bypass component hierarchy (atoms → molecules → organisms)

@@ -170,7 +170,7 @@ export const TextInput = forwardRef<
       );
     }
 
-    const { multiline: _multiline, ...inputProps } =
+    const { multiline: _multiline, size: _ignoreSize, ...inputProps } =
       rest as SingleLineInputProps;
     return (
       <input
