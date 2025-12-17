@@ -43,9 +43,7 @@ export const createSSEStream = async (
 
       if (!response.ok) {
         const errorBody = await response.json().catch(() => ({}));
-        throw new Error(
-          errorBody.message || `HTTP Error: ${response.status}`,
-        );
+        throw new Error(errorBody.message || `HTTP Error: ${response.status}`);
       }
 
       const reader = response.body?.getReader();

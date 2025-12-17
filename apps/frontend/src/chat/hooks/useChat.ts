@@ -41,7 +41,10 @@ export interface UseChatReturn {
   /** Interrupt the current streaming response */
   interrupt: () => Promise<void>;
   /** Confirm a proposed action */
-  confirmAction: (actionId: string, parameters?: Record<string, unknown>) => Promise<void>;
+  confirmAction: (
+    actionId: string,
+    parameters?: Record<string, unknown>,
+  ) => Promise<void>;
   /** Cancel a proposed action */
   cancelAction: (actionId: string) => Promise<void>;
   /** Whether a message is currently streaming */
@@ -70,7 +73,8 @@ export const useChat = ({
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(
     null,
   );
-  const [pendingAction, setPendingAction] = useState<AgentActionProposedPayload | null>(null);
+  const [pendingAction, setPendingAction] =
+    useState<AgentActionProposedPayload | null>(null);
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -79,7 +83,9 @@ export const useChat = ({
       switch (event.event) {
         case "chat.started": {
           const startPayload = event.payload as unknown as ChatStartedPayload;
-          setStreamingMessageId(startPayload.message_id || event.message_id || null);
+          setStreamingMessageId(
+            startPayload.message_id || event.message_id || null,
+          );
           setIsThinking(false);
           onStreamStart?.(startPayload.message_id || event.message_id || "");
           break;
@@ -131,7 +137,8 @@ export const useChat = ({
           break;
 
         case "agent.action.proposed": {
-          const actionPayload = event.payload as unknown as AgentActionProposedPayload;
+          const actionPayload =
+            event.payload as unknown as AgentActionProposedPayload;
           setIsThinking(false);
           setPendingAction(actionPayload);
           onActionProposed?.(actionPayload);
@@ -209,7 +216,10 @@ export const useChat = ({
     // Send interrupt command to backend
     if (conversationId) {
       try {
-        await chatApi.interrupt(conversationId, streamingMessageId || undefined);
+        await chatApi.interrupt(
+          conversationId,
+          streamingMessageId || undefined,
+        );
       } catch (error) {
         console.error("Failed to send interrupt command:", error);
       }
@@ -223,26 +233,30 @@ export const useChat = ({
     setPendingAction(null);
   }, [conversationId, streamingMessageId]);
 
-  const confirmAction = useCallback(async (actionId: string, parameters?: Record<string, unknown>) => {
+  const confirmAction = useCallback(
+    async (actionId: string, parameters?: Record<string, unknown>) => {
       if (!conversationId) return;
-      
+
       try {
         // We set isThinking to true as the agent will resume processing
         setIsThinking(true);
         setPendingAction(null);
-        
+
         if (parameters && Object.keys(parameters).length > 0) {
           await chatApi.modifyAction(conversationId, actionId, parameters);
         } else {
           await chatApi.confirmAction(conversationId, actionId);
         }
       } catch (error) {
-          setIsThinking(false);
-          onError?.(error as Error);
+        setIsThinking(false);
+        onError?.(error as Error);
       }
-  }, [conversationId, onError]);
+    },
+    [conversationId, onError],
+  );
 
-  const cancelAction = useCallback(async (actionId: string) => {
+  const cancelAction = useCallback(
+    async (actionId: string) => {
       if (!conversationId) return;
 
       try {
@@ -252,11 +266,12 @@ export const useChat = ({
 
         await chatApi.cancelAction(conversationId, actionId);
       } catch (error) {
-          setIsThinking(false);
-          onError?.(error as Error);
+        setIsThinking(false);
+        onError?.(error as Error);
       }
-  }, [conversationId, onError]);
-
+    },
+    [conversationId, onError],
+  );
 
   return {
     sendMessage,

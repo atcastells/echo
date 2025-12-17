@@ -8,7 +8,11 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ConversationApp, ConfirmModal } from "@echo/storybook";
-import type { Message, ConversationData, SuggestedPrompt } from "@echo/storybook";
+import type {
+  Message,
+  ConversationData,
+  SuggestedPrompt,
+} from "@echo/storybook";
 import { useAuth } from "@/auth";
 import {
   useConversations,
@@ -106,7 +110,11 @@ export const ChatPage = () => {
 
   // Auto-select first conversation if none selected
   useEffect(() => {
-    if (!conversationId && conversations.length > 0 && !isLoadingConversations) {
+    if (
+      !conversationId &&
+      conversations.length > 0 &&
+      !isLoadingConversations
+    ) {
       navigate(`/chat/${conversations[0].id}`, { replace: true });
     }
   }, [conversationId, conversations, isLoadingConversations, navigate]);
@@ -115,7 +123,10 @@ export const ChatPage = () => {
   const transformedMessages: Message[] = useMemo(() => {
     return messages.map((msg: ChatMessage) => ({
       id: msg.id,
-      role: msg.role === "assistant" ? "agent" : (msg.role as "user" | "system" | "agent"),
+      role:
+        msg.role === "assistant"
+          ? "agent"
+          : (msg.role as "user" | "system" | "agent"),
       content: msg.content.map((block) => block.value).join("\n"),
       timestamp: new Date(msg.createdAt),
       status: msg.status === "failed" ? ("failed" as const) : ("sent" as const),
@@ -184,13 +195,16 @@ export const ChatPage = () => {
     [conversationId, handleNewConversation],
   );
 
-  const handleCopy = useCallback((messageId: string) => {
-    const message = messages.find((m: ChatMessage) => m.id === messageId);
-    if (message) {
-      const content = message.content.map((block) => block.value).join("\n");
-      navigator.clipboard.writeText(content);
-    }
-  }, [messages]);
+  const handleCopy = useCallback(
+    (messageId: string) => {
+      const message = messages.find((m: ChatMessage) => m.id === messageId);
+      if (message) {
+        const content = message.content.map((block) => block.value).join("\n");
+        navigator.clipboard.writeText(content);
+      }
+    },
+    [messages],
+  );
 
   const handleThumbsUp = useCallback((messageId: string) => {
     setFeedbackByMessageId((prev) => ({

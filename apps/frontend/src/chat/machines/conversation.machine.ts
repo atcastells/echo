@@ -121,20 +121,23 @@ export const conversationMachine = setup({
       ],
     }),
     setStreamingStarted: assign({
-      streamingMessageId: (_, params: { messageId: string }) => params.messageId,
+      streamingMessageId: (_, params: { messageId: string }) =>
+        params.messageId,
       streamingContent: "",
     }),
     appendStreamingContent: assign({
       streamingContent: ({ context }, params: { delta: string }) =>
         context.streamingContent + params.delta,
     }),
-    finalizeStreamingMessage: assign(({ context }, params: { message?: ChatMessage }) => ({
-      messages: params.message
-        ? [...context.messages, params.message]
-        : context.messages,
-      streamingMessageId: null,
-      streamingContent: "",
-    })),
+    finalizeStreamingMessage: assign(
+      ({ context }, params: { message?: ChatMessage }) => ({
+        messages: params.message
+          ? [...context.messages, params.message]
+          : context.messages,
+        streamingMessageId: null,
+        streamingContent: "",
+      }),
+    ),
     clearStreaming: assign({
       streamingMessageId: null,
       streamingContent: "",
@@ -176,7 +179,10 @@ export const conversationMachine = setup({
       on: {
         SET_AGENT: {
           actions: [
-            { type: "setAgentId", params: ({ event }) => ({ agentId: event.agentId }) },
+            {
+              type: "setAgentId",
+              params: ({ event }) => ({ agentId: event.agentId }),
+            },
           ],
         },
         LOAD_CONVERSATIONS: {
@@ -211,7 +217,10 @@ export const conversationMachine = setup({
         ERROR: {
           target: "error",
           actions: [
-            { type: "setError", params: ({ event }) => ({ error: event.error }) },
+            {
+              type: "setError",
+              params: ({ event }) => ({ error: event.error }),
+            },
           ],
         },
       },
@@ -231,7 +240,10 @@ export const conversationMachine = setup({
         ERROR: {
           target: "error",
           actions: [
-            { type: "setError", params: ({ event }) => ({ error: event.error }) },
+            {
+              type: "setError",
+              params: ({ event }) => ({ error: event.error }),
+            },
           ],
         },
       },
@@ -285,7 +297,10 @@ export const conversationMachine = setup({
         ERROR: {
           target: "error",
           actions: [
-            { type: "setError", params: ({ event }) => ({ error: event.error }) },
+            {
+              type: "setError",
+              params: ({ event }) => ({ error: event.error }),
+            },
           ],
         },
       },
@@ -335,7 +350,10 @@ export const conversationMachine = setup({
           target: "ready",
           actions: [
             "clearStreaming",
-            { type: "setError", params: ({ event }) => ({ error: event.error }) },
+            {
+              type: "setError",
+              params: ({ event }) => ({ error: event.error }),
+            },
           ],
         },
       },

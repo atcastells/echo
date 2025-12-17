@@ -27,7 +27,9 @@ export const chatApi = {
   /**
    * Create a new conversation with an agent.
    */
-  createConversation: (data: CreateConversationRequest): Promise<Conversation> =>
+  createConversation: (
+    data: CreateConversationRequest,
+  ): Promise<Conversation> =>
     apiClient.post<Conversation>("/v1/conversations", data),
 
   /**
@@ -42,7 +44,9 @@ export const chatApi = {
    * Get all messages for a conversation.
    */
   getConversationMessages: (conversationId: string): Promise<ChatMessage[]> =>
-    apiClient.get<ChatMessage[]>(`/v1/conversations/${conversationId}/messages`),
+    apiClient.get<ChatMessage[]>(
+      `/v1/conversations/${conversationId}/messages`,
+    ),
 
   // ============================================================================
   // Chat Operations

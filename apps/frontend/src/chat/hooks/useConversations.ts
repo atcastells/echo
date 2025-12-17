@@ -14,10 +14,10 @@ import type { CreateConversationRequest } from "../types/chat.types";
 
 export const conversationKeys = {
   all: ["conversations"] as const,
-  list: (agentId: string) => [...conversationKeys.all, "list", agentId] as const,
+  list: (agentId: string) =>
+    [...conversationKeys.all, "list", agentId] as const,
   detail: (id: string) => [...conversationKeys.all, "detail", id] as const,
-  messages: (id: string) =>
-    [...conversationKeys.all, "messages", id] as const,
+  messages: (id: string) => [...conversationKeys.all, "messages", id] as const,
 };
 
 // ============================================================================
