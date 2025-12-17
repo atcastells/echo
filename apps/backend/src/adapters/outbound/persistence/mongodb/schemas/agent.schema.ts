@@ -14,6 +14,7 @@ export const agentSchema = z.object({
     tone: z.string(),
     enableThreads: z.boolean(),
   }),
+  isDefault: z.boolean().default(false),
   createdAt: z.date(),
   updatedAt: z.date(),
 });

@@ -1,4 +1,4 @@
-import { Service, Inject } from "typedi";
+import { Service, Container } from "typedi";
 import {
   Profile,
   ProfileBasics,
@@ -18,10 +18,8 @@ export interface UpdateMyProfileInput {
 
 @Service()
 export class UpdateMyProfileUseCase {
-  constructor(
-    @Inject(PROFILE_REPOSITORY)
-    private readonly profileRepository: ProfileRepository,
-  ) {}
+  private readonly profileRepository: ProfileRepository =
+    Container.get(PROFILE_REPOSITORY);
 
   async execute(userId: string, input: UpdateMyProfileInput): Promise<Profile> {
     const profile = await this.profileRepository.findByUserId(userId);

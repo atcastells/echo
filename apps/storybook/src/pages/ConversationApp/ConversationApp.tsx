@@ -53,6 +53,8 @@ export interface ConversationAppProps {
   suggestedPrompts?: SuggestedPrompt[];
   /** Whether the app is in mobile mode */
   isMobile?: boolean;
+  /** Whether the composer should be disabled */
+  isComposerDisabled?: boolean;
   /** Toast container for notifications */
   toastContainer?: ReactNode;
   /** Callbacks */
@@ -112,6 +114,7 @@ export const ConversationApp = ({
   attachments = [],
   suggestedPrompts,
   isMobile = false,
+  isComposerDisabled = false,
   toastContainer,
   onSelectConversation,
   onDeleteConversation,
@@ -242,6 +245,7 @@ export const ConversationApp = ({
           onThumbsUp={onThumbsUp}
           onThumbsDown={onThumbsDown}
           onRetry={onRetry}
+          isComposerDisabled={isComposerDisabled}
         />
       </div>
 

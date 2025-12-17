@@ -38,8 +38,8 @@ export interface MainPanelProps {
   memoryEnabled?: boolean;
   /** Context usage percentage */
   contextUsagePercent?: number;
-  /** Whether composer is disabled */
-  composerDisabled?: boolean;
+  /** Whether composer should be disabled */
+  isComposerDisabled?: boolean;
   /** Current composer value */
   composerValue?: string;
   /** Composer attachments */
@@ -96,7 +96,7 @@ export const MainPanel = ({
   conversationTitle,
   memoryEnabled = true,
   contextUsagePercent = 0,
-  composerDisabled = false,
+  isComposerDisabled = false,
   composerValue = "",
   attachments = [],
   suggestedPrompts,
@@ -182,7 +182,7 @@ export const MainPanel = ({
             onAttach={onAttach}
             onRemoveAttachment={onRemoveAttachment}
             attachments={attachments}
-            disabled={composerDisabled || isStreaming}
+            disabled={isComposerDisabled}
             placeholder={
               isStreaming
                 ? `${agentName} is responding...`

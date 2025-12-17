@@ -1,4 +1,4 @@
-import { Service, Inject } from "typedi";
+import { Service, Container } from "typedi";
 import { Profile } from "../../domain/entities/profile.js";
 import { ProfileRepository } from "../../domain/ports/outbound/profile-repository.js";
 import { PROFILE_REPOSITORY } from "../../infrastructure/constants.js";
@@ -7,10 +7,8 @@ import { ProfileCompletenessService } from "../../domain/services/profile-comple
 
 @Service()
 export class DeleteRoleUseCase {
-  constructor(
-    @Inject(PROFILE_REPOSITORY)
-    private readonly profileRepository: ProfileRepository,
-  ) {}
+  private readonly profileRepository: ProfileRepository =
+    Container.get(PROFILE_REPOSITORY);
 
   async execute(userId: string, roleId: string): Promise<Profile> {
     const profile = await this.profileRepository.findByUserId(userId);

@@ -15,7 +15,7 @@ export class GeminiAdapter {
       throw new Error("GEMINI_API_KEY environment variable is not set");
     }
     this.genAI = new GoogleGenerativeAI(apiKey);
-    this.model = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    this.model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   }
 
   async generateResponse(prompt: string): Promise<string> {

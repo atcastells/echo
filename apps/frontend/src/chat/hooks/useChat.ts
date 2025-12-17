@@ -5,18 +5,27 @@
  * and controlling the chat session.
  */
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { chatApi } from "../api/chatApi";
+import { chatStream, type ChatStreamEvent } from "../api/chatStream";
 import type {
   ChatMessage,
   ContentBlock,
-  SSEEvent,
-  MessageDeltaPayload,
-  MessageCompletedPayload,
-  ChatFailedPayload,
-  ChatStartedPayload,
   AgentActionProposedPayload,
 } from "../types/chat.types";
+
+/**
+ * Streaming status transitions:
+ * idle -> connecting -> streaming -> completed
+ * idle -> connecting -> streaming -> error
+ * idle -> connecting -> error
+ */
+export type StreamingStatus =
+  | "idle"
+  | "connecting"
+  | "streaming"
+  | "completed"
+  | "error";
 
 export interface UseChatOptions {
   /** Conversation ID to send messages to */
@@ -47,8 +56,10 @@ export interface UseChatReturn {
   ) => Promise<void>;
   /** Cancel a proposed action */
   cancelAction: (actionId: string) => Promise<void>;
-  /** Whether a message is currently streaming */
+  /** Whether a message is currently streaming (connecting or streaming) */
   isStreaming: boolean;
+  /** Explicit streaming status */
+  status: StreamingStatus;
   /** Current streaming content (partial response) */
   streamingContent: string;
   /** ID of the message currently being streamed */
@@ -61,13 +72,13 @@ export interface UseChatReturn {
 
 export const useChat = ({
   conversationId,
-  onMessage,
+  onMessage: _onMessage,
   onError,
   onStreamStart,
   onStreamComplete,
-  onActionProposed,
+  onActionProposed: _onActionProposed,
 }: UseChatOptions): UseChatReturn => {
-  const [isStreaming, setIsStreaming] = useState(false);
+  const [status, setStatus] = useState<StreamingStatus>("idle");
   const [isThinking, setIsThinking] = useState(false);
   const [streamingContent, setStreamingContent] = useState("");
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(
@@ -78,79 +89,44 @@ export const useChat = ({
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const handleSSEEvent = useCallback(
-    (event: SSEEvent) => {
-      switch (event.event) {
-        case "chat.started": {
-          const startPayload = event.payload as unknown as ChatStartedPayload;
-          setStreamingMessageId(
-            startPayload.message_id || event.message_id || null,
-          );
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
+
+  const handleStreamEvent = useCallback(
+    (event: ChatStreamEvent) => {
+      switch (event.type) {
+        case "assistant.start":
+          setStatus("streaming");
+          setStreamingMessageId(event.messageId);
           setIsThinking(false);
-          onStreamStart?.(startPayload.message_id || event.message_id || "");
-          break;
-        }
-
-        case "agent.thinking":
-          setIsThinking(true);
+          onStreamStart?.(event.messageId);
           break;
 
-        case "message.delta": {
-          const deltaPayload = event.payload as unknown as MessageDeltaPayload;
+        case "assistant.delta":
+          setStatus("streaming");
+          setStreamingContent((prev) => prev + event.delta);
           setIsThinking(false);
-          setStreamingContent((prev) => prev + (deltaPayload.delta || ""));
           break;
-        }
 
-        case "message.completed": {
-          const completedPayload =
-            event.payload as unknown as MessageCompletedPayload;
-          setIsThinking(false);
-          onMessage?.(completedPayload.message);
-          break;
-        }
-
-        case "chat.completed":
-          setIsStreaming(false);
-          setStreamingContent("");
-          setStreamingMessageId(null);
+        case "assistant.end":
+          setStatus("completed");
           setIsThinking(false);
           onStreamComplete?.();
+          // Reset status to idle after a short delay or on next message
           break;
 
-        case "chat.failed": {
-          const failedPayload = event.payload as unknown as ChatFailedPayload;
-          setIsStreaming(false);
-          setStreamingContent("");
-          setStreamingMessageId(null);
+        case "error":
+          setStatus("error");
           setIsThinking(false);
-          onError?.(new Error(failedPayload.error || "Chat failed"));
+          onError?.(new Error(event.message));
           break;
-        }
-
-        case "chat.interrupted":
-          setIsStreaming(false);
-          setStreamingContent("");
-          setStreamingMessageId(null);
-          setIsThinking(false);
-          setPendingAction(null);
-          break;
-
-        case "agent.action.proposed": {
-          const actionPayload =
-            event.payload as unknown as AgentActionProposedPayload;
-          setIsThinking(false);
-          setPendingAction(actionPayload);
-          onActionProposed?.(actionPayload);
-          break;
-        }
-
-        default:
-          // Log unhandled events for debugging
-          console.debug("Unhandled SSE event:", event.event, event.payload);
       }
     },
-    [onMessage, onError, onStreamStart, onStreamComplete, onActionProposed],
+    [onStreamStart, onStreamComplete, onError],
   );
 
   const sendMessageBlocks = useCallback(
@@ -160,45 +136,35 @@ export const useChat = ({
         return;
       }
 
-      // Reset state
-      setIsStreaming(true);
+      // Abort previous stream if any
+      abortControllerRef.current?.abort();
+
+      // Reset state for new stream
+      setStatus("connecting");
       setIsThinking(true);
       setStreamingContent("");
       setStreamingMessageId(null);
       setPendingAction(null);
 
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+
       try {
-        abortControllerRef.current = await chatApi.chatStream(
-          {
-            conversation_id: conversationId,
-            message: { role: "user", content },
-          },
-          {
-            onEvent: handleSSEEvent,
-            onError: (error) => {
-              setIsStreaming(false);
-              setIsThinking(false);
-              setStreamingContent("");
-              setStreamingMessageId(null);
-              setPendingAction(null);
-              onError?.(error);
-            },
-            onComplete: () => {
-              setIsStreaming(false);
-              setIsThinking(false);
-              setStreamingContent("");
-              setStreamingMessageId(null);
-              onStreamComplete?.();
-            },
-          },
-        );
+        // chatStream is fire-and-forget
+        chatStream({
+          conversationId,
+          agentId: "default", // Can be dynamic
+          message: content.map(b => b.value).join("\n"),
+          onEvent: handleStreamEvent,
+          signal: controller.signal,
+        });
       } catch (error) {
-        setIsStreaming(false);
+        setStatus("error");
         setIsThinking(false);
         onError?.(error as Error);
       }
     },
-    [conversationId, handleSSEEvent, onError, onStreamComplete],
+    [conversationId, handleStreamEvent, onError],
   );
 
   const sendMessage = useCallback(
@@ -210,8 +176,9 @@ export const useChat = ({
   );
 
   const interrupt = useCallback(async () => {
-    // Abort the fetch request
+    // Abort the fetch request locally
     abortControllerRef.current?.abort();
+    abortControllerRef.current = null;
 
     // Send interrupt command to backend
     if (conversationId) {
@@ -225,12 +192,11 @@ export const useChat = ({
       }
     }
 
-    // Reset state
-    setIsStreaming(false);
+    // Explicitly transition to idle (or completed/interrupted if we had that state)
+    // SPARK says "Abort transitions message to streaming: false"
+    setStatus("idle");
     setIsThinking(false);
-    setStreamingContent("");
-    setStreamingMessageId(null);
-    setPendingAction(null);
+    // Note: streamingContent is preserved as per SPARK ("Abort does NOT remove partial content")
   }, [conversationId, streamingMessageId]);
 
   const confirmAction = useCallback(
@@ -238,7 +204,6 @@ export const useChat = ({
       if (!conversationId) return;
 
       try {
-        // We set isThinking to true as the agent will resume processing
         setIsThinking(true);
         setPendingAction(null);
 
@@ -260,7 +225,6 @@ export const useChat = ({
       if (!conversationId) return;
 
       try {
-        // We set isThinking to true as the agent will resume processing (to acknowledge cancellation)
         setIsThinking(true);
         setPendingAction(null);
 
@@ -279,7 +243,8 @@ export const useChat = ({
     interrupt,
     confirmAction,
     cancelAction,
-    isStreaming,
+    isStreaming: status === "connecting" || status === "streaming",
+    status,
     streamingContent,
     streamingMessageId,
     isThinking,

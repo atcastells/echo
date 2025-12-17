@@ -41,8 +41,9 @@ export class ConversationAgentFactory {
       // Initialize ChatGoogleGenerativeAI with function calling support
       this.llm = new ChatGoogleGenerativeAI({
         apiKey: process.env.GEMINI_API_KEY,
-        model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+        model: process.env.GEMINI_MODEL || "gemini-2.0-flash",
         temperature: 0.7,
+        streaming: true,
       });
     }
   }
@@ -55,7 +56,7 @@ export class ConversationAgentFactory {
     return this.isEnabled;
   }
 
-  private createModel(): ChatGoogleGenerativeAI {
+  private createModel(temperature = 0.7): ChatGoogleGenerativeAI {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       throw new Error("GEMINI_API_KEY environment variable is required");
@@ -63,8 +64,9 @@ export class ConversationAgentFactory {
 
     return new ChatGoogleGenerativeAI({
       apiKey,
-      model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
-      temperature: 0.7,
+      model: process.env.GEMINI_MODEL || "gemini-2.0-flash",
+      temperature,
+      streaming: true,
     });
   }
 
@@ -183,13 +185,14 @@ export class ConversationAgentFactory {
     systemPrompt: string;
     tools: DynamicStructuredTool[];
     maxToolRounds?: number;
+    temperature?: number;
   }): {
     invoke: (arguments_: {
       input: string;
       chat_history?: BaseMessage[];
     }) => Promise<{ messages: BaseMessage[] }>;
   } {
-    const model = this.createModel();
+    const model = this.createModel(options.temperature ?? 0.7);
     const tools = options.tools;
     const maxToolRounds = options.maxToolRounds ?? 3;
 
@@ -236,6 +239,172 @@ export class ConversationAgentFactory {
         // Max rounds reached; get a final response without forcing further tools
         const finalResponse = await model.invoke(allMessages);
         return { messages: [...allMessages, finalResponse] };
+      },
+    };
+  }
+
+  /**
+   * Build an agent executor with streaming support.
+   * Yields string chunks as they arrive from the LLM.
+   */
+  buildWithSystemPromptStreaming(options: {
+    systemPrompt: string;
+    tools: DynamicStructuredTool[];
+    maxToolRounds?: number;
+    temperature?: number;
+  }): {
+    stream: (arguments_: {
+      input: string;
+      chat_history?: BaseMessage[];
+    }) => AsyncGenerator<
+      | { type: "token"; content: string }
+      | { type: "tool_start"; name: string }
+      | { type: "tool_end"; name: string; result: string }
+      | { type: "done"; messages: BaseMessage[] }
+    >;
+  } {
+    const model = this.createModel(options.temperature ?? 0.7);
+    const tools = options.tools;
+    const maxToolRounds = options.maxToolRounds ?? 3;
+
+    const modelWithTools = model.bindTools(tools);
+
+    const executeToolCalls = this.executeToolCalls.bind(this);
+
+    return {
+      stream: async function* ({
+        input,
+        chat_history,
+      }: {
+        input: string;
+        chat_history?: BaseMessage[];
+      }) {
+        const messages: BaseMessage[] = [
+          new SystemMessage(options.systemPrompt),
+          ...(chat_history ?? []),
+          new HumanMessage(input),
+        ];
+
+        const allMessages: BaseMessage[] = [...messages];
+
+        // Tool-calling loop (bounded)
+        for (let round = 0; round < maxToolRounds; round++) {
+          // Use streaming for the model response
+          console.log(
+            `[agent-factory] Starting stream round=${round} messages=${allMessages.length}`,
+          );
+          const stream = await modelWithTools.stream(allMessages);
+          console.log(`[agent-factory] Stream started, iterating chunks`);
+
+          let accumulatedContent = "";
+          let toolCalls: ToolCall[] = [];
+
+          for await (const chunk of stream) {
+            // Yield text content as tokens
+            if (chunk.content) {
+              let textContent = "";
+              if (typeof chunk.content === "string") {
+                textContent = chunk.content;
+              } else if (Array.isArray(chunk.content)) {
+                textContent = chunk.content
+                  .filter(
+                    (c): c is { type: "text"; text: string } =>
+                      typeof c === "object" &&
+                      c !== null &&
+                      "type" in c &&
+                      c.type === "text",
+                  )
+                  .map((c) => c.text)
+                  .join("");
+              }
+
+              if (textContent) {
+                accumulatedContent += textContent;
+                yield { type: "token" as const, content: textContent };
+              }
+            }
+
+            // Accumulate tool calls from chunks
+            if (chunk.tool_calls && chunk.tool_calls.length > 0) {
+              for (const tc of chunk.tool_calls) {
+                const existing = toolCalls.find((t) => t.id === tc.id);
+                if (existing) {
+                  // Merge args if needed
+                  existing.args = { ...existing.args, ...tc.args };
+                } else {
+                  toolCalls.push({
+                    name: tc.name,
+                    args: tc.args as Record<string, unknown>,
+                    id: tc.id,
+                  });
+                }
+              }
+            }
+          }
+
+          // Reconstruct the full AI message from accumulated content
+          const { AIMessage } = await import("@langchain/core/messages");
+          const fullResponse = new AIMessage({
+            content: accumulatedContent,
+            tool_calls: toolCalls.length > 0 ? toolCalls : undefined,
+          });
+          allMessages.push(fullResponse);
+
+          // If no tool calls, we're done
+          if (toolCalls.length === 0) {
+            yield { type: "done" as const, messages: allMessages };
+            return;
+          }
+
+          // Execute tool calls
+          for (const toolCall of toolCalls) {
+            yield { type: "tool_start" as const, name: toolCall.name };
+          }
+
+          const toolResults = await executeToolCalls(toolCalls, tools);
+
+          for (const [index, toolCall] of toolCalls.entries()) {
+            const result = toolResults[index];
+            if (result) {
+              yield {
+                type: "tool_end" as const,
+                name: toolCall.name,
+                result:
+                  typeof result.content === "string"
+                    ? result.content
+                    : JSON.stringify(result.content),
+              };
+            }
+          }
+
+          // If we couldn't resolve any tool call, stop to avoid infinite loops
+          if (toolResults.length === 0) {
+            yield { type: "done" as const, messages: allMessages };
+            return;
+          }
+
+          allMessages.push(...toolResults);
+        }
+
+        // Max rounds reached; get a final streaming response
+        const finalStream = await model.stream(allMessages);
+        let finalContent = "";
+
+        for await (const chunk of finalStream) {
+          if (chunk.content) {
+            const textContent =
+              typeof chunk.content === "string" ? chunk.content : "";
+
+            if (textContent) {
+              finalContent += textContent;
+              yield { type: "token" as const, content: textContent };
+            }
+          }
+        }
+
+        const { AIMessage } = await import("@langchain/core/messages");
+        allMessages.push(new AIMessage(finalContent));
+        yield { type: "done" as const, messages: allMessages };
       },
     };
   }

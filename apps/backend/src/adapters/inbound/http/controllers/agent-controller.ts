@@ -1,9 +1,10 @@
-import { Container } from "typedi";
+import { Container, Service } from "typedi";
 import { Request, Response, NextFunction } from "express";
 import { ChatWithAgentUseCase } from "../../../../application/agents/chat-with-agent.use-case.js";
 import { CreateAgentUseCase } from "../../../../application/agents/create-agent.use-case.js";
 import { ListAgentsUseCase } from "../../../../application/agents/list-agents.use-case.js";
 import { GetAgentUseCase } from "../../../../application/agents/get-agent.use-case.js";
+import { GetDefaultAgentUseCase } from "../../../../application/agents/get-default-agent.use-case.js";
 import { z } from "zod";
 import { AgentType } from "../../../../domain/entities/agent.js";
 import { AuthenticatedRequest } from "../middlewares/auth-middleware.js";
@@ -30,7 +31,10 @@ const createConversationSchema = z.object({
   title: z.string().optional(),
 });
 
+@Service()
 export class AgentController {
+  private readonly getDefaultAgentUseCase: GetDefaultAgentUseCase =
+    Container.get(GetDefaultAgentUseCase);
   private readonly createAgentUseCase: CreateAgentUseCase =
     Container.get(CreateAgentUseCase);
   private readonly listAgentsUseCase: ListAgentsUseCase =
@@ -92,6 +96,25 @@ export class AgentController {
 
       const agents = await this.listAgentsUseCase.execute(authRequest.user.id);
       response.json(agents);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getDefault(
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const authRequest = request as AuthenticatedRequest;
+      if (!authRequest.user) {
+        throw new HttpError(401, "Unauthorized");
+      }
+      const agent = await this.getDefaultAgentUseCase.execute(
+        authRequest.user.id,
+      );
+      response.json(agent);
     } catch (error) {
       next(error);
     }

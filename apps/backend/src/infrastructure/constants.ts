@@ -7,3 +7,5 @@ export const PROFILE_REPOSITORY = "ProfileRepository";
 
 // External services
 export const SUPABASE_CLIENT = "SupabaseClient";
+export const LLM_ADAPTER_FACTORY = "LLMAdapterFactory";
+export const LLM_ADAPTER = "LLMAdapter";

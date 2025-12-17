@@ -14,6 +14,13 @@ export const createAgentRouter = (): Router => {
   agentRoutes.get("/", (request, response, next) =>
     agentController.listAgents(request, response, next),
   );
+  // GET /agents/default - Must be defined BEFORE /:id
+  agentRoutes.get(
+    "/default",
+    authMiddleware.authenticate(),
+    agentController.getDefault.bind(agentController),
+  );
+
   agentRoutes.get("/:id", (request, response, next) =>
     agentController.getAgent(request, response, next),
   );

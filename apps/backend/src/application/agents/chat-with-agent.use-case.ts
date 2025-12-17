@@ -2,12 +2,7 @@ import { Service, Container } from "typedi";
 import { AgentRepository } from "../../domain/ports/outbound/agent-repository.js";
 import { ChatRepository } from "../../domain/ports/outbound/chat-repository.js";
 import { ConversationAgentFactory } from "../../adapters/inbound/primary/agents/conversation-agent-factory.js";
-import {
-  HumanMessage,
-  SystemMessage,
-  AIMessage,
-  BaseMessage,
-} from "@langchain/core/messages";
+import { HumanMessage, AIMessage, BaseMessage } from "@langchain/core/messages";
 import {
   AGENT_REPOSITORY,
   CHAT_REPOSITORY,
@@ -22,6 +17,10 @@ import {
 import { randomUUID } from "node:crypto";
 import { HttpError } from "../../adapters/inbound/http/errors/http-error.js";
 import { createRetrieveContextTool } from "../../adapters/outbound/external-services/tools/rag/retrieve-context.tool.js";
+import {
+  buildLangChainAgent,
+  validateInputScope,
+} from "../../infrastructure/langchain/langchain-agent.adapter.js";
 
 export interface ChatWithAgentInput {
   agentId: string;
@@ -61,9 +60,19 @@ export class ChatWithAgentUseCase {
       await this.validateConversationAccess(conversationId, userId, agent);
     }
 
-    // 2. Construct Prompt (System + History)
-    // RAG is available as a tool; it should be invoked by the model when needed.
-    const systemMessage = this.buildSystemMessage(agent);
+    // Safety Check
+    validateInputScope(message);
+
+    // Observability
+    console.info({
+      agentId: agent.id,
+      agentVersion: agent.configuration.version,
+      msg: "Executing agent",
+    });
+
+    // 2. Construct Runtime Configuration
+    const runtimeAgent = buildLangChainAgent(agent.configuration);
+
     const chatHistory: BaseMessage[] = [];
 
     // Load History if using conversation
@@ -82,8 +91,9 @@ export class ChatWithAgentUseCase {
     // 3. Generate Response via tool-capable agent
     const tools = [createRetrieveContextTool(userId)];
     const agentExecutor = this.conversationAgentFactory.buildWithSystemPrompt({
-      systemPrompt: systemMessage.content.toString(),
+      systemPrompt: runtimeAgent.systemPrompt,
       tools,
+      temperature: runtimeAgent.temperature,
     });
 
     const result = await agentExecutor.invoke({
@@ -108,27 +118,25 @@ export class ChatWithAgentUseCase {
     userId: string,
     agent: Agent,
   ) {
-    if (!agent.configuration.enableThreads) {
-      throw new HttpError(403, "Conversations are disabled for this agent");
-    }
     const conversation =
       await this.chatRepository.getConversationById(conversationId);
     if (!conversation) throw new HttpError(404, "Conversation not found");
     if (conversation.userId !== userId)
       throw new HttpError(403, "Unauthorized access to conversation");
-  }
 
-  private buildSystemMessage(agent: Agent): SystemMessage {
-    return new SystemMessage(`
-You are an AI assistant named "${agent.name}".
-Your instructions are:
-${agent.configuration.systemPrompt}
-
-Tone: ${agent.configuration.tone}
-
-If you need factual details from the user's uploaded documents, call the tool "retrieve_context" with an appropriate query.
-The tool returns JSON with relevant snippets and metadata. Use it to ground your answer.
-`);
+    // When threads are disabled, verify this is the user's only conversation for this agent
+    if (!agent.configuration.enableThreads) {
+      const userConversations = await this.chatRepository.getConversations(
+        userId,
+        agent.id,
+      );
+      const isDefaultConversation = userConversations.some(
+        (c) => c.id === conversationId,
+      );
+      if (!isDefaultConversation) {
+        throw new HttpError(403, "Invalid conversation for this agent");
+      }
+    }
   }
 
   private async saveHistory(

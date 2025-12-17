@@ -9,6 +9,7 @@ import { MongoDBAdapter } from "../adapters/outbound/persistence/mongodb/mongo-d
 import { Container } from "typedi";
 import { GeminiAdapter } from "../adapters/outbound/external-services/gemini-adapter.js";
 import { LangChainGeminiAdapter } from "../adapters/outbound/external-services/lang-chain-gemini-adapter.js";
+import { LLMAdapterFactory } from "../adapters/outbound/external-services/llm/index.js";
 import { ConversationAgentFactory } from "../adapters/inbound/primary/agents/conversation-agent-factory.js";
 import { SupabaseClient } from "../adapters/outbound/authentication/supabase-client.js";
 import { ToolRegistry } from "../adapters/outbound/external-services/tools/tool-registry.js";
@@ -24,6 +25,7 @@ import {
   CHAT_REPOSITORY,
   PROFILE_REPOSITORY,
   SUPABASE_CLIENT,
+  LLM_ADAPTER_FACTORY,
 } from "./constants.js";
 import { config } from "./config.js";
 
@@ -53,6 +55,14 @@ try {
 
   // Also make LangChain adapter available by its class name
   Container.set(LangChainGeminiAdapter, Container.get(LangChainGeminiAdapter));
+
+  // Register LLM Adapter Factory (supports multiple providers: Gemini, OpenRouter)
+  const llmAdapterFactory = new LLMAdapterFactory();
+  Container.set(LLM_ADAPTER_FACTORY, llmAdapterFactory);
+  Container.set(LLMAdapterFactory, llmAdapterFactory);
+  console.log(
+    `LLM Adapter Factory initialized. Available providers: ${llmAdapterFactory.getAvailableProviders().join(", ") || "none"}`,
+  );
 
   // Register ToolRegistry and ConversationAgentFactory for the agent
   Container.set(ToolRegistry, Container.get(ToolRegistry));

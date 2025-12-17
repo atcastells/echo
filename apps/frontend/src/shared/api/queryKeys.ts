@@ -16,6 +16,7 @@ export const agentKeys = {
   all: ["agents"] as const,
   list: () => [...agentKeys.all, "list"] as const,
   detail: (id: string) => [...agentKeys.all, "detail", id] as const,
+  default: () => [...agentKeys.all, "default"] as const,
   threads: (agentId: string) => [...agentKeys.all, agentId, "threads"] as const,
   thread: (agentId: string, threadId: string) =>
     [...agentKeys.all, agentId, "threads", threadId] as const,

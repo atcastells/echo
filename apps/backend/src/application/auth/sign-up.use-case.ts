@@ -6,14 +6,19 @@ import { SupabaseClient } from "../../adapters/outbound/authentication/supabase-
 import { HttpError } from "../../adapters/inbound/http/errors/http-error.js";
 import { AuthRepository } from "../../domain/auth/auth-repository.js";
 import {
+  AGENT_REPOSITORY,
   AUTH_REPOSITORY,
   SUPABASE_CLIENT,
 } from "../../infrastructure/constants.js";
+import { AgentRepository } from "../../domain/ports/outbound/agent-repository.js";
+import { createDefaultAgent } from "../../domain/entities/agent.js";
 
 @Service()
 export class SignUpUseCase {
   private readonly authRepository: AuthRepository =
     Container.get(AUTH_REPOSITORY);
+  private readonly agentRepository: AgentRepository =
+    Container.get(AGENT_REPOSITORY);
   private readonly supabaseClient: SupabaseClient =
     Container.get(SUPABASE_CLIENT);
 
@@ -62,6 +67,13 @@ export class SignUpUseCase {
       updatedAt: new Date(),
     };
 
-    return this.authRepository.create(user);
+    const createdUser = await this.authRepository.create(user);
+
+    // 5. Create default agent for the user
+    console.log("Creating default agent for user:", createdUser.id);
+    const defaultAgent = createDefaultAgent(createdUser.id);
+    await this.agentRepository.save(defaultAgent);
+
+    return createdUser;
   }
 }

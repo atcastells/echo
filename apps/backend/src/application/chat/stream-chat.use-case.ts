@@ -4,8 +4,9 @@ import { AgentRepository } from "../../domain/ports/outbound/agent-repository.js
 import {
   AGENT_REPOSITORY,
   CHAT_REPOSITORY,
+  LLM_ADAPTER_FACTORY,
 } from "../../infrastructure/constants.js";
-import { ConversationAgentFactory } from "../../adapters/inbound/primary/agents/conversation-agent-factory.js";
+import { LLMAdapterFactory } from "../../adapters/outbound/external-services/llm/index.js";
 import {
   SSEEvent,
   MessageDeltaEvent,
@@ -52,12 +53,13 @@ export interface StreamChatInput {
 
 @Service()
 export class StreamChatUseCase {
+  private static readonly INVOKE_TIMEOUT_MS = 60_000;
   private readonly chatRepository: ChatRepository =
     Container.get(CHAT_REPOSITORY);
   private readonly agentRepository: AgentRepository =
     Container.get(AGENT_REPOSITORY);
-  private readonly conversationAgentFactory: ConversationAgentFactory =
-    Container.get(ConversationAgentFactory);
+  private readonly llmAdapterFactory: LLMAdapterFactory =
+    Container.get(LLM_ADAPTER_FACTORY);
 
   // Track active streams for interrupt support
   private static activeStreams = new Map<
@@ -80,6 +82,10 @@ export class StreamChatUseCase {
   ): AsyncGenerator<SSEEvent> {
     const messageId = randomUUID();
     const startTime = Date.now();
+
+    console.log(
+      `[chat] stream start conversation=${input.conversation_id} user=${userId} messageId=${messageId}`,
+    );
 
     // Register this stream for potential interrupt
     StreamChatUseCase.activeStreams.set(input.conversation_id, {
@@ -104,6 +110,10 @@ export class StreamChatUseCase {
       if (!agent) {
         throw new HttpError(404, "Agent not found");
       }
+
+      console.log(
+        `[chat] agent loaded conversation=${input.conversation_id} agent=${agent.id} type=${agent.type}`,
+      );
 
       if (agent.type === AgentType.PRIVATE && agent.userId !== userId) {
         throw new HttpError(403, "Unauthorized access to private agent");
@@ -151,14 +161,19 @@ export class StreamChatUseCase {
       // 5. Load conversation history
       const chatHistory = await this.loadChatHistory(input.conversation_id);
 
-      // 6. Build agent and stream response
+      // 6. Get LLM adapter and prepare messages
+      const llmAdapter = this.llmAdapterFactory.getDefaultAdapter();
       const systemMessage = this.buildSystemMessage(agent);
       const tools = [createRetrieveContextTool(userId)];
-      const agentExecutor = this.conversationAgentFactory.buildWithSystemPrompt(
-        {
-          systemPrompt: systemMessage.content.toString(),
-          tools,
-        },
+
+      if (!llmAdapter.isConfigured()) {
+        throw new Error(
+          "No LLM provider configured. Set GEMINI_API_KEY or OPENROUTER_API_KEY",
+        );
+      }
+
+      console.log(
+        `[chat] invoking streaming agent conversation=${input.conversation_id} messageId=${messageId} provider=${llmAdapter.getProviderName()} model=${llmAdapter.getModelId()}`,
       );
 
       // Emit planning thinking
@@ -174,45 +189,109 @@ export class StreamChatUseCase {
         .map((c) => c.value)
         .join("\n");
 
-      // For now, use non-streaming invoke and simulate streaming
-      // TODO: Integrate with LangChain streaming callback
-      const result = await agentExecutor.invoke({
-        input: userMessageText,
-        chat_history: chatHistory,
+      console.log(
+        `[chat] starting stream conversation=${input.conversation_id} inputLength=${userMessageText.length} historyLength=${chatHistory.length}`,
+      );
+
+      // Build the full message array for the LLM
+      const messages: BaseMessage[] = [
+        systemMessage,
+        ...chatHistory,
+        new HumanMessage(userMessageText),
+      ];
+
+      // Stream response using LLM adapter
+      let replyContent = "";
+      const streamGenerator = llmAdapter.streamWithTools({
+        messages,
+        tools,
+        maxToolRounds: 3,
       });
 
-      // Check for interrupt before sending response
-      if (this.isAborted(input.conversation_id)) {
-        yield* this.handleInterrupt(input.conversation_id, messageId);
-        return;
-      }
+      // Create a timeout wrapper for the streaming
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        globalThis.setTimeout(
+          () =>
+            reject(
+              new Error(
+                `Agent stream timed out after ${StreamChatUseCase.INVOKE_TIMEOUT_MS}ms`,
+              ),
+            ),
+          StreamChatUseCase.INVOKE_TIMEOUT_MS,
+        ),
+      );
 
-      // eslint-disable-next-line unicorn/prefer-at
-      const lastMessage = result.messages[result.messages.length - 1];
-      const replyContent = lastMessage?.content?.toString() ?? "";
+      // Process stream events
+      // We need to race between stream iteration and timeout
+      // Using a manual iteration approach to support timeout
+      const iterator = streamGenerator[Symbol.asyncIterator]();
 
-      // 7. Stream response tokens (simulated chunking for now)
-      const chunks = this.chunkResponse(replyContent);
-      for (const chunk of chunks) {
+      while (true) {
+        // Check for interrupt
         if (this.isAborted(input.conversation_id)) {
           yield* this.handleInterrupt(input.conversation_id, messageId);
           return;
         }
 
-        const deltaEvent: MessageDeltaEvent = {
-          event: "message.delta",
-          conversation_id: input.conversation_id,
-          message_id: messageId,
-          payload: {
-            type: "text",
-            value: chunk,
-          },
-        };
-        yield deltaEvent;
+        const nextResult = await Promise.race([
+          iterator.next(),
+          timeoutPromise,
+        ]);
+
+        if (nextResult.done) {
+          break;
+        }
+
+        const streamEvent = nextResult.value;
+
+        switch (streamEvent.type) {
+          case "token": {
+            // Emit token as message delta
+            replyContent += streamEvent.content;
+            const deltaEvent: MessageDeltaEvent = {
+              event: "message.delta",
+              conversation_id: input.conversation_id,
+              message_id: messageId,
+              payload: {
+                type: "text",
+                value: streamEvent.content,
+              },
+            };
+            yield deltaEvent;
+            break;
+          }
+          case "tool_start": {
+            // Emit tool usage event
+            yield {
+              event: "agent.thinking",
+              conversation_id: input.conversation_id,
+              message_id: messageId,
+              payload: { reason: "tool_selection" },
+            };
+            break;
+          }
+          case "tool_end": {
+            // Tool execution completed
+            console.log(
+              `[chat] tool completed conversation=${input.conversation_id} tool=${streamEvent.name}`,
+            );
+            break;
+          }
+          case "done": {
+            // Streaming completed
+            console.log(
+              `[chat] agent streaming completed conversation=${input.conversation_id} messageId=${messageId}`,
+            );
+            break;
+          }
+        }
       }
 
       // 8. Save assistant message
       const latencyMs = Date.now() - startTime;
+      console.log(
+        `[chat] saving assistant message conversation=${input.conversation_id} messageId=${messageId} latencyMs=${latencyMs} contentLength=${replyContent.length}`,
+      );
       const assistantMessage = createChatMessage({
         id: messageId,
         conversationId: input.conversation_id,
@@ -253,11 +332,31 @@ export class StreamChatUseCase {
         message_id: messageId,
       };
     } catch (error) {
+      console.error(
+        `[chat] stream error conversation=${input.conversation_id} messageId=${messageId}`,
+        error,
+      );
       // Emit error event
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
-      const errorCode =
-        error instanceof HttpError ? "PERMISSION_DENIED" : "INTERNAL_ERROR";
+
+      // Determine error code based on error type
+      let errorCode = "INTERNAL_ERROR";
+      let recoverable = true;
+
+      if (error instanceof HttpError) {
+        errorCode = "PERMISSION_DENIED";
+      } else if (
+        errorMessage.includes("rate limit") ||
+        errorMessage.includes("429") ||
+        errorMessage.includes("quota")
+      ) {
+        errorCode = "RATE_LIMITED";
+        recoverable = true;
+      } else if (errorMessage.includes("timed out")) {
+        errorCode = "INTERNAL_ERROR";
+        recoverable = true;
+      }
 
       yield {
         event: "chat.failed",
@@ -265,15 +364,23 @@ export class StreamChatUseCase {
         message_id: messageId,
         payload: {
           error: {
-            code: errorCode,
+            code: errorCode as
+              | "RATE_LIMITED"
+              | "TOOL_FAILED"
+              | "PERMISSION_DENIED"
+              | "INTERNAL_ERROR"
+              | "VALIDATION_ERROR",
             message: errorMessage,
-            recoverable: true,
+            recoverable,
           },
         },
       };
     } finally {
       // Cleanup
       StreamChatUseCase.activeStreams.delete(input.conversation_id);
+      console.log(
+        `[chat] stream end conversation=${input.conversation_id} messageId=${messageId}`,
+      );
     }
   }
 
@@ -322,26 +429,5 @@ Tone: ${agent.configuration.tone}
 If you need factual details from the user's uploaded documents, call the tool "retrieve_context" with an appropriate query.
 The tool returns JSON with relevant snippets and metadata. Use it to ground your answer.
 `);
-  }
-
-  private chunkResponse(text: string, chunkSize = 20): string[] {
-    const words = text.split(" ");
-    const chunks: string[] = [];
-    let current = "";
-
-    for (const word of words) {
-      if (current.length + word.length + 1 > chunkSize && current) {
-        chunks.push(current + " ");
-        current = word;
-      } else {
-        current = current ? current + " " + word : word;
-      }
-    }
-
-    if (current) {
-      chunks.push(current);
-    }
-
-    return chunks;
   }
 }

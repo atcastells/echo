@@ -14,6 +14,7 @@ import type {
   SuggestedPrompt,
 } from "@echo/storybook";
 import { useAuth } from "@/auth";
+import { useDefaultAgent } from "@/agents";
 import {
   useConversations,
   useConversationMessages,
@@ -22,9 +23,6 @@ import {
   useChat,
 } from "@/chat";
 import type { ChatMessage } from "@/chat";
-
-// Default agent ID - can be made configurable via env or user selection
-const DEFAULT_AGENT_ID = import.meta.env.VITE_DEFAULT_AGENT_ID || "default";
 
 // Suggested prompts for empty state
 const SUGGESTED_PROMPTS: SuggestedPrompt[] = [
@@ -64,6 +62,18 @@ export const ChatPage = () => {
   const [feedbackByMessageId, setFeedbackByMessageId] = useState<
     Record<string, "positive" | "negative" | null>
   >({});
+  const [optimisticMessages, setOptimisticMessages] = useState<ChatMessage[]>(
+    []
+  );
+
+  // Fetch default agent
+  const {
+    data: defaultAgent,
+    isLoading: isLoadingAgent,
+    error: agentError,
+  } = useDefaultAgent();
+
+  const agentId = defaultAgent?.id;
 
   // Query hooks
   const {
@@ -71,7 +81,7 @@ export const ChatPage = () => {
     isLoading: isLoadingConversations,
     error: conversationsError,
     refetch: refetchConversations,
-  } = useConversations(DEFAULT_AGENT_ID);
+  } = useConversations(agentId || "");
 
   const {
     data: messages = [],
@@ -81,6 +91,14 @@ export const ChatPage = () => {
 
   const createConversation = useCreateConversation();
   const invalidateMessages = useInvalidateMessages();
+
+  const refreshMessages = useCallback(async () => {
+    if (conversationId) {
+      invalidateMessages(conversationId);
+      await refetchMessages();
+      setOptimisticMessages([]);
+    }
+  }, [conversationId, invalidateMessages, refetchMessages]);
 
   // Chat streaming hook
   const {
@@ -95,13 +113,8 @@ export const ChatPage = () => {
     pendingAction,
   } = useChat({
     conversationId: conversationId || "",
-    onMessage: () => {
-      // Refetch messages when a complete message is received
-      if (conversationId) {
-        invalidateMessages(conversationId);
-        refetchMessages();
-      }
-    },
+    onStreamStart: refreshMessages,
+    onStreamComplete: refreshMessages,
     onError: (error) => {
       console.error("Chat error:", error);
       // TODO: Show toast notification
@@ -121,7 +134,8 @@ export const ChatPage = () => {
 
   // Transform backend messages to Storybook format
   const transformedMessages: Message[] = useMemo(() => {
-    return messages.map((msg: ChatMessage) => ({
+    const combined = [...messages, ...optimisticMessages];
+    return combined.map((msg: ChatMessage) => ({
       id: msg.id,
       role:
         msg.role === "assistant"
@@ -131,7 +145,7 @@ export const ChatPage = () => {
       timestamp: new Date(msg.createdAt),
       status: msg.status === "failed" ? ("failed" as const) : ("sent" as const),
     }));
-  }, [messages]);
+  }, [messages, optimisticMessages]);
 
   // Transform conversations to Storybook format
   const transformedConversations: ConversationData[] = useMemo(() => {
@@ -149,7 +163,7 @@ export const ChatPage = () => {
     (id: string) => {
       navigate(`/chat/${id}`);
     },
-    [navigate],
+    [navigate]
   );
 
   const handleDeleteConversation = useCallback((id: string) => {
@@ -158,15 +172,19 @@ export const ChatPage = () => {
   }, []);
 
   const handleNewConversation = useCallback(async () => {
+    if (!agentId) {
+      console.error("No agent available to create conversation");
+      return;
+    }
     try {
       const newConv = await createConversation.mutateAsync({
-        agent_id: DEFAULT_AGENT_ID,
+        agent_id: agentId,
       });
       navigate(`/chat/${newConv.id}`);
     } catch (error) {
       console.error("Failed to create conversation:", error);
     }
-  }, [createConversation, navigate]);
+  }, [createConversation, navigate, agentId]);
 
   const handleRetryLoadConversations = useCallback(() => {
     refetchConversations();
@@ -175,10 +193,27 @@ export const ChatPage = () => {
   const handleComposerSubmit = useCallback(
     (message: string) => {
       if (!conversationId || !message.trim()) return;
-      sendMessage(message);
+      const now = new Date().toISOString();
+      const optimisticMessage: ChatMessage = {
+        id: `temp-${now}`,
+        conversationId,
+        role: "user",
+        content: [{ type: "text", value: message }],
+        status: "complete",
+        createdAt: now,
+      };
+
+      setOptimisticMessages((prev) => [...prev, optimisticMessage]);
       setComposerValue("");
+
+      sendMessage(message).catch((error) => {
+        console.error("Failed to send message:", error);
+        setOptimisticMessages((prev) =>
+          prev.filter((msg) => msg.id !== optimisticMessage.id)
+        );
+      });
     },
-    [conversationId, sendMessage],
+    [conversationId, sendMessage]
   );
 
   const handlePromptClick = useCallback(
@@ -192,7 +227,7 @@ export const ChatPage = () => {
         setComposerValue(prompt.text);
       }
     },
-    [conversationId, handleNewConversation],
+    [conversationId, handleNewConversation]
   );
 
   const handleCopy = useCallback(
@@ -203,7 +238,7 @@ export const ChatPage = () => {
         navigator.clipboard.writeText(content);
       }
     },
-    [messages],
+    [messages]
   );
 
   const handleThumbsUp = useCallback((messageId: string) => {
@@ -226,7 +261,7 @@ export const ChatPage = () => {
     (messageId: string) => {
       // Find the user message before this assistant message and resend
       const messageIndex = messages.findIndex(
-        (m: ChatMessage) => m.id === messageId,
+        (m: ChatMessage) => m.id === messageId
       );
       if (messageIndex > 0) {
         const prevMessage = messages[messageIndex - 1];
@@ -236,7 +271,7 @@ export const ChatPage = () => {
         }
       }
     },
-    [messages, sendMessage],
+    [messages, sendMessage]
   );
 
   const handleConfirmAction = useCallback(() => {
@@ -251,12 +286,21 @@ export const ChatPage = () => {
     }
   }, [pendingAction, cancelAction]);
 
-  // Determine agent status
+  // Determine agent status and UI state
   const agentStatus = isThinking
     ? "busy"
     : isStreaming
       ? "available"
       : "available";
+
+  const isComposerDisabled = isStreaming || isThinking || !agentId;
+
+  // Combine loading states
+  const isLoading =
+    isLoadingAgent || isLoadingConversations || isLoadingMessages;
+
+  // Combine error messages
+  const errorMessage = agentError?.message || conversationsError?.message;
 
   return (
     <>
@@ -266,14 +310,14 @@ export const ChatPage = () => {
         activeConversationId={conversationId}
         messages={transformedMessages}
         // Loading states
-        isLoadingConversations={isLoadingConversations || isLoadingMessages}
-        conversationsError={conversationsError?.message}
+        isLoadingConversations={isLoading}
+        conversationsError={errorMessage}
         // Streaming state
         streamingMessageId={streamingMessageId || undefined}
         streamingContent={streamingContent}
         feedbackByMessageId={feedbackByMessageId}
         // Agent info
-        agentName="Echo"
+        agentName={defaultAgent?.name || "Echo"}
         agentRole="AI Assistant"
         agentStatus={agentStatus}
         // User info
@@ -281,6 +325,7 @@ export const ChatPage = () => {
         // Composer state
         composerValue={composerValue}
         suggestedPrompts={SUGGESTED_PROMPTS}
+        isComposerDisabled={isComposerDisabled}
         // Conversation callbacks
         onSelectConversation={handleSelectConversation}
         onDeleteConversation={handleDeleteConversation}

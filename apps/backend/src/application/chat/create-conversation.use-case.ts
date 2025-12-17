@@ -34,9 +34,18 @@ export class CreateConversationUseCase {
       throw new HttpError(403, "Unauthorized access to private agent");
     }
 
-    // Feature flag check
+    // Feature flag check: when threads are disabled, only allow one default conversation
     if (!agent.configuration.enableThreads) {
-      throw new HttpError(403, "Conversations are disabled for this agent");
+      const existingConversations = await this.chatRepository.getConversations(
+        userId,
+        agentId,
+      );
+      if (existingConversations.length > 0) {
+        throw new HttpError(
+          403,
+          "Multiple conversations are disabled for this agent. Use the existing conversation.",
+        );
+      }
     }
 
     const conversation = createConversation({
