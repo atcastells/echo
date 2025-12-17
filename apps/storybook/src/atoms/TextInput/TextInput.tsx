@@ -170,8 +170,11 @@ export const TextInput = forwardRef<
       );
     }
 
-    const { multiline: _multiline, size: _ignoreSize, ...inputProps } =
-      rest as SingleLineInputProps;
+    const {
+      multiline: _multiline,
+      size: _ignoreSize,
+      ...inputProps
+    } = rest as SingleLineInputProps;
     return (
       <input
         ref={ref as React.Ref<HTMLInputElement>}
