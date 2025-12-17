@@ -23,6 +23,10 @@ export interface ConversationAppProps {
   streamingMessageId?: string;
   /** Streaming message content */
   streamingContent?: string;
+  /** Whether the agent is currently thinking */
+  isThinking?: boolean;
+  /** Whether to show streaming response placeholder when message not yet in list */
+  showStreamingPlaceholder?: boolean;
   /** Feedback by message ID */
   feedbackByMessageId?: Record<string, "positive" | "negative" | null>;
   /** Agent name */
@@ -93,6 +97,8 @@ export const ConversationApp = ({
   conversationsError,
   streamingMessageId,
   streamingContent,
+  isThinking = false,
+  showStreamingPlaceholder = true,
   feedbackByMessageId,
   agentName = "Echo",
   agentRole = "AI Career Agent",
@@ -150,11 +156,11 @@ export const ConversationApp = ({
         setSidebarOpen(false);
       }
     },
-    [isMobile, onSelectConversation],
+    [isMobile, onSelectConversation]
   );
 
   const activeConversation = conversations.find(
-    (c) => c.id === activeConversationId,
+    (c) => c.id === activeConversationId
   );
 
   return (
@@ -174,9 +180,9 @@ export const ConversationApp = ({
           isMobile
             ? clsx(
                 "fixed inset-y-0 left-0 z-50 transition-transform duration-300",
-                sidebarOpen ? "translate-x-0" : "-translate-x-full",
+                sidebarOpen ? "translate-x-0" : "-translate-x-full"
               )
-            : "relative flex-shrink-0",
+            : "relative flex-shrink-0"
         )}
       >
         <Sidebar
@@ -200,6 +206,8 @@ export const ConversationApp = ({
           messages={messages}
           streamingMessageId={streamingMessageId}
           streamingContent={streamingContent}
+          isThinking={isThinking}
+          showStreamingPlaceholder={showStreamingPlaceholder}
           feedbackByMessageId={feedbackByMessageId}
           agentName={agentName}
           agentRole={agentRole}

@@ -14,6 +14,10 @@ export interface MainPanelProps {
   streamingMessageId?: string;
   /** Partial content for streaming message */
   streamingContent?: string;
+  /** Whether the agent is currently thinking */
+  isThinking?: boolean;
+  /** Whether to show streaming response placeholder when message not yet in list */
+  showStreamingPlaceholder?: boolean;
   /** Feedback by message ID */
   feedbackByMessageId?: Record<string, "positive" | "negative" | null>;
   /** Agent name */
@@ -80,6 +84,8 @@ export const MainPanel = ({
   messages,
   streamingMessageId,
   streamingContent,
+  isThinking = false,
+  showStreamingPlaceholder = true,
   feedbackByMessageId,
   agentName = "Echo",
   agentRole = "AI Career Agent",
@@ -117,7 +123,7 @@ export const MainPanel = ({
   onRetry,
   className,
 }: MainPanelProps) => {
-  const isStreaming = !!streamingMessageId;
+  const isStreaming = !!streamingMessageId || isThinking;
 
   return (
     <div className={clsx("flex flex-col h-full bg-white", className)}>
@@ -147,6 +153,8 @@ export const MainPanel = ({
           messages={messages}
           streamingMessageId={streamingMessageId}
           streamingContent={streamingContent}
+          isThinking={isThinking}
+          showStreamingPlaceholder={showStreamingPlaceholder}
           feedbackByMessageId={feedbackByMessageId}
           agentName={agentName}
           agentAvatarUrl={agentAvatarUrl}

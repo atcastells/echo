@@ -14,6 +14,7 @@ export default [
       parserOptions: {
         ecmaVersion: 2020,
         sourceType: 'module',
+        tsconfigRootDir: import.meta.dirname,
       },
       globals: {
         console: 'readonly',
@@ -51,6 +52,7 @@ export default [
       parserOptions: {
         ecmaVersion: 2020,
         sourceType: 'module',
+        tsconfigRootDir: import.meta.dirname,
       },
       globals: {
         describe: 'readonly',

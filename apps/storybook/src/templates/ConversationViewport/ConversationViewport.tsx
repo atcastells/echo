@@ -20,6 +20,10 @@ export interface ConversationViewportProps {
   streamingMessageId?: string;
   /** Partial content for streaming message */
   streamingContent?: string;
+  /** Whether the agent is currently thinking */
+  isThinking?: boolean;
+  /** Whether to show streaming response placeholder when message not yet in list */
+  showStreamingPlaceholder?: boolean;
   /** Feedback state per message ID */
   feedbackByMessageId?: Record<string, "positive" | "negative" | null>;
   /** Agent display name */
@@ -68,6 +72,8 @@ export const ConversationViewport = ({
   messages,
   streamingMessageId,
   streamingContent,
+  isThinking = false,
+  showStreamingPlaceholder = true,
   feedbackByMessageId,
   agentName = "Echo",
   agentAvatarUrl,
@@ -148,7 +154,16 @@ export const ConversationViewport = ({
     }
   }, [streamingContent, isAtBottom, autoScroll]);
 
-  const isEmpty = messages.length === 0;
+  // Auto-scroll when thinking starts
+  useEffect(() => {
+    if (isThinking && isAtBottom && autoScroll) {
+      queueMicrotask(() => {
+        scrollToBottom();
+      });
+    }
+  }, [isThinking, isAtBottom, autoScroll, scrollToBottom]);
+
+  const isEmpty = messages.length === 0 && !isThinking;
 
   return (
     <div className={clsx("relative flex flex-col h-full", className)}>
@@ -168,6 +183,8 @@ export const ConversationViewport = ({
               messages={messages}
               streamingMessageId={streamingMessageId}
               streamingContent={streamingContent}
+              isThinking={isThinking}
+              showStreamingPlaceholder={showStreamingPlaceholder}
               feedbackByMessageId={feedbackByMessageId}
               agentName={agentName}
               agentAvatarUrl={agentAvatarUrl}
