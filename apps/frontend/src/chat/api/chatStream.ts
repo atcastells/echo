@@ -49,17 +49,50 @@ export const chatStream = (params: ChatStreamParams): void => {
 
       switch (sseEvent.event) {
         case "chat.started":
-          onEvent({
-            type: "assistant.start",
-            messageId: sseEvent.message_id || (sseEvent.payload as { message_id: string }).message_id || "",
-          });
+          {
+            const payload =
+              sseEvent.payload && typeof sseEvent.payload === "object"
+                ? (sseEvent.payload as Record<string, unknown>)
+                : undefined;
+
+            const messageIdFromPayload = payload?.message_id;
+
+            onEvent({
+              type: "assistant.start",
+              messageId:
+                sseEvent.message_id ||
+                (typeof messageIdFromPayload === "string"
+                  ? messageIdFromPayload
+                  : ""),
+            });
+          }
           break;
 
         case "message.delta":
-          onEvent({
-            type: "assistant.delta",
-            delta: (sseEvent.payload as any).delta || "",
-          });
+          {
+            // Backend may send either { delta: string } or { value: string }
+            // depending on implementation.
+            // Example observed: payload: { type: "text", value: "¡" }
+            const payload =
+              sseEvent.payload && typeof sseEvent.payload === "object"
+                ? (sseEvent.payload as Record<string, unknown>)
+                : undefined;
+
+            const maybeDelta = payload?.delta;
+            const maybeValue = payload?.value;
+
+            const delta =
+              typeof maybeDelta === "string"
+                ? maybeDelta
+                : typeof maybeValue === "string"
+                  ? maybeValue
+                  : "";
+
+            onEvent({
+              type: "assistant.delta",
+              delta,
+            });
+          }
           break;
 
         case "message.completed":
@@ -69,11 +102,24 @@ export const chatStream = (params: ChatStreamParams): void => {
           break;
 
         case "chat.failed":
-          onEvent({
-            type: "error",
-            code: (sseEvent.payload as any).code || "STREAM_ERROR",
-            message: (sseEvent.payload as any).error || "Unknown stream error",
-          });
+          {
+            const payload =
+              sseEvent.payload && typeof sseEvent.payload === "object"
+                ? (sseEvent.payload as Record<string, unknown>)
+                : undefined;
+
+            const code = payload?.code;
+            const errorMessage = payload?.error;
+
+            onEvent({
+              type: "error",
+              code: typeof code === "string" ? code : "STREAM_ERROR",
+              message:
+                typeof errorMessage === "string"
+                  ? errorMessage
+                  : "Unknown stream error",
+            });
+          }
           break;
 
         default:

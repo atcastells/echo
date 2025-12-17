@@ -88,7 +88,7 @@ export const MessageList = ({
   streamingMessageId,
   streamingContent,
   isThinking = false,
-  showStreamingPlaceholder = true,
+  showStreamingPlaceholder: _showStreamingPlaceholder = true,
   feedbackByMessageId = {},
   agentName = "Echo",
   agentAvatarUrl,
@@ -109,22 +109,19 @@ export const MessageList = ({
   const listRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom on new messages, streaming content, or thinking state
+  // Auto-scroll to bottom on new messages or thinking state.
+  // Note: Canonical streaming updates are represented as message.content growth,
+  // and scrolling is primarily handled by ConversationViewport.
   useEffect(() => {
     if (autoScroll && bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages.length, streamingContent, isThinking, autoScroll]);
+  }, [messages.length, isThinking, autoScroll]);
 
   const renderMessages = () => {
     const elements: React.ReactNode[] = [];
     let lastDate: Date | null = null;
     let lastSender: string | null = null;
-
-    // Check if streaming message exists in the messages list
-    const streamingMessageExists =
-      streamingMessageId &&
-      messages.some((msg) => msg.id === streamingMessageId);
 
     messages.forEach((message, index) => {
       const messageDate =
@@ -149,11 +146,14 @@ export const MessageList = ({
         lastDate &&
         !isDifferentDay(lastDate, messageDate);
 
+      const isStreamingMessage =
+        message.status === "streaming" || message.id === streamingMessageId;
+
       elements.push(
         <MessageItem
           key={message.id}
           message={message}
-          isStreaming={message.id === streamingMessageId}
+          isStreaming={isStreamingMessage}
           streamingContent={
             message.id === streamingMessageId ? streamingContent : undefined
           }
@@ -168,9 +168,7 @@ export const MessageList = ({
           onThumbsUp={onThumbsUp}
           onThumbsDown={onThumbsDown}
           onRetry={onRetry}
-          onStopStreaming={
-            message.id === streamingMessageId ? onStopStreaming : undefined
-          }
+          onStopStreaming={isStreamingMessage ? onStopStreaming : undefined}
           className={clsx(
             isConsecutive && "mt-1", // Tighter spacing for consecutive messages
             !isConsecutive && index > 0 && "mt-4" // Normal spacing
@@ -182,35 +180,10 @@ export const MessageList = ({
       lastSender = message.role;
     });
 
-    // Add streaming message placeholder if streaming but message not in list yet
-    if (
-      showStreamingPlaceholder &&
-      streamingMessageId &&
-      !streamingMessageExists
-    ) {
-      const streamingMessage: Message = {
-        id: streamingMessageId,
-        role: "agent",
-        content: streamingContent || "",
-        timestamp: new Date(),
-        status: "sent",
-      };
-
-      elements.push(
-        <MessageItem
-          key={`streaming-${streamingMessageId}`}
-          message={streamingMessage}
-          isStreaming={true}
-          streamingContent={streamingContent}
-          agentName={agentName}
-          agentAvatarUrl={agentAvatarUrl}
-          userName={userName}
-          userAvatarUrl={userAvatarUrl}
-          onStopStreaming={onStopStreaming}
-          className={messages.length > 0 ? "mt-4" : undefined}
-        />
-      );
-    }
+    // NOTE: Canonical model renders the streaming assistant response as a normal
+    // message in the list (message.status === "streaming").
+    // For legacy callers, showStreamingPlaceholder remains supported at the
+    // viewport level.
 
     // Add thinking indicator if agent is thinking but no streaming yet
     if (isThinking && !streamingMessageId && !streamingContent) {
@@ -219,7 +192,7 @@ export const MessageList = ({
           key="thinking-indicator"
           className={clsx("flex gap-3", messages.length > 0 && "mt-4")}
         >
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <Avatar name={agentName} src={agentAvatarUrl} size="sm" />
           </div>
           <div className="flex flex-col gap-1 items-start">

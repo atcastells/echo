@@ -123,7 +123,10 @@ export const MainPanel = ({
   onRetry,
   className,
 }: MainPanelProps) => {
-  const isStreaming = !!streamingMessageId || isThinking;
+  const isStreaming =
+    messages.some((m) => m.status === "streaming") ||
+    !!streamingMessageId ||
+    isThinking;
 
   return (
     <div className={clsx("flex flex-col h-full bg-white", className)}>

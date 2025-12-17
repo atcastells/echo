@@ -36,6 +36,8 @@ export interface UseChatOptions {
   onError?: (error: Error) => void;
   /** Callback when streaming starts */
   onStreamStart?: (messageId: string) => void;
+  /** Callback for each streaming delta */
+  onStreamDelta?: (delta: string) => void;
   /** Callback when streaming completes */
   onStreamComplete?: () => void;
   /** Callback when an action is proposed */
@@ -48,7 +50,7 @@ export interface UseChatReturn {
   /** Send a message with content blocks */
   sendMessageBlocks: (content: ContentBlock[]) => Promise<void>;
   /** Interrupt the current streaming response */
-  interrupt: () => Promise<void>;
+  interrupt: (messageId?: string) => Promise<void>;
   /** Confirm a proposed action */
   confirmAction: (
     actionId: string,
@@ -60,10 +62,6 @@ export interface UseChatReturn {
   isStreaming: boolean;
   /** Explicit streaming status */
   status: StreamingStatus;
-  /** Current streaming content (partial response) */
-  streamingContent: string;
-  /** ID of the message currently being streamed */
-  streamingMessageId: string | null;
   /** Whether the agent is thinking/processing */
   isThinking: boolean;
   /** Currently pending action requiring confirmation */
@@ -75,15 +73,12 @@ export const useChat = ({
   onMessage: _onMessage,
   onError,
   onStreamStart,
+  onStreamDelta,
   onStreamComplete,
   onActionProposed: _onActionProposed,
 }: UseChatOptions): UseChatReturn => {
   const [status, setStatus] = useState<StreamingStatus>("idle");
   const [isThinking, setIsThinking] = useState(false);
-  const [streamingContent, setStreamingContent] = useState("");
-  const [streamingMessageId, setStreamingMessageId] = useState<string | null>(
-    null,
-  );
   const [pendingAction, setPendingAction] =
     useState<AgentActionProposedPayload | null>(null);
 
@@ -101,22 +96,24 @@ export const useChat = ({
       switch (event.type) {
         case "assistant.start":
           setStatus("streaming");
-          setStreamingMessageId(event.messageId);
           setIsThinking(false);
           onStreamStart?.(event.messageId);
           break;
 
         case "assistant.delta":
           setStatus("streaming");
-          setStreamingContent((prev) => prev + event.delta);
           setIsThinking(false);
+          onStreamDelta?.(event.delta);
           break;
 
         case "assistant.end":
           setStatus("completed");
           setIsThinking(false);
           onStreamComplete?.();
-          // Reset status to idle after a short delay or on next message
+          // Return to idle shortly after completion.
+          setTimeout(() => {
+            setStatus("idle");
+          }, 50);
           break;
 
         case "error":
@@ -126,7 +123,7 @@ export const useChat = ({
           break;
       }
     },
-    [onStreamStart, onStreamComplete, onError],
+    [onStreamStart, onStreamDelta, onStreamComplete, onError],
   );
 
   const sendMessageBlocks = useCallback(
@@ -142,8 +139,6 @@ export const useChat = ({
       // Reset state for new stream
       setStatus("connecting");
       setIsThinking(true);
-      setStreamingContent("");
-      setStreamingMessageId(null);
       setPendingAction(null);
 
       const controller = new AbortController();
@@ -175,7 +170,8 @@ export const useChat = ({
     [sendMessageBlocks],
   );
 
-  const interrupt = useCallback(async () => {
+  const interrupt = useCallback(
+    async (messageId?: string) => {
     // Abort the fetch request locally
     abortControllerRef.current?.abort();
     abortControllerRef.current = null;
@@ -183,10 +179,7 @@ export const useChat = ({
     // Send interrupt command to backend
     if (conversationId) {
       try {
-        await chatApi.interrupt(
-          conversationId,
-          streamingMessageId || undefined,
-        );
+        await chatApi.interrupt(conversationId, messageId);
       } catch (error) {
         console.error("Failed to send interrupt command:", error);
       }
@@ -197,7 +190,9 @@ export const useChat = ({
     setStatus("idle");
     setIsThinking(false);
     // Note: streamingContent is preserved as per SPARK ("Abort does NOT remove partial content")
-  }, [conversationId, streamingMessageId]);
+    },
+    [conversationId],
+  );
 
   const confirmAction = useCallback(
     async (actionId: string, parameters?: Record<string, unknown>) => {
@@ -245,8 +240,6 @@ export const useChat = ({
     cancelAction,
     isStreaming: status === "connecting" || status === "streaming",
     status,
-    streamingContent,
-    streamingMessageId,
     isThinking,
     pendingAction,
   };

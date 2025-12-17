@@ -99,6 +99,8 @@ export const MessageItem = ({
   const isAgent = message.role === "agent";
   const isSystem = message.role === "system";
   const hasError = !!message.error;
+  const isStreamingMessage =
+    (message.status === "streaming" || isStreaming) && isAgent;
 
   // System messages have a simpler layout
   if (isSystem) {
@@ -119,11 +121,11 @@ export const MessageItem = ({
       className={clsx(
         "flex gap-3",
         isUser ? "flex-row-reverse" : "flex-row",
-        className,
+        className
       )}
     >
       {/* Avatar */}
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <Avatar
           name={isUser ? userName : agentName}
           src={isUser ? userAvatarUrl : agentAvatarUrl}
@@ -135,7 +137,7 @@ export const MessageItem = ({
       <div
         className={clsx(
           "flex flex-col gap-1 max-w-[75%]",
-          isUser ? "items-end" : "items-start",
+          isUser ? "items-end" : "items-start"
         )}
       >
         {/* Sender name */}
@@ -144,10 +146,10 @@ export const MessageItem = ({
         </span>
 
         {/* Message bubble */}
-        {isStreaming && isAgent ? (
+        {isStreamingMessage ? (
           <div className="bg-neutral-100 rounded-2xl rounded-bl-md px-4 py-3 max-w-prose">
             <StreamingIndicator
-              partialContent={streamingContent}
+              partialContent={message.content || streamingContent}
               showTyping={true}
               showStopButton={!!onStopStreaming}
               onStop={onStopStreaming}
@@ -184,11 +186,11 @@ export const MessageItem = ({
         )}
 
         {/* Meta and actions row */}
-        {!isStreaming && (
+        {!isStreamingMessage && (
           <div
             className={clsx(
               "flex items-center gap-2",
-              isUser ? "flex-row-reverse" : "flex-row",
+              isUser ? "flex-row-reverse" : "flex-row"
             )}
           >
             <MessageMeta
@@ -203,7 +205,7 @@ export const MessageItem = ({
                 messageType={isUser ? "user" : "agent"}
                 showOnHover={true}
                 feedback={feedback}
-                isStreaming={isStreaming}
+                isStreaming={isStreamingMessage}
                 onCopy={onCopy ? () => onCopy(message.id) : undefined}
                 onRegenerate={
                   onRegenerate && isAgent
