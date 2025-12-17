@@ -1,6 +1,9 @@
 // @echo/storybook - UI Component Library
 // Re-export all UI components and utilities
 
+// Styles - needed for Tailwind CSS to be bundled
+import "./index.css";
+
 // Atomic Design System
 export * from "./atoms";
 export * from "./molecules";
