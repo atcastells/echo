@@ -9,14 +9,19 @@ export type {
   AuthResponse,
   AuthState,
   AuthContextType,
-} from './types';
+} from "./types";
 
 // Hooks
-export { useAuth } from './hooks';
-export { useCurrentUser, useMaybeCurrentUser } from './hooks';
+export { useAuth } from "./hooks";
+export { useCurrentUser, useMaybeCurrentUser } from "./hooks";
 
 // Context & Provider
-export { AuthProvider, useAuthContext } from './context';
+export { AuthProvider, useAuthContext } from "./context";
 
 // Components
-export { LoginForm, SignUpForm, AuthLayout, ProtectedRoute } from './components';
+export {
+  LoginForm,
+  SignUpForm,
+  AuthLayout,
+  ProtectedRoute,
+} from "./components";

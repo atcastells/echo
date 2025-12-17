@@ -1,22 +1,22 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
-import type { ConversationTurn, ConversationState } from '../types';
-import type { ChatMessage, Agent } from '@/agents';
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import type { ConversationTurn, ConversationState } from "../types";
+import type { ChatMessage, Agent } from "@/agents";
 import {
   useAgentsQuery,
   useCreateAgentMutation,
   useCreateThreadMutation,
   useThreadHistoryQuery,
   useSendChatMessageMutation,
-} from '@/agents';
+} from "@/agents";
 
 // Agent configuration constants
-const PROFILE_BUILDER_AGENT_NAME = 'Profile Builder';
+const PROFILE_BUILDER_AGENT_NAME = "Profile Builder";
 const PROFILE_BUILDER_AGENT_CONFIG = {
   name: PROFILE_BUILDER_AGENT_NAME,
-  type: 'PRIVATE' as const,
-  tone: 'PROFESSIONAL' as const,
+  type: "PRIVATE" as const,
+  tone: "PROFESSIONAL" as const,
   instructions:
-    'You are a helpful AI career agent assisting users in building recruiter-ready profiles. Guide them through adding their professional experience, skills, and achievements.',
+    "You are a helpful AI career agent assisting users in building recruiter-ready profiles. Guide them through adding their professional experience, skills, and achievements.",
   enableThreads: true,
 };
 
@@ -36,35 +36,46 @@ const mapChatMessageToTurn = (message: ChatMessage): ConversationTurn => ({
 /**
  * Hook to ensure Profile Builder agent exists
  */
-const useEnsureAgent = (agents: Agent[] | undefined, isLoadingAgents: boolean) => {
+const useEnsureAgent = (
+  agents: Agent[] | undefined,
+  isLoadingAgents: boolean,
+) => {
   const [createdAgentId, setCreatedAgentId] = useState<string | null>(null);
   const [error, setError] = useState<string | undefined>(undefined);
-  const [isCreating, setIsCreating] = useState(false);
+  const isCreatingRef = useRef(false);
   const createAgentMutation = useCreateAgentMutation();
 
   const existingAgent = useMemo(() => {
     if (isLoadingAgents || !agents) return null;
 
     return (
-      agents.find((a) => a.name === PROFILE_BUILDER_AGENT_NAME && a.type === 'PRIVATE') || null
+      agents.find(
+        (a) => a.name === PROFILE_BUILDER_AGENT_NAME && a.type === "PRIVATE",
+      ) || null
     );
   }, [agents, isLoadingAgents]);
 
   useEffect(() => {
-    if (isLoadingAgents || existingAgent || createdAgentId || isCreating) return;
+    if (
+      isLoadingAgents ||
+      existingAgent ||
+      createdAgentId ||
+      isCreatingRef.current
+    )
+      return;
 
-    setIsCreating(true);
+    isCreatingRef.current = true;
     createAgentMutation.mutate(PROFILE_BUILDER_AGENT_CONFIG, {
       onSuccess: (newAgent) => {
         setCreatedAgentId(newAgent.id);
-        setIsCreating(false);
+        isCreatingRef.current = false;
       },
       onError: (err) => {
         setError(`Failed to initialize agent: ${err.message}`);
-        setIsCreating(false);
+        isCreatingRef.current = false;
       },
     });
-  }, [isLoadingAgents, existingAgent, createdAgentId, isCreating, createAgentMutation]);
+  }, [isLoadingAgents, existingAgent, createdAgentId, createAgentMutation]);
 
   const agentId = existingAgent?.id || createdAgentId;
 
@@ -77,7 +88,7 @@ const useEnsureAgent = (agents: Agent[] | undefined, isLoadingAgents: boolean) =
 const useEnsureThread = (agentId: string | null) => {
   const [createdThreadId, setCreatedThreadId] = useState<string | null>(null);
   const [error, setError] = useState<string | undefined>(undefined);
-  const [isCreating, setIsCreating] = useState(false);
+  const isCreatingRef = useRef(false);
   const createThreadMutation = useCreateThreadMutation();
 
   const storedThreadId = useMemo(() => {
@@ -86,24 +97,25 @@ const useEnsureThread = (agentId: string | null) => {
   }, [agentId]);
 
   useEffect(() => {
-    if (!agentId || storedThreadId || createdThreadId || isCreating) return;
+    if (!agentId || storedThreadId || createdThreadId || isCreatingRef.current)
+      return;
 
-    setIsCreating(true);
+    isCreatingRef.current = true;
     createThreadMutation.mutate(
       { agentId },
       {
         onSuccess: (newThread) => {
           setCreatedThreadId(newThread.id);
           localStorage.setItem(THREAD_STORAGE_KEY(agentId), newThread.id);
-          setIsCreating(false);
+          isCreatingRef.current = false;
         },
         onError: (err) => {
           setError(`Failed to create thread: ${err.message}`);
-          setIsCreating(false);
+          isCreatingRef.current = false;
         },
-      }
+      },
     );
-  }, [agentId, storedThreadId, createdThreadId, isCreating, createThreadMutation]);
+  }, [agentId, storedThreadId, createdThreadId, createThreadMutation]);
 
   const threadId = storedThreadId || createdThreadId;
 
@@ -115,7 +127,9 @@ const useEnsureThread = (agentId: string | null) => {
  */
 export const useConversationDriver = () => {
   const [sendError, setSendError] = useState<string | undefined>(undefined);
-  const [optimisticTurns, setOptimisticTurns] = useState<ConversationTurn[]>([]);
+  const [optimisticTurns, setOptimisticTurns] = useState<ConversationTurn[]>(
+    [],
+  );
   const [isSending, setIsSending] = useState(false);
 
   // Queries and mutations
@@ -123,30 +137,42 @@ export const useConversationDriver = () => {
   const sendChatMutation = useSendChatMessageMutation();
 
   // Ensure agent and thread exist
-  const { agentId, error: agentError } = useEnsureAgent(agents, isLoadingAgents);
+  const { agentId, error: agentError } = useEnsureAgent(
+    agents,
+    isLoadingAgents,
+  );
   const { threadId, error: threadError } = useEnsureThread(agentId);
 
   // Load thread history when agent and thread are ready
-  const { data: threadHistory, isLoading: isLoadingHistory, refetch: refetchThread } = useThreadHistoryQuery(
-    agentId || '',
-    threadId || '',
-    !!(agentId && threadId)
+  const {
+    data: threadHistory,
+    isLoading: isLoadingHistory,
+    refetch: refetchThread,
+  } = useThreadHistoryQuery(
+    agentId || "",
+    threadId || "",
+    !!(agentId && threadId),
   );
 
-  // Compute turns from thread history
-  const turnsFromHistory = threadHistory ? threadHistory.map(mapChatMessageToTurn) : [];
   // Merge optimistic turns (user message and placeholder) with fetched history
   const turns = useMemo(() => {
+    const turnsFromHistory = threadHistory
+      ? threadHistory.map(mapChatMessageToTurn)
+      : [];
     if (optimisticTurns.length === 0) return turnsFromHistory;
     // Avoid duplicates: filter out any history turn that matches optimistic ids
     const optimisticIds = new Set(optimisticTurns.map((t) => t.id));
-    const merged = [...turnsFromHistory.filter((t) => !optimisticIds.has(t.id)), ...optimisticTurns];
+    const merged = [
+      ...turnsFromHistory.filter((t) => !optimisticIds.has(t.id)),
+      ...optimisticTurns,
+    ];
     // Sort by timestamp to keep order
     return merged.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
-  }, [turnsFromHistory, optimisticTurns]);
+  }, [threadHistory, optimisticTurns]);
 
   // Compute loading state
-  const isLoading = isLoadingAgents || isLoadingHistory || !agentId || !threadId || isSending;
+  const isLoading =
+    isLoadingAgents || isLoadingHistory || !agentId || !threadId || isSending;
 
   // Combine errors
   const error = agentError || threadError || sendError;
@@ -169,7 +195,7 @@ export const useConversationDriver = () => {
       // Add optimistic user turn immediately
       const optimisticUserTurn: ConversationTurn = {
         id: `optimistic-user-${Date.now()}`,
-        role: 'user',
+        role: "user",
         content: message,
         timestamp: new Date(),
         blocks: undefined,
@@ -178,13 +204,17 @@ export const useConversationDriver = () => {
       // Add a lightweight typing/progress placeholder for agent
       const optimisticAgentTyping: ConversationTurn = {
         id: `optimistic-agent-${Date.now()}`,
-        role: 'assistant',
-        content: '...',
+        role: "assistant",
+        content: "...",
         timestamp: new Date(new Date().getTime() + 1), // slightly after user
         blocks: undefined,
       };
 
-      setOptimisticTurns((prev) => [...prev, optimisticUserTurn, optimisticAgentTyping]);
+      setOptimisticTurns((prev) => [
+        ...prev,
+        optimisticUserTurn,
+        optimisticAgentTyping,
+      ]);
 
       // Send to backend
       sendChatMutation.mutate(
@@ -199,7 +229,9 @@ export const useConversationDriver = () => {
           onError: (err) => {
             setSendError(`Failed to send message: ${err.message}`);
             // Remove optimistic typing indicator
-            setOptimisticTurns((prev) => prev.filter((t) => !t.id.startsWith('optimistic-')));
+            setOptimisticTurns((prev) =>
+              prev.filter((t) => !t.id.startsWith("optimistic-")),
+            );
             setIsSending(false);
           },
           onSuccess: async () => {
@@ -212,10 +244,10 @@ export const useConversationDriver = () => {
               setIsSending(false);
             }
           },
-        }
+        },
       );
     },
-    [agentId, threadId, sendChatMutation, refetchThread]
+    [agentId, threadId, sendChatMutation, refetchThread],
   );
 
   return {

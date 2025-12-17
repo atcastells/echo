@@ -6,7 +6,8 @@ import { VectorStore } from "../../../../domain/ports/outbound/vector-store.js";
 
 @Service()
 export class SupabaseVectorStore implements VectorStore {
-  private readonly supabaseClient: SupabaseClient = Container.get(SUPABASE_CLIENT);
+  private readonly supabaseClient: SupabaseClient =
+    Container.get(SUPABASE_CLIENT);
 
   async addDocuments(documents: DocumentChunk[]): Promise<void> {
     const rows = documents.map((document) => ({

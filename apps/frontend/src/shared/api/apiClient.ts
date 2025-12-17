@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 interface RequestConfig extends RequestInit {
   params?: Record<string, string>;
@@ -16,17 +16,20 @@ class ApiClientError extends Error {
 
   constructor({ message, status, code }: ApiError) {
     super(message);
-    this.name = 'ApiClientError';
+    this.name = "ApiClientError";
     this.status = status;
     this.code = code;
   }
 }
 
 const getAuthToken = (): string | null => {
-  return localStorage.getItem('auth_token');
+  return localStorage.getItem("auth_token");
 };
 
-const buildUrl = (endpoint: string, params?: Record<string, string>): string => {
+const buildUrl = (
+  endpoint: string,
+  params?: Record<string, string>,
+): string => {
   const url = new URL(`${API_BASE_URL}${endpoint}`);
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
@@ -61,9 +64,9 @@ export const apiClient = {
 
     const response = await fetch(url, {
       ...config,
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...(token && { Authorization: `Bearer ${token}` }),
         ...config?.headers,
       },
@@ -72,33 +75,19 @@ export const apiClient = {
     return handleResponse<T>(response);
   },
 
-  async post<T>(endpoint: string, data?: unknown, config?: RequestConfig): Promise<T> {
+  async post<T>(
+    endpoint: string,
+    data?: unknown,
+    config?: RequestConfig,
+  ): Promise<T> {
     const token = getAuthToken();
     const url = buildUrl(endpoint, config?.params);
 
     const response = await fetch(url, {
       ...config,
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
-        ...config?.headers,
-      },
-      body: data ? JSON.stringify(data) : undefined,
-    });
-
-    return handleResponse<T>(response);
-  },
-
-  async put<T>(endpoint: string, data?: unknown, config?: RequestConfig): Promise<T> {
-    const token = getAuthToken();
-    const url = buildUrl(endpoint, config?.params);
-
-    const response = await fetch(url, {
-      ...config,
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...(token && { Authorization: `Bearer ${token}` }),
         ...config?.headers,
       },
@@ -108,15 +97,41 @@ export const apiClient = {
     return handleResponse<T>(response);
   },
 
-  async patch<T>(endpoint: string, data?: unknown, config?: RequestConfig): Promise<T> {
+  async put<T>(
+    endpoint: string,
+    data?: unknown,
+    config?: RequestConfig,
+  ): Promise<T> {
     const token = getAuthToken();
     const url = buildUrl(endpoint, config?.params);
 
     const response = await fetch(url, {
       ...config,
-      method: 'PATCH',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }),
+        ...config?.headers,
+      },
+      body: data ? JSON.stringify(data) : undefined,
+    });
+
+    return handleResponse<T>(response);
+  },
+
+  async patch<T>(
+    endpoint: string,
+    data?: unknown,
+    config?: RequestConfig,
+  ): Promise<T> {
+    const token = getAuthToken();
+    const url = buildUrl(endpoint, config?.params);
+
+    const response = await fetch(url, {
+      ...config,
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
         ...(token && { Authorization: `Bearer ${token}` }),
         ...config?.headers,
       },
@@ -132,9 +147,9 @@ export const apiClient = {
 
     const response = await fetch(url, {
       ...config,
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...(token && { Authorization: `Bearer ${token}` }),
         ...config?.headers,
       },
@@ -143,16 +158,20 @@ export const apiClient = {
     return handleResponse<T>(response);
   },
 
-  async upload<T>(endpoint: string, file: File, config?: RequestConfig): Promise<T> {
+  async upload<T>(
+    endpoint: string,
+    file: File,
+    config?: RequestConfig,
+  ): Promise<T> {
     const token = getAuthToken();
     const url = buildUrl(endpoint, config?.params);
 
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
     const response = await fetch(url, {
       ...config,
-      method: 'POST',
+      method: "POST",
       headers: {
         ...(token && { Authorization: `Bearer ${token}` }),
         ...config?.headers,

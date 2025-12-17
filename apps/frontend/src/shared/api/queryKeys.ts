@@ -2,33 +2,34 @@
 // Each feature adds its keys here for consistency
 
 export const authKeys = {
-  all: ['auth'] as const,
-  me: () => [...authKeys.all, 'me'] as const,
+  all: ["auth"] as const,
+  me: () => [...authKeys.all, "me"] as const,
 };
 
 export const documentKeys = {
-  all: ['documents'] as const,
-  list: () => [...documentKeys.all, 'list'] as const,
-  detail: (id: string) => [...documentKeys.all, 'detail', id] as const,
+  all: ["documents"] as const,
+  list: () => [...documentKeys.all, "list"] as const,
+  detail: (id: string) => [...documentKeys.all, "detail", id] as const,
 };
 
 export const agentKeys = {
-  all: ['agents'] as const,
-  list: () => [...agentKeys.all, 'list'] as const,
-  detail: (id: string) => [...agentKeys.all, 'detail', id] as const,
-  threads: (agentId: string) => [...agentKeys.all, agentId, 'threads'] as const,
+  all: ["agents"] as const,
+  list: () => [...agentKeys.all, "list"] as const,
+  detail: (id: string) => [...agentKeys.all, "detail", id] as const,
+  threads: (agentId: string) => [...agentKeys.all, agentId, "threads"] as const,
   thread: (agentId: string, threadId: string) =>
-    [...agentKeys.all, agentId, 'threads', threadId] as const,
+    [...agentKeys.all, agentId, "threads", threadId] as const,
 };
 
 export const chatKeys = {
-  all: ['chat'] as const,
-  messages: (threadId: string) => [...chatKeys.all, 'messages', threadId] as const,
+  all: ["chat"] as const,
+  messages: (threadId: string) =>
+    [...chatKeys.all, "messages", threadId] as const,
 };
 
 export const profileKeys = {
-  all: ['profile'] as const,
-  me: () => [...profileKeys.all, 'me'] as const,
-  roles: () => [...profileKeys.all, 'roles'] as const,
-  role: (roleId: string) => [...profileKeys.all, 'roles', roleId] as const,
+  all: ["profile"] as const,
+  me: () => [...profileKeys.all, "me"] as const,
+  roles: () => [...profileKeys.all, "roles"] as const,
+  role: (roleId: string) => [...profileKeys.all, "roles", roleId] as const,
 };

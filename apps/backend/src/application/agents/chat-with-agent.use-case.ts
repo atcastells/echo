@@ -1,4 +1,4 @@
-import { Service, Inject, Container } from "typedi";
+import { Service, Container } from "typedi";
 import { AgentRepository } from "../../domain/ports/outbound/agent-repository.js";
 import { ChatRepository } from "../../domain/ports/outbound/chat-repository.js";
 import { ConversationAgentFactory } from "../../adapters/inbound/primary/agents/conversation-agent-factory.js";
@@ -13,7 +13,12 @@ import {
   CHAT_REPOSITORY,
 } from "../../infrastructure/constants.js";
 import { Agent, AgentType } from "../../domain/entities/agent.js";
-import { ChatRole } from "../../domain/entities/chat-message.js";
+import {
+  ChatRole,
+  MessageStatus,
+  createTextContent,
+  getPlainText,
+} from "../../domain/entities/chat-message.js";
 import { randomUUID } from "node:crypto";
 import { HttpError } from "../../adapters/inbound/http/errors/http-error.js";
 import { createRetrieveContextTool } from "../../adapters/outbound/external-services/tools/rag/retrieve-context.tool.js";
@@ -22,19 +27,24 @@ export interface ChatWithAgentInput {
   agentId: string;
   userId: string;
   message: string;
+  /** @deprecated Use conversationId instead */
   threadId?: string;
+  conversationId?: string;
 }
 
 @Service()
 export class ChatWithAgentUseCase {
-  private readonly agentRepository: AgentRepository = Container.get(AGENT_REPOSITORY);
-  private readonly chatRepository: ChatRepository = Container.get(CHAT_REPOSITORY);
-  private readonly conversationAgentFactory: ConversationAgentFactory = Container.get(ConversationAgentFactory);
-
-
+  private readonly agentRepository: AgentRepository =
+    Container.get(AGENT_REPOSITORY);
+  private readonly chatRepository: ChatRepository =
+    Container.get(CHAT_REPOSITORY);
+  private readonly conversationAgentFactory: ConversationAgentFactory =
+    Container.get(ConversationAgentFactory);
 
   async execute(input: ChatWithAgentInput): Promise<string> {
-    const { agentId, userId, message, threadId } = input;
+    const { agentId, userId, message } = input;
+    // Support both threadId (legacy) and conversationId
+    const conversationId = input.conversationId ?? input.threadId;
 
     // 1. Retrieve and Validate Agent
     const agent = await this.agentRepository.findById(agentId);
@@ -46,9 +56,9 @@ export class ChatWithAgentUseCase {
       throw new HttpError(403, "Unauthorized access to private agent");
     }
 
-    // Thread Verification
-    if (threadId) {
-      await this.validateThreadAccess(threadId, userId, agent);
+    // Conversation Verification
+    if (conversationId) {
+      await this.validateConversationAccess(conversationId, userId, agent);
     }
 
     // 2. Construct Prompt (System + History)
@@ -56,14 +66,15 @@ export class ChatWithAgentUseCase {
     const systemMessage = this.buildSystemMessage(agent);
     const chatHistory: BaseMessage[] = [];
 
-    // Load History if Threaded
-    if (threadId) {
-      const history = await this.chatRepository.getMessages(threadId);
-      for (const message_ of history) {
-        if (message_.role === ChatRole.USER) {
-          chatHistory.push(new HumanMessage(message_.content));
-        } else if (message_.role === ChatRole.ASSISTANT) {
-          chatHistory.push(new AIMessage(message_.content));
+    // Load History if using conversation
+    if (conversationId) {
+      const history = await this.chatRepository.getMessages(conversationId);
+      for (const historyMessage of history) {
+        const text = getPlainText(historyMessage.content);
+        if (historyMessage.role === ChatRole.USER) {
+          chatHistory.push(new HumanMessage(text));
+        } else if (historyMessage.role === ChatRole.ASSISTANT) {
+          chatHistory.push(new AIMessage(text));
         }
       }
     }
@@ -80,29 +91,31 @@ export class ChatWithAgentUseCase {
       chat_history: chatHistory,
     });
 
+    // eslint-disable-next-line unicorn/prefer-at
     const lastMessage = result.messages[result.messages.length - 1];
     const replyContent = lastMessage?.content?.toString() ?? "";
 
     // 5. Save Persistence (Async)
-    if (threadId) {
-      await this.saveHistory(threadId, message, replyContent);
+    if (conversationId) {
+      await this.saveHistory(conversationId, message, replyContent);
     }
 
     return replyContent;
   }
 
-  private async validateThreadAccess(
-    threadId: string,
+  private async validateConversationAccess(
+    conversationId: string,
     userId: string,
     agent: Agent,
   ) {
     if (!agent.configuration.enableThreads) {
-      throw new HttpError(403, "Threading is disabled for this agent");
+      throw new HttpError(403, "Conversations are disabled for this agent");
     }
-    const thread = await this.chatRepository.getThreadById(threadId);
-    if (!thread) throw new HttpError(404, "Thread not found");
-    if (thread.userId !== userId)
-      throw new HttpError(403, "Unauthorized access to thread");
+    const conversation =
+      await this.chatRepository.getConversationById(conversationId);
+    if (!conversation) throw new HttpError(404, "Conversation not found");
+    if (conversation.userId !== userId)
+      throw new HttpError(403, "Unauthorized access to conversation");
   }
 
   private buildSystemMessage(agent: Agent): SystemMessage {
@@ -119,23 +132,25 @@ The tool returns JSON with relevant snippets and metadata. Use it to ground your
   }
 
   private async saveHistory(
-    threadId: string,
+    conversationId: string,
     userMessage: string,
     assistantMessage: string,
   ) {
     await this.chatRepository.saveMessage({
       id: randomUUID(),
-      threadId,
+      conversationId,
       role: ChatRole.USER,
-      content: userMessage,
+      content: createTextContent(userMessage),
+      status: MessageStatus.COMPLETE,
       createdAt: new Date(),
     });
 
     await this.chatRepository.saveMessage({
       id: randomUUID(),
-      threadId,
+      conversationId,
       role: ChatRole.ASSISTANT,
-      content: assistantMessage,
+      content: createTextContent(assistantMessage),
+      status: MessageStatus.COMPLETE,
       createdAt: new Date(),
     });
   }

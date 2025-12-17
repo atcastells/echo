@@ -5,7 +5,8 @@ import { DOCUMENT_REPOSITORY } from "../../infrastructure/constants.js";
 
 @Service()
 export class ListDocumentsUseCase {
-  private readonly documentRepository: DocumentRepository = Container.get(DOCUMENT_REPOSITORY);
+  private readonly documentRepository: DocumentRepository =
+    Container.get(DOCUMENT_REPOSITORY);
 
   async execute(userId: string): Promise<Document[]> {
     return this.documentRepository.findByUserId(userId);

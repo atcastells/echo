@@ -1,1 +1,1 @@
-export * from './ProfilePreviewPanel';
+export * from "./ProfilePreviewPanel";

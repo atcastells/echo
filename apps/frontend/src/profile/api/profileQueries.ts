@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import { profileKeys } from '@/shared';
-import { getMyProfile } from './profileApi';
+import { useQuery } from "@tanstack/react-query";
+import { profileKeys } from "@/shared";
+import { getMyProfile } from "./profileApi";
 
 /**
  * Query hook to fetch current user's profile

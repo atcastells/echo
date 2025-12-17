@@ -37,28 +37,28 @@ Echo provides professionals with a personal AI agent that encapsulates their ent
 
 ### Frontend (`apps/frontend`)
 
-| Category | Technology |
-|----------|------------|
-| Framework | React 19 + TypeScript |
-| Build Tool | Vite |
-| Styling | Tailwind CSS |
-| State Management | TanStack Query |
-| Routing | React Router |
+| Category         | Technology            |
+| ---------------- | --------------------- |
+| Framework        | React 19 + TypeScript |
+| Build Tool       | Vite                  |
+| Styling          | Tailwind CSS          |
+| State Management | TanStack Query        |
+| Routing          | React Router          |
 
 ### Backend (`apps/backend`)
 
-| Category | Technology |
-|----------|------------|
-| Runtime | Node.js + TypeScript |
-| Framework | Express 5 |
-| Architecture | Hexagonal (Ports & Adapters) |
-| AI / LLMs | Gemini, LangChain |
-| Vector Store | Supabase (pgvector) |
-| Document Store | MongoDB Atlas |
-| Authentication | Supabase Auth |
-| DI Container | TypeDI |
-| API Docs | Scalar + OpenAPI 3.1 |
-| Testing | Jest |
+| Category       | Technology                   |
+| -------------- | ---------------------------- |
+| Runtime        | Node.js + TypeScript         |
+| Framework      | Express 5                    |
+| Architecture   | Hexagonal (Ports & Adapters) |
+| AI / LLMs      | Gemini, LangChain            |
+| Vector Store   | Supabase (pgvector)          |
+| Document Store | MongoDB Atlas                |
+| Authentication | Supabase Auth                |
+| DI Container   | TypeDI                       |
+| API Docs       | Scalar + OpenAPI 3.1         |
+| Testing        | Jest                         |
 
 ## 📁 Project Structure
 
@@ -145,11 +145,11 @@ pnpm lint:fix
 
 Once the backend is running, access the API documentation:
 
-| Endpoint | Description |
-|----------|-------------|
-| `http://localhost:3000/docs` | Interactive API docs (Scalar) |
-| `http://localhost:3000/openapi.json` | OpenAPI specification |
-| `http://localhost:3000/health` | Health check |
+| Endpoint                             | Description                   |
+| ------------------------------------ | ----------------------------- |
+| `http://localhost:3000/docs`         | Interactive API docs (Scalar) |
+| `http://localhost:3000/openapi.json` | OpenAPI specification         |
+| `http://localhost:3000/health`       | Health check                  |
 
 ## 🔐 Environment Variables
 
@@ -180,6 +180,7 @@ VITE_API_URL=http://localhost:3000
 ## 🗺 Roadmap
 
 ### Phase 1: MVP (Current)
+
 - ✅ Core architecture setup (Hexagonal backend, React frontend)
 - ✅ Authentication (Supabase)
 - ✅ Document ingestion (PDF upload)
@@ -188,18 +189,21 @@ VITE_API_URL=http://localhost:3000
 - ⏳ Contextual chat endpoint
 
 ### Phase 2: Enhanced Features
+
 - ⏳ Chat interface with AI-powered Q&A
 - ⏳ Shareable profile link generation
 - ⏳ Profile customization options
 - ⏳ Real-time parsing feedback
 
 ### Phase 3: Optimization
+
 - ⏳ Performance optimization
 - ⏳ WCAG 2.1 AA compliance
 - ⏳ Mobile-responsive design
 - ⏳ PWA features
 
 ### Phase 4: Production Ready
+
 - ⏳ Comprehensive testing suite
 - ⏳ Error tracking & analytics
 - ⏳ Performance monitoring

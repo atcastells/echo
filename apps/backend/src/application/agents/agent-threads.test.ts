@@ -193,14 +193,16 @@ describe("Chat Threads & History", () => {
       expect(mockChatRepository.getMessages).toHaveBeenCalledWith("thread-1");
 
       // Verify agent factory was called with tools
-      expect(mockConversationAgentFactory.buildWithSystemPrompt).toHaveBeenCalled();
+      expect(
+        mockConversationAgentFactory.buildWithSystemPrompt,
+      ).toHaveBeenCalled();
 
       // Verify chat history was passed to invoke
-      const invokeArgs = mockInvoke.mock.calls[0][0];
-      expect(invokeArgs.input).toBe("How are you?");
-      expect(invokeArgs.chat_history).toHaveLength(2);
-      expect(invokeArgs.chat_history[0].content).toBe("Hello");
-      expect(invokeArgs.chat_history[1].content).toBe("Hi");
+      const invokeArguments = mockInvoke.mock.calls[0][0];
+      expect(invokeArguments.input).toBe("How are you?");
+      expect(invokeArguments.chat_history).toHaveLength(2);
+      expect(invokeArguments.chat_history[0].content).toBe("Hello");
+      expect(invokeArguments.chat_history[1].content).toBe("Hi");
 
       // Verify Saving
       expect(mockChatRepository.saveMessage).toHaveBeenCalledTimes(2); // User msg + AI reply

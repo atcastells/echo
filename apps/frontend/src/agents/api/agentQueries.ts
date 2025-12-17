@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import { agentKeys } from '@/shared';
-import { listAgents, getAgent, getThreadHistory } from './agentApi';
+import { useQuery } from "@tanstack/react-query";
+import { agentKeys } from "@/shared";
+import { listAgents, getAgent, getThreadHistory } from "./agentApi";
 
 /**
  * Query hook to list all agents
@@ -31,7 +31,7 @@ export const useAgentQuery = (agentId: string, enabled = true) => {
 export const useThreadHistoryQuery = (
   agentId: string,
   threadId: string,
-  enabled = true
+  enabled = true,
 ) => {
   return useQuery({
     queryKey: agentKeys.thread(agentId, threadId),

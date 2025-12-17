@@ -1,7 +1,11 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { agentKeys } from '@/shared';
-import { createAgent, createThread, sendChatMessage } from './agentApi';
-import type { CreateAgentPayload, CreateThreadPayload, ChatPayload } from '../types';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { agentKeys } from "@/shared";
+import { createAgent, createThread, sendChatMessage } from "./agentApi";
+import type {
+  CreateAgentPayload,
+  CreateThreadPayload,
+  ChatPayload,
+} from "../types";
 
 /**
  * Mutation hook to create a new agent
@@ -40,8 +44,13 @@ export const useSendChatMessageMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ agentId, payload }: { agentId: string; payload: ChatPayload }) =>
-      sendChatMessage(agentId, payload),
+    mutationFn: ({
+      agentId,
+      payload,
+    }: {
+      agentId: string;
+      payload: ChatPayload;
+    }) => sendChatMessage(agentId, payload),
     onSuccess: (data, variables) => {
       // Invalidate thread history to refetch messages
       if (data.threadId) {

@@ -10,8 +10,10 @@ import { ProfileCompletenessService } from "../../domain/services/profile-comple
 
 @Service()
 export class EnsureMyProfileUseCase {
-  private readonly profileRepository: ProfileRepository = Container.get(PROFILE_REPOSITORY);
-  private readonly authRepository: AuthRepository = Container.get(AUTH_REPOSITORY);
+  private readonly profileRepository: ProfileRepository =
+    Container.get(PROFILE_REPOSITORY);
+  private readonly authRepository: AuthRepository =
+    Container.get(AUTH_REPOSITORY);
 
   async execute(userId: string): Promise<Profile> {
     // Try to find existing profile

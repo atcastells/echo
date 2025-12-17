@@ -1,22 +1,25 @@
 import { Service, Container } from "typedi";
 import { MongoDBAdapter } from "./mongo-database-adapter.js";
 import { ChatRepository } from "../../../../domain/ports/outbound/chat-repository.js";
-import { Thread } from "../../../../domain/entities/thread.js";
+import { Conversation } from "../../../../domain/entities/conversation.js";
 import { ChatMessage } from "../../../../domain/entities/chat-message.js";
 import {
-  ThreadSchema,
+  ConversationSchema,
   ChatMessageSchema,
-  threadSchema,
+  conversationSchema,
   chatMessageSchema,
 } from "./schemas/chat.schema.js";
 import { ObjectId, WithId, Filter } from "mongodb";
 
 @Service()
 export class MongoChatRepository implements ChatRepository {
-  private readonly databaseConnection: MongoDBAdapter = Container.get(MongoDBAdapter);
+  private readonly databaseConnection: MongoDBAdapter =
+    Container.get(MongoDBAdapter);
 
-  private get threadCollection() {
-    return this.databaseConnection.getDb().collection<ThreadSchema>("threads");
+  private get conversationCollection() {
+    return this.databaseConnection
+      .getDb()
+      .collection<ConversationSchema>("conversations");
   }
 
   private get messageCollection() {
@@ -25,14 +28,18 @@ export class MongoChatRepository implements ChatRepository {
       .collection<ChatMessageSchema>("chat_messages");
   }
 
-  async createThread(thread: Thread): Promise<Thread> {
+  // ===========================================================================
+  // Conversation Operations
+  // ===========================================================================
+
+  async createConversation(conversation: Conversation): Promise<Conversation> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, ...threadData } = thread;
+    const { id, ...conversationData } = conversation;
 
     // Validate with Zod
-    const validatedData = threadSchema.parse(threadData);
+    const validatedData = conversationSchema.parse(conversationData);
 
-    const result = await this.threadCollection.insertOne(validatedData);
+    const result = await this.conversationCollection.insertOne(validatedData);
 
     return {
       ...validatedData,
@@ -40,28 +47,58 @@ export class MongoChatRepository implements ChatRepository {
     };
   }
 
-  async getThreads(userId: string, agentId: string): Promise<Thread[]> {
-    const threads = await this.threadCollection
+  async getConversations(
+    userId: string,
+    agentId: string,
+  ): Promise<Conversation[]> {
+    const conversations = await this.conversationCollection
       .find({ userId, agentId })
       // eslint-disable-next-line unicorn/no-array-sort
       .sort({ updatedAt: -1 })
       .toArray();
-    return threads.map((thread) => this.mapThread(thread));
+    return conversations.map((conversation) =>
+      this.mapConversation(conversation),
+    );
   }
 
-  async getThreadById(id: string): Promise<Thread | null> {
+  async getConversationById(id: string): Promise<Conversation | null> {
     // eslint-disable-next-line unicorn/no-null
     if (!ObjectId.isValid(id)) return null;
 
-    const thread = await this.threadCollection.findOne({
+    const conversation = await this.conversationCollection.findOne({
       _id: new ObjectId(id),
-    } as Filter<ThreadSchema>);
+    } as Filter<ConversationSchema>);
 
     // eslint-disable-next-line unicorn/no-null
-    if (!thread) return null;
+    if (!conversation) return null;
 
-    return this.mapThread(thread);
+    return this.mapConversation(conversation);
   }
+
+  async updateConversation(
+    id: string,
+    updates: Partial<
+      Pick<Conversation, "title" | "contextPolicy" | "updatedAt">
+    >,
+  ): Promise<Conversation | null> {
+    // eslint-disable-next-line unicorn/no-null
+    if (!ObjectId.isValid(id)) return null;
+
+    const result = await this.conversationCollection.findOneAndUpdate(
+      { _id: new ObjectId(id) } as Filter<ConversationSchema>,
+      { $set: { ...updates, updatedAt: updates.updatedAt ?? new Date() } },
+      { returnDocument: "after" },
+    );
+
+    // eslint-disable-next-line unicorn/no-null
+    if (!result) return null;
+
+    return this.mapConversation(result);
+  }
+
+  // ===========================================================================
+  // Message Operations
+  // ===========================================================================
 
   async saveMessage(message: ChatMessage): Promise<ChatMessage> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -72,10 +109,12 @@ export class MongoChatRepository implements ChatRepository {
 
     const result = await this.messageCollection.insertOne(validatedData);
 
-    // Update thread updatedAt
-    if (ObjectId.isValid(message.threadId)) {
-      await this.threadCollection.updateOne(
-        { _id: new ObjectId(message.threadId) } as Filter<ThreadSchema>,
+    // Update conversation updatedAt
+    if (ObjectId.isValid(message.conversationId)) {
+      await this.conversationCollection.updateOne(
+        {
+          _id: new ObjectId(message.conversationId),
+        } as Filter<ConversationSchema>,
         { $set: { updatedAt: new Date() } },
       );
     }
@@ -86,17 +125,35 @@ export class MongoChatRepository implements ChatRepository {
     };
   }
 
-  async getMessages(threadId: string): Promise<ChatMessage[]> {
+  async getMessages(conversationId: string): Promise<ChatMessage[]> {
     const messages = await this.messageCollection
-      .find({ threadId })
+      .find({ conversationId })
       // eslint-disable-next-line unicorn/no-array-sort
       .sort({ createdAt: 1 }) // Oldest first for chat context
       .toArray();
     return messages.map((message) => this.mapMessage(message));
   }
 
-  private mapThread(thread: WithId<ThreadSchema>): Thread {
-    const { _id, ...rest } = thread;
+  async updateMessageStatus(
+    messageId: string,
+    status: ChatMessage["status"],
+  ): Promise<void> {
+    if (!ObjectId.isValid(messageId)) return;
+
+    await this.messageCollection.updateOne(
+      { _id: new ObjectId(messageId) } as Filter<ChatMessageSchema>,
+      { $set: { status } },
+    );
+  }
+
+  // ===========================================================================
+  // Mappers
+  // ===========================================================================
+
+  private mapConversation(
+    conversation: WithId<ConversationSchema>,
+  ): Conversation {
+    const { _id, ...rest } = conversation;
     return {
       id: _id.toString(),
       ...rest,

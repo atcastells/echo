@@ -1,7 +1,7 @@
 // Conversation turn represents a single message exchange
 export interface ConversationTurn {
   id: string;
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   blocks?: TurnBlock[];
   timestamp: Date;
@@ -9,11 +9,11 @@ export interface ConversationTurn {
 
 // Block types for structured assistant responses
 export type TurnBlockType =
-  | 'text'
-  | 'profile-basics-prompt'
-  | 'role-prompt'
-  | 'cv-upload-prompt'
-  | 'confirmation';
+  | "text"
+  | "profile-basics-prompt"
+  | "role-prompt"
+  | "cv-upload-prompt"
+  | "confirmation";
 
 export interface TurnBlock {
   id: string;

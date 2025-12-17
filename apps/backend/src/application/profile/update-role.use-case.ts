@@ -9,7 +9,8 @@ export type UpdateRoleInput = Partial<Omit<ProfileRole, "id">>;
 
 @Service()
 export class UpdateRoleUseCase {
-  private readonly profileRepository: ProfileRepository = Container.get(PROFILE_REPOSITORY);
+  private readonly profileRepository: ProfileRepository =
+    Container.get(PROFILE_REPOSITORY);
 
   async execute(
     userId: string,

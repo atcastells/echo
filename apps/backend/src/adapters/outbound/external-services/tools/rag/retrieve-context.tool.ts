@@ -17,7 +17,9 @@ const inputSchema = z.object({
     .describe("Maximum number of chunks to retrieve"),
 });
 
-export const createRetrieveContextTool = (userId: string): DynamicStructuredTool => {
+export const createRetrieveContextTool = (
+  userId: string,
+): DynamicStructuredTool => {
   return new DynamicStructuredTool({
     name: "retrieve_context",
     description:

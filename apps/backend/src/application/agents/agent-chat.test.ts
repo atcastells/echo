@@ -55,9 +55,9 @@ describe("Chat With Agent", () => {
     // Setup Mocks
     mockAgentRepository.findById.mockResolvedValue(mockAgent);
 
-    const mockInvoke = jest
-      .fn()
-      .mockResolvedValue({ messages: [new AIMessage("Arrr! POST to /auth/signup!")] });
+    const mockInvoke = jest.fn().mockResolvedValue({
+      messages: [new AIMessage("Arrr! POST to /auth/signup!")],
+    });
     mockConversationAgentFactory.buildWithSystemPrompt.mockReturnValue({
       invoke: mockInvoke,
     });
@@ -75,13 +75,15 @@ describe("Chat With Agent", () => {
     // Verify mocks called correctly
     expect(mockAgentRepository.findById).toHaveBeenCalledWith(agentId);
 
-    expect(mockConversationAgentFactory.buildWithSystemPrompt).toHaveBeenCalled();
+    expect(
+      mockConversationAgentFactory.buildWithSystemPrompt,
+    ).toHaveBeenCalled();
 
-    const buildArgs = mockConversationAgentFactory.buildWithSystemPrompt.mock
-      .calls[0][0];
-    expect(buildArgs.systemPrompt).toContain(instructions);
-    expect(buildArgs.systemPrompt).toContain(tone);
-    expect(buildArgs.tools).toHaveLength(1);
+    const buildArguments =
+      mockConversationAgentFactory.buildWithSystemPrompt.mock.calls[0][0];
+    expect(buildArguments.systemPrompt).toContain(instructions);
+    expect(buildArguments.systemPrompt).toContain(tone);
+    expect(buildArguments.tools).toHaveLength(1);
 
     expect(mockInvoke).toHaveBeenCalledWith({
       input: message,

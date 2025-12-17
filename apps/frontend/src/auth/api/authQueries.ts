@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import { authKeys } from '@/shared';
-import { getCurrentUser } from './authApi';
+import { useQuery } from "@tanstack/react-query";
+import { authKeys } from "@/shared";
+import { getCurrentUser } from "./authApi";
 
 /**
  * Query hook to fetch current authenticated user

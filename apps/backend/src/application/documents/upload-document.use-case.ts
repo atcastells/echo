@@ -23,12 +23,19 @@ interface MulterFile {
 
 @Service()
 export class UploadDocumentUseCase {
-  private readonly storageAdapter: SupabaseStorageAdapter = Container.get(SupabaseStorageAdapter);
-  private readonly documentRepository: DocumentRepository = Container.get(DOCUMENT_REPOSITORY);
-  private readonly documentParser: DocumentParser = Container.get(PdfParserAdapter);
+  private readonly storageAdapter: SupabaseStorageAdapter = Container.get(
+    SupabaseStorageAdapter,
+  );
+  private readonly documentRepository: DocumentRepository =
+    Container.get(DOCUMENT_REPOSITORY);
+  private readonly documentParser: DocumentParser =
+    Container.get(PdfParserAdapter);
   private readonly textChunker: TextChunker = Container.get(TextChunker);
-  private readonly embeddingService: EmbeddingService = Container.get(GeminiEmbeddingAdapter);
-  private readonly vectorStore: VectorStore = Container.get(SupabaseVectorStore);
+  private readonly embeddingService: EmbeddingService = Container.get(
+    GeminiEmbeddingAdapter,
+  );
+  private readonly vectorStore: VectorStore =
+    Container.get(SupabaseVectorStore);
 
   async execute(
     userId: string,

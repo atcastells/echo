@@ -7,8 +7,11 @@ import { HttpError } from "../../adapters/inbound/http/errors/http-error.js";
 
 @Service()
 export class DeleteDocumentUseCase {
-  private readonly documentRepository: DocumentRepository = Container.get(DOCUMENT_REPOSITORY);
-  private readonly storageAdapter: SupabaseStorageAdapter = Container.get(SupabaseStorageAdapter);
+  private readonly documentRepository: DocumentRepository =
+    Container.get(DOCUMENT_REPOSITORY);
+  private readonly storageAdapter: SupabaseStorageAdapter = Container.get(
+    SupabaseStorageAdapter,
+  );
 
   async execute(id: string, userId: string): Promise<void> {
     const document = await this.documentRepository.findById(id);

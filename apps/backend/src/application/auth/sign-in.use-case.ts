@@ -4,12 +4,17 @@ import { User } from "../../domain/user/user.js";
 import { SupabaseClient } from "../../adapters/outbound/authentication/supabase-client.js";
 import { HttpError } from "../../adapters/inbound/http/errors/http-error.js";
 import { AuthRepository } from "../../domain/auth/auth-repository.js";
-import { AUTH_REPOSITORY, SUPABASE_CLIENT } from "../../infrastructure/constants.js";
+import {
+  AUTH_REPOSITORY,
+  SUPABASE_CLIENT,
+} from "../../infrastructure/constants.js";
 
 @Service()
 export class SignInUseCase {
-  private readonly authRepository: AuthRepository = Container.get(AUTH_REPOSITORY);
-  private readonly supabaseClient: SupabaseClient = Container.get(SUPABASE_CLIENT);
+  private readonly authRepository: AuthRepository =
+    Container.get(AUTH_REPOSITORY);
+  private readonly supabaseClient: SupabaseClient =
+    Container.get(SUPABASE_CLIENT);
 
   async execute(
     email: string,

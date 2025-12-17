@@ -1,3 +1,3 @@
-export * from './profileApi';
-export * from './profileQueries';
-export * from './profileMutations';
+export * from "./profileApi";
+export * from "./profileQueries";
+export * from "./profileMutations";

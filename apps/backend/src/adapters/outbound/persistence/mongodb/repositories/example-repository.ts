@@ -4,7 +4,8 @@ import { DatabaseConnection } from "../../../../../domain/services/database-conn
 
 @Service()
 export class ExampleRepository {
-  private readonly databaseConnection: DatabaseConnection = Container.get("DatabaseConnection");
+  private readonly databaseConnection: DatabaseConnection =
+    Container.get("DatabaseConnection");
 
   async findAll() {
     const database = this.databaseConnection.getDb();

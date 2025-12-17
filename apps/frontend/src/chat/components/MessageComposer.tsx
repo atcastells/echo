@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import type { KeyboardEvent } from 'react';
+import { useState } from "react";
+import type { KeyboardEvent } from "react";
 
 interface MessageComposerProps {
   onSendMessage: (message: string) => void;
@@ -10,19 +10,19 @@ interface MessageComposerProps {
 export const MessageComposer = ({
   onSendMessage,
   disabled = false,
-  placeholder = 'Type your message...',
+  placeholder = "Type your message...",
 }: MessageComposerProps) => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const handleSend = () => {
     if (message.trim() && !disabled) {
       onSendMessage(message.trim());
-      setMessage('');
+      setMessage("");
     }
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
@@ -38,7 +38,7 @@ export const MessageComposer = ({
         disabled={disabled}
         rows={1}
         className="flex-1 resize-none border-none bg-transparent text-sm text-neutral-900 placeholder-neutral-400 outline-none focus:ring-0"
-        style={{ minHeight: '24px', maxHeight: '120px' }}
+        style={{ minHeight: "24px", maxHeight: "120px" }}
       />
       <button
         onClick={handleSend}

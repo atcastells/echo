@@ -7,8 +7,11 @@ import { DocumentChunk } from "../../domain/entities/document-chunk.js";
 
 @Service()
 export class RetrieveContextUseCase {
-  private readonly embeddingService: EmbeddingService = Container.get(GeminiEmbeddingAdapter);
-  private readonly vectorStore: VectorStore = Container.get(SupabaseVectorStore);
+  private readonly embeddingService: EmbeddingService = Container.get(
+    GeminiEmbeddingAdapter,
+  );
+  private readonly vectorStore: VectorStore =
+    Container.get(SupabaseVectorStore);
 
   async execute(
     userId: string,
