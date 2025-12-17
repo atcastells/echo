@@ -117,7 +117,7 @@ export const Avatar = ({
           !showImage && bgColor,
           // Ring styles
           showRing && "ring-2 ring-white ring-offset-2",
-          className
+          className,
         )}
       >
         {showImage ? (
@@ -141,7 +141,7 @@ export const Avatar = ({
             "absolute bottom-0 right-0",
             "rounded-full border-white",
             statusSizeStyles[size],
-            statusColorStyles[status]
+            statusColorStyles[status],
           )}
           aria-label={`Status: ${status}`}
         />

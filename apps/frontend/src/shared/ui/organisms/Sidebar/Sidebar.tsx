@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { clsx } from 'clsx';
-import { Button } from '../../atoms/Button';
-import { Icon } from '../../atoms/Icon';
-import { TextInput } from '../../atoms/TextInput';
-import { ConversationList } from '../ConversationList';
-import type { ConversationData } from '../../molecules/ConversationListItem';
+import { useState } from "react";
+import { clsx } from "clsx";
+import { Button } from "../../atoms/Button";
+import { Icon } from "../../atoms/Icon";
+import { TextInput } from "../../atoms/TextInput";
+import { ConversationList } from "../ConversationList";
+import type { ConversationData } from "../../molecules/ConversationListItem";
 
 export interface SidebarProps {
   /** Array of conversations to display */
@@ -53,7 +53,7 @@ export const Sidebar = ({
   onToggleCollapse,
   className,
 }: SidebarProps) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -64,7 +64,7 @@ export const Sidebar = ({
   // Filter conversations based on search
   const filteredConversations = searchQuery
     ? conversations.filter((conv) =>
-        conv.title.toLowerCase().includes(searchQuery.toLowerCase())
+        conv.title.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     : conversations;
 
@@ -73,10 +73,10 @@ export const Sidebar = ({
     return (
       <aside
         className={clsx(
-          'flex flex-col items-center py-4 gap-4',
-          'bg-neutral-50 border-r border-neutral-200',
-          'w-16',
-          className
+          "flex flex-col items-center py-4 gap-4",
+          "bg-neutral-50 border-r border-neutral-200",
+          "w-16",
+          className,
         )}
       >
         {/* Expand button */}
@@ -85,9 +85,9 @@ export const Sidebar = ({
             type="button"
             onClick={onToggleCollapse}
             className={clsx(
-              'p-2 rounded-lg transition-colors',
-              'text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100',
-              'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500'
+              "p-2 rounded-lg transition-colors",
+              "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100",
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
             )}
             aria-label="Expand sidebar"
           >
@@ -101,9 +101,9 @@ export const Sidebar = ({
             type="button"
             onClick={onNewConversation}
             className={clsx(
-              'p-3 rounded-xl transition-colors',
-              'bg-primary-600 text-white hover:bg-primary-700',
-              'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500'
+              "p-3 rounded-xl transition-colors",
+              "bg-primary-600 text-white hover:bg-primary-700",
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
             )}
             aria-label="New conversation"
           >
@@ -117,10 +117,10 @@ export const Sidebar = ({
   return (
     <aside
       className={clsx(
-        'flex flex-col',
-        'bg-neutral-50 border-r border-neutral-200',
-        'w-72',
-        className
+        "flex flex-col",
+        "bg-neutral-50 border-r border-neutral-200",
+        "w-72",
+        className,
       )}
     >
       {/* Header */}
@@ -132,9 +132,9 @@ export const Sidebar = ({
               type="button"
               onClick={onToggleCollapse}
               className={clsx(
-                'p-1.5 rounded-lg transition-colors',
-                'text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500'
+                "p-1.5 rounded-lg transition-colors",
+                "text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
               )}
               aria-label="Collapse sidebar"
             >
@@ -190,7 +190,8 @@ export const Sidebar = ({
       {/* Footer */}
       <div className="p-4 border-t border-neutral-200">
         <p className="text-xs text-neutral-400 text-center">
-          {conversations.length} conversation{conversations.length === 1 ? '' : 's'}
+          {conversations.length} conversation
+          {conversations.length === 1 ? "" : "s"}
         </p>
       </div>
     </aside>

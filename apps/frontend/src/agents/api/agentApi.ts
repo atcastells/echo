@@ -1,4 +1,4 @@
-import { apiClient } from '@/shared';
+import { apiClient } from "@/shared";
 import type {
   Agent,
   Thread,
@@ -7,10 +7,10 @@ import type {
   CreateThreadPayload,
   ChatPayload,
   ChatResponse,
-} from '../types';
+} from "../types";
 
 const AGENT_ENDPOINTS = {
-  list: '/api/v1/agents',
+  list: "/api/v1/agents",
   detail: (id: string) => `/api/v1/agents/${id}`,
   createThread: (id: string) => `/api/v1/agents/${id}/threads`,
   threadHistory: (id: string, threadId: string) =>
@@ -35,7 +35,9 @@ export const getAgent = async (agentId: string): Promise<Agent> => {
 /**
  * Create a new agent
  */
-export const createAgent = async (payload: CreateAgentPayload): Promise<Agent> => {
+export const createAgent = async (
+  payload: CreateAgentPayload,
+): Promise<Agent> => {
   return apiClient.post<Agent>(AGENT_ENDPOINTS.list, payload);
 };
 
@@ -44,9 +46,12 @@ export const createAgent = async (payload: CreateAgentPayload): Promise<Agent> =
  */
 export const createThread = async (
   agentId: string,
-  payload?: CreateThreadPayload
+  payload?: CreateThreadPayload,
 ): Promise<Thread> => {
-  return apiClient.post<Thread>(AGENT_ENDPOINTS.createThread(agentId), payload || {});
+  return apiClient.post<Thread>(
+    AGENT_ENDPOINTS.createThread(agentId),
+    payload || {},
+  );
 };
 
 /**
@@ -54,9 +59,11 @@ export const createThread = async (
  */
 export const getThreadHistory = async (
   agentId: string,
-  threadId: string
+  threadId: string,
 ): Promise<ChatMessage[]> => {
-  return apiClient.get<ChatMessage[]>(AGENT_ENDPOINTS.threadHistory(agentId, threadId));
+  return apiClient.get<ChatMessage[]>(
+    AGENT_ENDPOINTS.threadHistory(agentId, threadId),
+  );
 };
 
 /**
@@ -64,7 +71,7 @@ export const getThreadHistory = async (
  */
 export const sendChatMessage = async (
   agentId: string,
-  payload: ChatPayload
+  payload: ChatPayload,
 ): Promise<ChatResponse> => {
   return apiClient.post<ChatResponse>(AGENT_ENDPOINTS.chat(agentId), payload);
 };

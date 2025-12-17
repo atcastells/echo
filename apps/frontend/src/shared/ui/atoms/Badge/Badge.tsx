@@ -62,7 +62,7 @@ export const Badge = ({
           "inline-block rounded-full",
           dotSizeStyles[size],
           dotVariantStyles[variant],
-          className
+          className,
         )}
         aria-hidden="true"
       />
@@ -76,7 +76,7 @@ export const Badge = ({
         "font-medium rounded-full",
         sizeStyles[size],
         variantStyles[variant],
-        className
+        className,
       )}
     >
       {children}

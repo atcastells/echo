@@ -1,6 +1,6 @@
-import { clsx } from 'clsx';
-import { Button } from '../../atoms/Button';
-import { Icon, type IconName } from '../../atoms/Icon';
+import { clsx } from "clsx";
+import { Button } from "../../atoms/Button";
+import { Icon, type IconName } from "../../atoms/Icon";
 
 export interface Capability {
   /** Unique identifier */
@@ -34,35 +34,35 @@ export interface FirstRunExperienceProps {
 
 const defaultCapabilities: Capability[] = [
   {
-    id: '1',
-    title: 'Resume Optimization',
-    description: 'Get AI-powered suggestions to improve your resume',
-    icon: 'document',
+    id: "1",
+    title: "Resume Optimization",
+    description: "Get AI-powered suggestions to improve your resume",
+    icon: "document",
   },
   {
-    id: '2',
-    title: 'Interview Prep',
-    description: 'Practice with mock interviews and get feedback',
-    icon: 'chat-bubble-left-right',
+    id: "2",
+    title: "Interview Prep",
+    description: "Practice with mock interviews and get feedback",
+    icon: "chat-bubble-left-right",
   },
   {
-    id: '3',
-    title: 'Career Guidance',
-    description: 'Explore career paths and skill development',
-    icon: 'sparkles',
+    id: "3",
+    title: "Career Guidance",
+    description: "Explore career paths and skill development",
+    icon: "sparkles",
   },
   {
-    id: '4',
-    title: 'Job Search',
-    description: 'Find opportunities that match your profile',
-    icon: 'magnifying-glass',
+    id: "4",
+    title: "Job Search",
+    description: "Find opportunities that match your profile",
+    icon: "magnifying-glass",
   },
 ];
 
 const defaultExamples = [
-  'Review my resume for a senior engineer position',
-  'Help me prepare for a technical interview',
-  'What skills should I learn for product management?',
+  "Review my resume for a senior engineer position",
+  "Help me prepare for a technical interview",
+  "What skills should I learn for product management?",
 ];
 
 /**
@@ -72,8 +72,8 @@ const defaultExamples = [
  * shows example prompts, and provides quick-start actions.
  */
 export const FirstRunExperience = ({
-  productName = 'Echo',
-  tagline = 'Your AI-powered career assistant',
+  productName = "Echo",
+  tagline = "Your AI-powered career assistant",
   capabilities = defaultCapabilities,
   examplePrompts = defaultExamples,
   onGetStarted,
@@ -84,9 +84,9 @@ export const FirstRunExperience = ({
   return (
     <div
       className={clsx(
-        'min-h-screen flex flex-col items-center justify-center p-6',
-        'bg-gradient-to-b from-primary-50 to-white',
-        className
+        "min-h-screen flex flex-col items-center justify-center p-6",
+        "bg-gradient-to-b from-primary-50 to-white",
+        className,
       )}
     >
       <div className="w-full max-w-2xl text-center">
@@ -108,13 +108,17 @@ export const FirstRunExperience = ({
               <div
                 key={cap.id}
                 className={clsx(
-                  'p-5 rounded-xl bg-white border border-neutral-200',
-                  'text-left transition-all duration-150',
-                  'hover:shadow-md hover:border-primary-200'
+                  "p-5 rounded-xl bg-white border border-neutral-200",
+                  "text-left transition-all duration-150",
+                  "hover:shadow-md hover:border-primary-200",
                 )}
               >
                 <div className="w-10 h-10 rounded-lg bg-primary-100 flex items-center justify-center mb-3">
-                  <Icon name={cap.icon} size="md" className="text-primary-600" />
+                  <Icon
+                    name={cap.icon}
+                    size="md"
+                    className="text-primary-600"
+                  />
                 </div>
                 <h3 className="font-semibold text-neutral-800 mb-1">
                   {cap.title}
@@ -146,11 +150,11 @@ export const FirstRunExperience = ({
                   type="button"
                   onClick={() => onExampleClick?.(prompt)}
                   className={clsx(
-                    'px-4 py-2 rounded-full text-sm',
-                    'bg-neutral-100 text-neutral-700',
-                    'hover:bg-primary-100 hover:text-primary-700',
-                    'transition-colors duration-150',
-                    'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500'
+                    "px-4 py-2 rounded-full text-sm",
+                    "bg-neutral-100 text-neutral-700",
+                    "hover:bg-primary-100 hover:text-primary-700",
+                    "transition-colors duration-150",
+                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
                   )}
                 >
                   {prompt}

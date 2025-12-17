@@ -5,17 +5,22 @@
 /**
  * Size variants available for components
  */
-export type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type Size = "xs" | "sm" | "md" | "lg" | "xl";
 
 /**
  * Color variants available for components
  */
-export type ColorVariant = 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
+export type ColorVariant =
+  | "primary"
+  | "secondary"
+  | "success"
+  | "warning"
+  | "danger";
 
 /**
  * Style variants for components (solid, outline, ghost)
  */
-export type StyleVariant = 'solid' | 'outline' | 'ghost';
+export type StyleVariant = "solid" | "outline" | "ghost";
 
 /**
  * Common props that most components share
@@ -63,6 +68,9 @@ export type AsProps<T extends React.ElementType> = {
 /**
  * Utility type for polymorphic components
  */
-export type PolymorphicProps<T extends React.ElementType, Props = object> = Props &
+export type PolymorphicProps<
+  T extends React.ElementType,
+  Props = object,
+> = Props &
   AsProps<T> &
-  Omit<React.ComponentPropsWithoutRef<T>, keyof Props | 'as'>;
+  Omit<React.ComponentPropsWithoutRef<T>, keyof Props | "as">;

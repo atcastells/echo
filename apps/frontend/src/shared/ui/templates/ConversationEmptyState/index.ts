@@ -1,2 +1,5 @@
-export { ConversationEmptyState } from './ConversationEmptyState';
-export type { ConversationEmptyStateProps, SuggestedPrompt } from './ConversationEmptyState';
+export { ConversationEmptyState } from "./ConversationEmptyState";
+export type {
+  ConversationEmptyStateProps,
+  SuggestedPrompt,
+} from "./ConversationEmptyState";

@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { clsx } from 'clsx';
-import { Icon } from '../../atoms/Icon';
-import { Tooltip } from '../../atoms/Tooltip';
-import { AgentIdentity, type AgentStatus } from '../../molecules/AgentIdentity';
-import { ContextIndicator } from '../../molecules/ContextIndicator';
+import { useState } from "react";
+import { clsx } from "clsx";
+import { Icon } from "../../atoms/Icon";
+import { Tooltip } from "../../atoms/Tooltip";
+import { AgentIdentity, type AgentStatus } from "../../molecules/AgentIdentity";
+import { ContextIndicator } from "../../molecules/ContextIndicator";
 
 export interface ConversationHeaderProps {
   /** Agent display name */
@@ -51,10 +51,10 @@ export interface ConversationHeaderProps {
  * in a header bar for the chat interface.
  */
 export const ConversationHeader = ({
-  agentName = 'Echo',
-  agentRole = 'AI Career Agent',
+  agentName = "Echo",
+  agentRole = "AI Career Agent",
   agentAvatarUrl,
-  agentStatus = 'available',
+  agentStatus = "available",
   conversationTitle,
   memoryEnabled = true,
   contextUsagePercent = 0,
@@ -75,10 +75,10 @@ export const ConversationHeader = ({
   return (
     <header
       className={clsx(
-        'flex items-center justify-between',
-        'px-4 py-3',
-        'bg-white border-b border-neutral-200',
-        className
+        "flex items-center justify-between",
+        "px-4 py-3",
+        "bg-white border-b border-neutral-200",
+        className,
       )}
     >
       {/* Left section */}
@@ -86,18 +86,18 @@ export const ConversationHeader = ({
         {/* Sidebar toggle */}
         {showSidebarToggle && (
           <Tooltip
-            content={sidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
+            content={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
             position="bottom"
           >
             <button
               type="button"
               onClick={onToggleSidebar}
               className={clsx(
-                'p-2 rounded-lg transition-colors',
-                'text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500'
+                "p-2 rounded-lg transition-colors",
+                "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
               )}
-              aria-label={sidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
+              aria-label={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
             >
               <Icon name="bars-3" size="md" />
             </button>
@@ -137,9 +137,9 @@ export const ConversationHeader = ({
                 type="button"
                 onClick={onShare}
                 className={clsx(
-                  'p-2 rounded-lg transition-colors',
-                  'text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100',
-                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500'
+                  "p-2 rounded-lg transition-colors",
+                  "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100",
+                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
                 )}
                 aria-label="Share conversation"
               >
@@ -155,10 +155,10 @@ export const ConversationHeader = ({
                 type="button"
                 onClick={() => setShowMoreMenu(!showMoreMenu)}
                 className={clsx(
-                  'p-2 rounded-lg transition-colors',
-                  'text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100',
-                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
-                  showMoreMenu && 'bg-neutral-100 text-neutral-700'
+                  "p-2 rounded-lg transition-colors",
+                  "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100",
+                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
+                  showMoreMenu && "bg-neutral-100 text-neutral-700",
                 )}
                 aria-label="More options"
                 aria-expanded={showMoreMenu}
@@ -176,10 +176,10 @@ export const ConversationHeader = ({
                 />
                 <div
                   className={clsx(
-                    'absolute right-0 top-full mt-1 z-20',
-                    'w-48 py-1',
-                    'bg-white rounded-lg shadow-lg border border-neutral-200',
-                    'animate-in fade-in slide-in-from-top-1 duration-150'
+                    "absolute right-0 top-full mt-1 z-20",
+                    "w-48 py-1",
+                    "bg-white rounded-lg shadow-lg border border-neutral-200",
+                    "animate-in fade-in slide-in-from-top-1 duration-150",
                   )}
                 >
                   {onRename && (
@@ -227,26 +227,26 @@ export const ConversationHeader = ({
 };
 
 interface MenuButtonProps {
-  icon: 'pencil' | 'arrow-up-tray' | 'trash';
+  icon: "pencil" | "arrow-up-tray" | "trash";
   label: string;
   onClick: () => void;
-  variant?: 'default' | 'danger';
+  variant?: "default" | "danger";
 }
 
 const MenuButton = ({
   icon,
   label,
   onClick,
-  variant = 'default',
+  variant = "default",
 }: MenuButtonProps) => (
   <button
     type="button"
     onClick={onClick}
     className={clsx(
-      'w-full flex items-center gap-2 px-3 py-2 text-sm',
-      'transition-colors duration-150',
-      variant === 'default' && 'text-neutral-700 hover:bg-neutral-100',
-      variant === 'danger' && 'text-error-600 hover:bg-error-50'
+      "w-full flex items-center gap-2 px-3 py-2 text-sm",
+      "transition-colors duration-150",
+      variant === "default" && "text-neutral-700 hover:bg-neutral-100",
+      variant === "danger" && "text-error-600 hover:bg-error-50",
     )}
   >
     <Icon name={icon} size="sm" />

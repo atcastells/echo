@@ -1,8 +1,8 @@
-import { useEffect, useRef, type ReactNode } from 'react';
-import { createPortal } from 'react-dom';
-import { clsx } from 'clsx';
-import { Button } from '../../atoms/Button';
-import { Icon } from '../../atoms/Icon';
+import { useEffect, useRef, type ReactNode } from "react";
+import { createPortal } from "react-dom";
+import { clsx } from "clsx";
+import { Button } from "../../atoms/Button";
+import { Icon } from "../../atoms/Icon";
 
 export interface ModalProps {
   /** Whether the modal is open */
@@ -16,7 +16,7 @@ export interface ModalProps {
   /** Footer content (typically action buttons) */
   footer?: ReactNode;
   /** Size of the modal */
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: "sm" | "md" | "lg" | "xl";
   /** Whether clicking the backdrop closes the modal */
   closeOnBackdropClick?: boolean;
   /** Whether pressing Escape closes the modal */
@@ -29,11 +29,11 @@ export interface ModalProps {
   className?: string;
 }
 
-const sizeStyles: Record<NonNullable<ModalProps['size']>, string> = {
-  sm: 'max-w-sm',
-  md: 'max-w-md',
-  lg: 'max-w-lg',
-  xl: 'max-w-xl',
+const sizeStyles: Record<NonNullable<ModalProps["size"]>, string> = {
+  sm: "max-w-sm",
+  md: "max-w-md",
+  lg: "max-w-lg",
+  xl: "max-w-xl",
 };
 
 /**
@@ -48,7 +48,7 @@ export const Modal = ({
   title,
   children,
   footer,
-  size = 'md',
+  size = "md",
   closeOnBackdropClick = true,
   closeOnEscape = true,
   showCloseButton = true,
@@ -63,13 +63,13 @@ export const Modal = ({
     if (!isOpen || !closeOnEscape) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         onClose();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, closeOnEscape, onClose]);
 
   // Focus management
@@ -82,17 +82,17 @@ export const Modal = ({
       modalRef.current?.focus();
 
       // Prevent body scroll
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
       // Restore body scroll
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
 
       // Restore focus to the previously focused element
       previousActiveElement.current?.focus();
     }
 
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 
@@ -101,10 +101,10 @@ export const Modal = ({
     if (!isOpen) return;
 
     const handleTabKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab' || !modalRef.current) return;
+      if (e.key !== "Tab" || !modalRef.current) return;
 
       const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
       );
       const firstElement = focusableElements[0];
       const lastElement = focusableElements[focusableElements.length - 1];
@@ -118,8 +118,8 @@ export const Modal = ({
       }
     };
 
-    document.addEventListener('keydown', handleTabKey);
-    return () => document.removeEventListener('keydown', handleTabKey);
+    document.addEventListener("keydown", handleTabKey);
+    return () => document.removeEventListener("keydown", handleTabKey);
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -133,28 +133,28 @@ export const Modal = ({
   const modalContent = (
     <div
       className={clsx(
-        'fixed inset-0 z-50',
-        'flex overflow-y-auto',
-        centered ? 'items-center' : 'items-start pt-16',
-        'justify-center p-4',
-        'bg-black/50 backdrop-blur-sm',
-        'animate-in fade-in duration-200'
+        "fixed inset-0 z-50",
+        "flex overflow-y-auto",
+        centered ? "items-center" : "items-start pt-16",
+        "justify-center p-4",
+        "bg-black/50 backdrop-blur-sm",
+        "animate-in fade-in duration-200",
       )}
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
-      aria-labelledby={title ? 'modal-title' : undefined}
+      aria-labelledby={title ? "modal-title" : undefined}
     >
       <div
         ref={modalRef}
         tabIndex={-1}
         className={clsx(
-          'relative w-full',
+          "relative w-full",
           sizeStyles[size],
-          'bg-white rounded-xl shadow-xl',
-          'animate-in zoom-in-95 slide-in-from-bottom-4 duration-200',
-          'focus:outline-none',
-          className
+          "bg-white rounded-xl shadow-xl",
+          "animate-in zoom-in-95 slide-in-from-bottom-4 duration-200",
+          "focus:outline-none",
+          className,
         )}
       >
         {/* Header */}
@@ -173,10 +173,10 @@ export const Modal = ({
                 type="button"
                 onClick={onClose}
                 className={clsx(
-                  'p-1.5 rounded-lg transition-colors',
-                  'text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100',
-                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
-                  !title && 'ml-auto'
+                  "p-1.5 rounded-lg transition-colors",
+                  "text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100",
+                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
+                  !title && "ml-auto",
                 )}
                 aria-label="Close modal"
               >
@@ -212,7 +212,7 @@ export interface ConfirmModalProps {
   message: string;
   confirmLabel?: string;
   cancelLabel?: string;
-  variant?: 'default' | 'danger';
+  variant?: "default" | "danger";
   isLoading?: boolean;
 }
 
@@ -222,9 +222,9 @@ export const ConfirmModal = ({
   onConfirm,
   title,
   message,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
-  variant = 'default',
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
+  variant = "default",
   isLoading = false,
 }: ConfirmModalProps) => (
   <Modal
@@ -238,7 +238,7 @@ export const ConfirmModal = ({
           {cancelLabel}
         </Button>
         <Button
-          variant={variant === 'danger' ? 'danger' : 'primary'}
+          variant={variant === "danger" ? "danger" : "primary"}
           onClick={onConfirm}
           isLoading={isLoading}
         >

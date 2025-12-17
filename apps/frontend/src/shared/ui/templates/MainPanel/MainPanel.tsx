@@ -1,11 +1,11 @@
-import { clsx } from 'clsx';
-import { ConversationHeader } from '../../organisms/ConversationHeader';
-import { Composer } from '../../organisms/Composer';
-import { ConversationViewport } from '../ConversationViewport';
-import type { Message } from '../../organisms/MessageItem';
-import type { SuggestedPrompt } from '../ConversationEmptyState';
-import type { AttachmentFile } from '../../molecules/AttachmentPreview';
-import type { AgentStatus } from '../../molecules/AgentIdentity';
+import { clsx } from "clsx";
+import { ConversationHeader } from "../../organisms/ConversationHeader";
+import { Composer } from "../../organisms/Composer";
+import { ConversationViewport } from "../ConversationViewport";
+import type { Message } from "../../organisms/MessageItem";
+import type { SuggestedPrompt } from "../ConversationEmptyState";
+import type { AttachmentFile } from "../../molecules/AttachmentPreview";
+import type { AgentStatus } from "../../molecules/AgentIdentity";
 
 export interface MainPanelProps {
   /** Messages to display */
@@ -15,7 +15,7 @@ export interface MainPanelProps {
   /** Partial content for streaming message */
   streamingContent?: string;
   /** Feedback by message ID */
-  feedbackByMessageId?: Record<string, 'positive' | 'negative' | null>;
+  feedbackByMessageId?: Record<string, "positive" | "negative" | null>;
   /** Agent name */
   agentName?: string;
   /** Agent role */
@@ -81,17 +81,17 @@ export const MainPanel = ({
   streamingMessageId,
   streamingContent,
   feedbackByMessageId,
-  agentName = 'Echo',
-  agentRole = 'AI Career Agent',
+  agentName = "Echo",
+  agentRole = "AI Career Agent",
   agentAvatarUrl,
-  agentStatus = 'available',
-  userName = 'You',
+  agentStatus = "available",
+  userName = "You",
   userAvatarUrl,
   conversationTitle,
   memoryEnabled = true,
   contextUsagePercent = 0,
   composerDisabled = false,
-  composerValue = '',
+  composerValue = "",
   attachments = [],
   suggestedPrompts,
   showSidebarToggle = true,
@@ -120,7 +120,7 @@ export const MainPanel = ({
   const isStreaming = !!streamingMessageId;
 
   return (
-    <div className={clsx('flex flex-col h-full bg-white', className)}>
+    <div className={clsx("flex flex-col h-full bg-white", className)}>
       {/* Header */}
       <ConversationHeader
         agentName={agentName}
@@ -178,7 +178,7 @@ export const MainPanel = ({
             placeholder={
               isStreaming
                 ? `${agentName} is responding...`
-                : 'Type your message...'
+                : "Type your message..."
             }
           />
         </div>

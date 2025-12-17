@@ -103,7 +103,7 @@ export const Tooltip = ({
             "absolute z-50 px-3 py-1.5 text-sm text-white bg-neutral-800 rounded-md shadow-lg whitespace-nowrap",
             "animate-in fade-in duration-150",
             positionStyles[position],
-            tooltipClassName
+            tooltipClassName,
           )}
         >
           {content}

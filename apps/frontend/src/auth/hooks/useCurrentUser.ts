@@ -1,5 +1,5 @@
-import { useAuthContext } from '../context';
-import type { User } from '../types';
+import { useAuthContext } from "../context";
+import type { User } from "../types";
 
 /**
  * Hook to get the current authenticated user
@@ -9,7 +9,7 @@ export const useCurrentUser = (): User => {
   const { user, isAuthenticated } = useAuthContext();
 
   if (!isAuthenticated || !user) {
-    throw new Error('useCurrentUser must be used when user is authenticated');
+    throw new Error("useCurrentUser must be used when user is authenticated");
   }
 
   return user;

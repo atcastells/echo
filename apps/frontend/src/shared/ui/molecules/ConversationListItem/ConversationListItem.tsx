@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { clsx } from 'clsx';
-import { Icon } from '../../atoms/Icon';
-import { Tooltip } from '../../atoms/Tooltip';
+import { useState } from "react";
+import { clsx } from "clsx";
+import { Icon } from "../../atoms/Icon";
+import { Tooltip } from "../../atoms/Tooltip";
 
 export interface ConversationData {
   /** Unique identifier */
@@ -43,14 +43,14 @@ const formatRelativeTime = (date: Date): string => {
   const diffHour = Math.floor(diffMin / 60);
   const diffDay = Math.floor(diffHour / 24);
 
-  if (diffMin < 1) return 'Just now';
+  if (diffMin < 1) return "Just now";
   if (diffMin < 60) return `${diffMin}m ago`;
   if (diffHour < 24) return `${diffHour}h ago`;
   if (diffDay < 7) return `${diffDay}d ago`;
 
   return date.toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
+    month: "short",
+    day: "numeric",
   });
 };
 
@@ -71,7 +71,7 @@ export const ConversationListItem = ({
   const [isHovered, setIsHovered] = useState(false);
 
   const timestamp =
-    typeof conversation.timestamp === 'string'
+    typeof conversation.timestamp === "string"
       ? new Date(conversation.timestamp)
       : conversation.timestamp;
 
@@ -91,13 +91,13 @@ export const ConversationListItem = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={clsx(
-        'w-full text-left px-3 py-2.5 rounded-lg cursor-pointer',
-        'transition-colors duration-150',
-        'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
+        "w-full text-left px-3 py-2.5 rounded-lg cursor-pointer",
+        "transition-colors duration-150",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
         isActive
-          ? 'bg-primary-50 border border-primary-200'
-          : 'hover:bg-neutral-100 border border-transparent',
-        className
+          ? "bg-primary-50 border border-primary-200"
+          : "hover:bg-neutral-100 border border-transparent",
+        className,
       )}
     >
       <div className="flex items-start gap-3">
@@ -116,9 +116,9 @@ export const ConversationListItem = ({
           <div className="flex items-center justify-between gap-2">
             <h3
               className={clsx(
-                'text-sm font-medium truncate',
-                isActive ? 'text-primary-800' : 'text-neutral-800',
-                conversation.hasUnread && 'font-semibold'
+                "text-sm font-medium truncate",
+                isActive ? "text-primary-800" : "text-neutral-800",
+                conversation.hasUnread && "font-semibold",
               )}
             >
               {conversation.title}
@@ -132,9 +132,9 @@ export const ConversationListItem = ({
                     type="button"
                     onClick={handleDelete}
                     className={clsx(
-                      'p-1 rounded-md transition-colors',
-                      'text-neutral-400 hover:text-error-600 hover:bg-error-50',
-                      'focus:outline-none focus-visible:ring-2 focus-visible:ring-error-500'
+                      "p-1 rounded-md transition-colors",
+                      "text-neutral-400 hover:text-error-600 hover:bg-error-50",
+                      "focus:outline-none focus-visible:ring-2 focus-visible:ring-error-500",
                     )}
                     aria-label="Delete conversation"
                   >
@@ -156,8 +156,8 @@ export const ConversationListItem = ({
           {conversation.lastMessagePreview && (
             <p
               className={clsx(
-                'text-sm truncate mt-0.5',
-                isActive ? 'text-primary-600' : 'text-neutral-500'
+                "text-sm truncate mt-0.5",
+                isActive ? "text-primary-600" : "text-neutral-500",
               )}
             >
               {conversation.lastMessagePreview}
@@ -168,7 +168,7 @@ export const ConversationListItem = ({
           {conversation.messageCount !== undefined && (
             <p className="text-xs text-neutral-400 mt-1">
               {conversation.messageCount} message
-              {conversation.messageCount === 1 ? '' : 's'}
+              {conversation.messageCount === 1 ? "" : "s"}
             </p>
           )}
         </div>

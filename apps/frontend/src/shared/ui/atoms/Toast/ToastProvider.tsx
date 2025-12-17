@@ -66,7 +66,7 @@ export const ToastProvider = ({
 }: ToastProviderProps) => {
   const [toasts, setToasts] = useState<ToastData[]>([]);
   const timersRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(
-    new Map()
+    new Map(),
   );
 
   const removeToast = useCallback((id: string) => {
@@ -111,7 +111,7 @@ export const ToastProvider = ({
 
       return id;
     },
-    [defaultDuration, maxToasts, removeToast]
+    [defaultDuration, maxToasts, removeToast],
   );
 
   // Cleanup all timers on unmount
@@ -128,7 +128,7 @@ export const ToastProvider = ({
     (variant: ToastVariant) =>
       (message: string, options?: ToastHelperOptions) =>
         addToast({ ...options, message, variant }),
-    [addToast]
+    [addToast],
   );
 
   const success = createVariantHelper("success");
@@ -138,7 +138,7 @@ export const ToastProvider = ({
 
   const contextValue = useMemo(
     () => ({ toasts, addToast, removeToast, success, error, warning, info }),
-    [toasts, addToast, removeToast, success, error, warning, info]
+    [toasts, addToast, removeToast, success, error, warning, info],
   );
 
   return (

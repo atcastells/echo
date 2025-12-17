@@ -1,7 +1,7 @@
-import { Component, type ReactNode, type ErrorInfo } from 'react';
-import { clsx } from 'clsx';
-import { Button } from '../../atoms/Button';
-import { Icon } from '../../atoms/Icon';
+import { Component, type ReactNode, type ErrorInfo } from "react";
+import { clsx } from "clsx";
+import { Button } from "../../atoms/Button";
+import { Icon } from "../../atoms/Icon";
 
 // -------------------
 // Offline Banner
@@ -31,12 +31,12 @@ export const OfflineBanner = ({
   return (
     <div
       className={clsx(
-        'fixed top-0 left-0 right-0 z-50',
-        'bg-warning-600 text-white',
-        'px-4 py-2',
-        'flex items-center justify-center gap-3',
-        'animate-in slide-in-from-top duration-300',
-        className
+        "fixed top-0 left-0 right-0 z-50",
+        "bg-warning-600 text-white",
+        "px-4 py-2",
+        "flex items-center justify-center gap-3",
+        "animate-in slide-in-from-top duration-300",
+        className,
       )}
       role="alert"
     >
@@ -89,18 +89,18 @@ export const RateLimitBanner = ({
   const formatTime = (seconds: number) => {
     if (seconds < 60) return `${seconds} seconds`;
     const minutes = Math.ceil(seconds / 60);
-    return `${minutes} minute${minutes > 1 ? 's' : ''}`;
+    return `${minutes} minute${minutes > 1 ? "s" : ""}`;
   };
 
   return (
     <div
       className={clsx(
-        'fixed top-0 left-0 right-0 z-50',
-        'bg-error-600 text-white',
-        'px-4 py-2',
-        'flex items-center justify-center gap-3',
-        'animate-in slide-in-from-top duration-300',
-        className
+        "fixed top-0 left-0 right-0 z-50",
+        "bg-error-600 text-white",
+        "px-4 py-2",
+        "flex items-center justify-center gap-3",
+        "animate-in slide-in-from-top duration-300",
+        className,
       )}
       role="alert"
     >
@@ -270,7 +270,7 @@ export const GlobalStates = ({
         resetInSeconds={rateLimitResetInSeconds}
         onDismiss={onDismissRateLimit}
       />
-      <div className={clsx((isOffline || isRateLimited) && 'pt-10')}>
+      <div className={clsx((isOffline || isRateLimited) && "pt-10")}>
         {children}
       </div>
     </ErrorBoundary>

@@ -1,6 +1,6 @@
-import { clsx } from 'clsx';
-import { Icon } from '../../atoms/Icon';
-import { Button } from '../../atoms/Button';
+import { clsx } from "clsx";
+import { Icon } from "../../atoms/Icon";
+import { Button } from "../../atoms/Button";
 
 export interface StreamingIndicatorProps {
   /** Partial content being streamed */
@@ -28,11 +28,11 @@ export const StreamingIndicator = ({
   showTyping = true,
   showStopButton = true,
   onStop,
-  label = 'Echo is typing',
+  label = "Echo is typing",
   className,
 }: StreamingIndicatorProps) => {
   return (
-    <div className={clsx('flex flex-col gap-2', className)}>
+    <div className={clsx("flex flex-col gap-2", className)}>
       {/* Partial content display */}
       {partialContent && (
         <div className="text-neutral-800 whitespace-pre-wrap">
@@ -44,7 +44,7 @@ export const StreamingIndicator = ({
       {/* Typing indicator with stop button */}
       <div className="flex items-center gap-3">
         {showTyping && !partialContent && <TypingDots />}
-        
+
         <span className="text-sm text-neutral-500 flex items-center gap-2">
           {label}
           {showTyping && partialContent && <TypingDotsInline />}
@@ -75,12 +75,12 @@ const TypingDots = () => (
       <span
         key={i}
         className={clsx(
-          'w-2 h-2 rounded-full bg-neutral-400',
-          'animate-bounce'
+          "w-2 h-2 rounded-full bg-neutral-400",
+          "animate-bounce",
         )}
         style={{
           animationDelay: `${i * 0.15}s`,
-          animationDuration: '0.6s',
+          animationDuration: "0.6s",
         }}
       />
     ))}
@@ -96,12 +96,12 @@ const TypingDotsInline = () => (
       <span
         key={i}
         className={clsx(
-          'w-1 h-1 rounded-full bg-neutral-400',
-          'animate-bounce'
+          "w-1 h-1 rounded-full bg-neutral-400",
+          "animate-bounce",
         )}
         style={{
           animationDelay: `${i * 0.15}s`,
-          animationDuration: '0.6s',
+          animationDuration: "0.6s",
         }}
       />
     ))}

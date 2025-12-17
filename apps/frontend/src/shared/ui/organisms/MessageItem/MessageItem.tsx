@@ -1,14 +1,14 @@
-import { clsx } from 'clsx';
-import { Avatar } from '../../atoms/Avatar';
-import { Button } from '../../atoms/Button';
-import { Icon } from '../../atoms/Icon';
+import { clsx } from "clsx";
+import { Avatar } from "../../atoms/Avatar";
+import { Button } from "../../atoms/Button";
+import { Icon } from "../../atoms/Icon";
 import {
   MessageBubble,
   type MessageBubbleCitation,
-} from '../../molecules/MessageBubble';
-import { MessageMeta, type MessageStatus } from '../../molecules/MessageMeta';
-import { MessageActions } from '../../molecules/MessageActions';
-import { StreamingIndicator } from '../../molecules/StreamingIndicator';
+} from "../../molecules/MessageBubble";
+import { MessageMeta, type MessageStatus } from "../../molecules/MessageMeta";
+import { MessageActions } from "../../molecules/MessageActions";
+import { StreamingIndicator } from "../../molecules/StreamingIndicator";
 
 export interface Message {
   /** Unique message identifier */
@@ -16,7 +16,7 @@ export interface Message {
   /** Message content */
   content: string;
   /** Message sender type */
-  role: 'user' | 'agent' | 'system';
+  role: "user" | "agent" | "system";
   /** Timestamp of the message */
   timestamp: Date | string;
   /** Whether the content is in Markdown format */
@@ -41,7 +41,7 @@ export interface MessageItemProps {
   /** Partial content for streaming messages */
   streamingContent?: string;
   /** Current feedback state */
-  feedback?: 'positive' | 'negative' | null;
+  feedback?: "positive" | "negative" | null;
   /** Agent display name (for agent messages) */
   agentName?: string;
   /** Agent avatar URL */
@@ -81,9 +81,9 @@ export const MessageItem = ({
   isStreaming = false,
   streamingContent,
   feedback,
-  agentName = 'Echo',
+  agentName = "Echo",
   agentAvatarUrl,
-  userName = 'You',
+  userName = "You",
   userAvatarUrl,
   showActions = true,
   onCopy,
@@ -95,15 +95,15 @@ export const MessageItem = ({
   onStopStreaming,
   className,
 }: MessageItemProps) => {
-  const isUser = message.role === 'user';
-  const isAgent = message.role === 'agent';
-  const isSystem = message.role === 'system';
+  const isUser = message.role === "user";
+  const isAgent = message.role === "agent";
+  const isSystem = message.role === "system";
   const hasError = !!message.error;
 
   // System messages have a simpler layout
   if (isSystem) {
     return (
-      <div className={clsx('flex justify-center py-2', className)}>
+      <div className={clsx("flex justify-center py-2", className)}>
         <MessageBubble
           content={message.content}
           variant="system"
@@ -117,9 +117,9 @@ export const MessageItem = ({
   return (
     <div
       className={clsx(
-        'flex gap-3',
-        isUser ? 'flex-row-reverse' : 'flex-row',
-        className
+        "flex gap-3",
+        isUser ? "flex-row-reverse" : "flex-row",
+        className,
       )}
     >
       {/* Avatar */}
@@ -134,8 +134,8 @@ export const MessageItem = ({
       {/* Message content */}
       <div
         className={clsx(
-          'flex flex-col gap-1 max-w-[75%]',
-          isUser ? 'items-end' : 'items-start'
+          "flex flex-col gap-1 max-w-[75%]",
+          isUser ? "items-end" : "items-start",
         )}
       >
         {/* Sender name */}
@@ -157,7 +157,7 @@ export const MessageItem = ({
         ) : (
           <MessageBubble
             content={message.content}
-            variant={isUser ? 'user' : 'agent'}
+            variant={isUser ? "user" : "agent"}
             isMarkdown={message.isMarkdown}
             citations={message.citations}
           />
@@ -187,8 +187,8 @@ export const MessageItem = ({
         {!isStreaming && (
           <div
             className={clsx(
-              'flex items-center gap-2',
-              isUser ? 'flex-row-reverse' : 'flex-row'
+              "flex items-center gap-2",
+              isUser ? "flex-row-reverse" : "flex-row",
             )}
           >
             <MessageMeta
@@ -200,7 +200,7 @@ export const MessageItem = ({
 
             {showActions && !hasError && (
               <MessageActions
-                messageType={isUser ? 'user' : 'agent'}
+                messageType={isUser ? "user" : "agent"}
                 showOnHover={true}
                 feedback={feedback}
                 isStreaming={isStreaming}

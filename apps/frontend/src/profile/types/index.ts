@@ -1,4 +1,4 @@
-import type { Timestamps } from '@/shared';
+import type { Timestamps } from "@/shared";
 
 // Profile basic information
 export interface ProfileBasics {

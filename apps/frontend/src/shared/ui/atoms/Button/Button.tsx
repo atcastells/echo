@@ -25,28 +25,28 @@ const variantStyles: Record<ButtonVariant, string> = {
     "hover:bg-primary-700",
     "focus-visible:ring-primary-500",
     "active:bg-primary-800",
-    "disabled:bg-primary-300 disabled:cursor-not-allowed"
+    "disabled:bg-primary-300 disabled:cursor-not-allowed",
   ),
   secondary: clsx(
     "bg-neutral-100 text-neutral-800 border border-neutral-300",
     "hover:bg-neutral-200",
     "focus-visible:ring-neutral-500",
     "active:bg-neutral-300",
-    "disabled:bg-neutral-50 disabled:text-neutral-400 disabled:border-neutral-200 disabled:cursor-not-allowed"
+    "disabled:bg-neutral-50 disabled:text-neutral-400 disabled:border-neutral-200 disabled:cursor-not-allowed",
   ),
   ghost: clsx(
     "bg-transparent text-neutral-700",
     "hover:bg-neutral-100",
     "focus-visible:ring-neutral-500",
     "active:bg-neutral-200",
-    "disabled:text-neutral-400 disabled:hover:bg-transparent disabled:cursor-not-allowed"
+    "disabled:text-neutral-400 disabled:hover:bg-transparent disabled:cursor-not-allowed",
   ),
   destructive: clsx(
     "bg-error-600 text-white",
     "hover:bg-error-700",
     "focus-visible:ring-error-500",
     "active:bg-error-800",
-    "disabled:bg-error-300 disabled:cursor-not-allowed"
+    "disabled:bg-error-300 disabled:cursor-not-allowed",
   ),
 };
 
@@ -81,7 +81,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
     const isDisabled = disabled || isLoading;
 
@@ -100,7 +100,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           // Size styles
           sizeStyles[size],
           // Custom className
-          className
+          className,
         )}
         {...props}
       >
@@ -126,7 +126,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = "Button";

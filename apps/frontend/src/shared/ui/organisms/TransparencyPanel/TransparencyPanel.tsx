@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { clsx } from 'clsx';
-import { Icon, type IconName } from '../../atoms/Icon';
-import { Badge } from '../../atoms/Badge';
+import { useState } from "react";
+import { clsx } from "clsx";
+import { Icon, type IconName } from "../../atoms/Icon";
+import { Badge } from "../../atoms/Badge";
 
 export interface ContextItem {
   /** Unique identifier */
   id: string;
   /** Item type */
-  type: 'document' | 'conversation' | 'memory' | 'web';
+  type: "document" | "conversation" | "memory" | "web";
   /** Display name */
   name: string;
   /** Relevance score (0-100) */
@@ -20,7 +20,7 @@ export interface ToolInvocation {
   /** Tool name */
   name: string;
   /** Tool status */
-  status: 'success' | 'failed' | 'skipped';
+  status: "success" | "failed" | "skipped";
   /** Execution time in ms */
   durationMs?: number;
 }
@@ -40,18 +40,18 @@ export interface TransparencyPanelProps {
   className?: string;
 }
 
-const typeIcons: Record<ContextItem['type'], IconName> = {
-  document: 'document',
-  conversation: 'chat-bubble-left-right',
-  memory: 'sparkles',
-  web: 'globe-alt',
+const typeIcons: Record<ContextItem["type"], IconName> = {
+  document: "document",
+  conversation: "chat-bubble-left-right",
+  memory: "sparkles",
+  web: "globe-alt",
 };
 
-const typeLabels: Record<ContextItem['type'], string> = {
-  document: 'Document',
-  conversation: 'Conversation',
-  memory: 'Memory',
-  web: 'Web',
+const typeLabels: Record<ContextItem["type"], string> = {
+  document: "Document",
+  conversation: "Conversation",
+  memory: "Memory",
+  web: "Web",
 };
 
 /**
@@ -81,9 +81,9 @@ export const TransparencyPanel = ({
   return (
     <div
       className={clsx(
-        'border border-neutral-200 rounded-lg overflow-hidden',
-        'bg-neutral-50',
-        className
+        "border border-neutral-200 rounded-lg overflow-hidden",
+        "bg-neutral-50",
+        className,
       )}
     >
       {/* Header */}
@@ -91,9 +91,9 @@ export const TransparencyPanel = ({
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
         className={clsx(
-          'w-full flex items-center gap-2 px-4 py-3',
-          'hover:bg-neutral-100 transition-colors',
-          'focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500'
+          "w-full flex items-center gap-2 px-4 py-3",
+          "hover:bg-neutral-100 transition-colors",
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500",
         )}
       >
         <Icon name="eye" size="sm" className="text-neutral-500" />
@@ -101,7 +101,7 @@ export const TransparencyPanel = ({
           Response Details
         </span>
         <Icon
-          name={isExpanded ? 'chevron-up' : 'chevron-down'}
+          name={isExpanded ? "chevron-up" : "chevron-down"}
           size="sm"
           className="ml-auto text-neutral-400"
         />
@@ -157,19 +157,19 @@ export const TransparencyPanel = ({
                   >
                     <Icon
                       name={
-                        tool.status === 'success'
-                          ? 'check-circle'
-                          : tool.status === 'failed'
-                          ? 'x-circle'
-                          : 'minus-circle'
+                        tool.status === "success"
+                          ? "check-circle"
+                          : tool.status === "failed"
+                            ? "x-circle"
+                            : "minus-circle"
                       }
                       size="sm"
                       className={
-                        tool.status === 'success'
-                          ? 'text-success-500'
-                          : tool.status === 'failed'
-                          ? 'text-error-500'
-                          : 'text-neutral-400'
+                        tool.status === "success"
+                          ? "text-success-500"
+                          : tool.status === "failed"
+                            ? "text-error-500"
+                            : "text-neutral-400"
                       }
                     />
                     <span className="text-neutral-700 flex-1">{tool.name}</span>

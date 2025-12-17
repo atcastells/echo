@@ -129,8 +129,8 @@ export const Interactive: Story = {
     const handleToggleScope = (scopeId: string) => {
       setScopes(
         scopes.map((s) =>
-          s.id === scopeId ? { ...s, isActive: !s.isActive } : s
-        )
+          s.id === scopeId ? { ...s, isActive: !s.isActive } : s,
+        ),
       );
     };
 

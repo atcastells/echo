@@ -1,8 +1,13 @@
-import { clsx } from 'clsx';
-import { Icon, type IconName } from '../../atoms/Icon';
-import { Spinner } from '../../atoms/Spinner';
+import { clsx } from "clsx";
+import { Icon, type IconName } from "../../atoms/Icon";
+import { Spinner } from "../../atoms/Spinner";
 
-export type MessageStatus = 'sending' | 'sent' | 'delivered' | 'failed' | 'streaming';
+export type MessageStatus =
+  | "sending"
+  | "sent"
+  | "delivered"
+  | "failed"
+  | "streaming";
 
 export interface MessageMetaProps {
   /** Timestamp of the message */
@@ -30,14 +35,14 @@ const formatRelativeTime = (date: Date): string => {
   const diffHour = Math.floor(diffMin / 60);
   const diffDay = Math.floor(diffHour / 24);
 
-  if (diffSec < 60) return 'Just now';
+  if (diffSec < 60) return "Just now";
   if (diffMin < 60) return `${diffMin} min ago`;
-  if (diffHour < 24) return `${diffHour} hour${diffHour > 1 ? 's' : ''} ago`;
-  if (diffDay < 7) return `${diffDay} day${diffDay > 1 ? 's' : ''} ago`;
+  if (diffHour < 24) return `${diffHour} hour${diffHour > 1 ? "s" : ""} ago`;
+  if (diffDay < 7) return `${diffDay} day${diffDay > 1 ? "s" : ""} ago`;
 
   return date.toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
+    month: "short",
+    day: "numeric",
   });
 };
 
@@ -46,8 +51,8 @@ const formatRelativeTime = (date: Date): string => {
  */
 const formatAbsoluteTime = (date: Date): string => {
   return date.toLocaleTimeString(undefined, {
-    hour: 'numeric',
-    minute: '2-digit',
+    hour: "numeric",
+    minute: "2-digit",
   });
 };
 
@@ -56,27 +61,27 @@ const statusConfig: Record<
   { icon?: IconName; label: string; className: string }
 > = {
   sending: {
-    label: 'Sending',
-    className: 'text-neutral-400',
+    label: "Sending",
+    className: "text-neutral-400",
   },
   sent: {
-    icon: 'check',
-    label: 'Sent',
-    className: 'text-neutral-400',
+    icon: "check",
+    label: "Sent",
+    className: "text-neutral-400",
   },
   delivered: {
-    icon: 'check-circle',
-    label: 'Delivered',
-    className: 'text-success-500',
+    icon: "check-circle",
+    label: "Delivered",
+    className: "text-success-500",
   },
   failed: {
-    icon: 'x-circle',
-    label: 'Failed to send',
-    className: 'text-error-500',
+    icon: "x-circle",
+    label: "Failed to send",
+    className: "text-error-500",
   },
   streaming: {
-    label: 'Streaming',
-    className: 'text-primary-500',
+    label: "Streaming",
+    className: "text-primary-500",
   },
 };
 
@@ -95,7 +100,7 @@ export const MessageMeta = ({
   className,
 }: MessageMetaProps) => {
   const date = timestamp
-    ? typeof timestamp === 'string'
+    ? typeof timestamp === "string"
       ? new Date(timestamp)
       : timestamp
     : null;
@@ -116,8 +121,8 @@ export const MessageMeta = ({
   return (
     <div
       className={clsx(
-        'flex items-center gap-2 text-xs text-neutral-500',
-        className
+        "flex items-center gap-2 text-xs text-neutral-500",
+        className,
       )}
     >
       {/* Timestamp */}
@@ -137,10 +142,10 @@ export const MessageMeta = ({
       {/* Status */}
       {statusInfo && (
         <span
-          className={clsx('flex items-center gap-1', statusInfo.className)}
+          className={clsx("flex items-center gap-1", statusInfo.className)}
           aria-label={statusInfo.label}
         >
-          {status === 'sending' || status === 'streaming' ? (
+          {status === "sending" || status === "streaming" ? (
             <Spinner size="sm" variant="secondary" />
           ) : (
             statusInfo.icon && <Icon name={statusInfo.icon} size="sm" />

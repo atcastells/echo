@@ -76,7 +76,7 @@ export const ConversationEmptyState = ({
     <div
       className={clsx(
         "flex flex-col items-center justify-center py-12 px-4 text-center",
-        className
+        className,
       )}
     >
       {/* Agent avatar/logo */}
@@ -118,7 +118,7 @@ export const ConversationEmptyState = ({
                   isAgentAvailable
                     ? "hover:border-primary-300 hover:bg-primary-50 hover:shadow-sm cursor-pointer"
                     : "opacity-50 cursor-not-allowed",
-                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
                 )}
               >
                 <div className="shrink-0 w-10 h-10 rounded-lg bg-primary-100 flex items-center justify-center">

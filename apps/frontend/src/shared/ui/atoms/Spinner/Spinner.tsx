@@ -107,7 +107,7 @@ export const Skeleton = ({
       className={clsx(
         "animate-pulse bg-neutral-200",
         circle ? "rounded-full" : "rounded",
-        className
+        className,
       )}
       style={{
         width: typeof width === "number" ? `${width}px` : width,

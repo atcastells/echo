@@ -1,4 +1,4 @@
-import { useAuthContext } from '../context';
+import { useAuthContext } from "../context";
 
 /**
  * Hook to access auth state and actions

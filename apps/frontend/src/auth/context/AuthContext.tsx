@@ -28,14 +28,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     async (credentials: SignInCredentials) => {
       await signInMutation.mutateAsync(credentials);
     },
-    [signInMutation]
+    [signInMutation],
   );
 
   const signUp = useCallback(
     async (credentials: SignUpCredentials) => {
       await signUpMutation.mutateAsync(credentials);
     },
-    [signUpMutation]
+    [signUpMutation],
   );
 
   const signOut = useCallback(() => {
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       signUp,
       signOut,
     }),
-    [user, token, isLoading, signIn, signUp, signOut]
+    [user, token, isLoading, signIn, signUp, signOut],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

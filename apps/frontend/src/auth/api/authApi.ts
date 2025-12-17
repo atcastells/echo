@@ -1,16 +1,23 @@
-import { apiClient } from '@/shared';
-import type { User, AuthResponse, SignInCredentials, SignUpCredentials } from '../types';
+import { apiClient } from "@/shared";
+import type {
+  User,
+  AuthResponse,
+  SignInCredentials,
+  SignUpCredentials,
+} from "../types";
 
 const AUTH_ENDPOINTS = {
-  signIn: '/auth/signin',
-  signUp: '/auth/signup',
-  me: '/auth/me',
+  signIn: "/auth/signin",
+  signUp: "/auth/signup",
+  me: "/auth/me",
 } as const;
 
 /**
  * Sign in with email and password
  */
-export const signIn = async (credentials: SignInCredentials): Promise<AuthResponse> => {
+export const signIn = async (
+  credentials: SignInCredentials,
+): Promise<AuthResponse> => {
   return apiClient.post<AuthResponse>(AUTH_ENDPOINTS.signIn, credentials);
 };
 

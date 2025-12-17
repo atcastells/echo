@@ -1,11 +1,11 @@
-import type { Timestamps } from '@/shared';
+import type { Timestamps } from "@/shared";
 
 /**
  * Agent types
  */
-export type AgentType = 'PRIVATE' | 'PUBLIC';
+export type AgentType = "PRIVATE" | "PUBLIC";
 
-export type AgentTone = 'PROFESSIONAL' | 'FRIENDLY' | 'CASUAL' | 'FORMAL';
+export type AgentTone = "PROFESSIONAL" | "FRIENDLY" | "CASUAL" | "FORMAL";
 
 /**
  * Agent entity
@@ -35,7 +35,7 @@ export interface Thread extends Timestamps {
 export interface ChatMessage extends Timestamps {
   id: string;
   threadId: string;
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   metadata?: Record<string, unknown>;
 }

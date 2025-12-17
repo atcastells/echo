@@ -1,2 +1,2 @@
-export { Modal, ConfirmModal } from './Modal';
-export type { ModalProps, ConfirmModalProps } from './Modal';
+export { Modal, ConfirmModal } from "./Modal";
+export type { ModalProps, ConfirmModalProps } from "./Modal";

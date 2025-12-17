@@ -1,9 +1,13 @@
-import { type ReactNode } from 'react';
-import { clsx } from 'clsx';
-import { Button } from '../../atoms/Button';
-import { Icon, type IconName } from '../../atoms/Icon';
+import { type ReactNode } from "react";
+import { clsx } from "clsx";
+import { Button } from "../../atoms/Button";
+import { Icon, type IconName } from "../../atoms/Icon";
 
-export type AgentPromptVariant = 'clarifying' | 'suggestion' | 'confirmation' | 'warning';
+export type AgentPromptVariant =
+  | "clarifying"
+  | "suggestion"
+  | "confirmation"
+  | "warning";
 
 export interface AgentPromptProps {
   /** Prompt variant/type */
@@ -33,36 +37,39 @@ const variantConfig: Record<
   { icon: IconName; bgClass: string; borderClass: string; iconClass: string }
 > = {
   clarifying: {
-    icon: 'chat-bubble-left-right',
-    bgClass: 'bg-primary-50',
-    borderClass: 'border-primary-200',
-    iconClass: 'text-primary-500',
+    icon: "chat-bubble-left-right",
+    bgClass: "bg-primary-50",
+    borderClass: "border-primary-200",
+    iconClass: "text-primary-500",
   },
   suggestion: {
-    icon: 'sparkles',
-    bgClass: 'bg-success-50',
-    borderClass: 'border-success-200',
-    iconClass: 'text-success-500',
+    icon: "sparkles",
+    bgClass: "bg-success-50",
+    borderClass: "border-success-200",
+    iconClass: "text-success-500",
   },
   confirmation: {
-    icon: 'check-circle',
-    bgClass: 'bg-warning-50',
-    borderClass: 'border-warning-200',
-    iconClass: 'text-warning-500',
+    icon: "check-circle",
+    bgClass: "bg-warning-50",
+    borderClass: "border-warning-200",
+    iconClass: "text-warning-500",
   },
   warning: {
-    icon: 'exclamation-triangle',
-    bgClass: 'bg-error-50',
-    borderClass: 'border-error-200',
-    iconClass: 'text-error-500',
+    icon: "exclamation-triangle",
+    bgClass: "bg-error-50",
+    borderClass: "border-error-200",
+    iconClass: "text-error-500",
   },
 };
 
-const defaultLabels: Record<AgentPromptVariant, { accept: string; reject: string }> = {
-  clarifying: { accept: 'Answer', reject: 'Skip' },
-  suggestion: { accept: 'Accept', reject: 'Decline' },
-  confirmation: { accept: 'Confirm', reject: 'Cancel' },
-  warning: { accept: 'Continue', reject: 'Cancel' },
+const defaultLabels: Record<
+  AgentPromptVariant,
+  { accept: string; reject: string }
+> = {
+  clarifying: { accept: "Answer", reject: "Skip" },
+  suggestion: { accept: "Accept", reject: "Decline" },
+  confirmation: { accept: "Confirm", reject: "Cancel" },
+  warning: { accept: "Continue", reject: "Cancel" },
 };
 
 /**
@@ -72,7 +79,7 @@ const defaultLabels: Record<AgentPromptVariant, { accept: string; reject: string
  * confirmations, and warnings with appropriate styling and actions.
  */
 export const AgentPrompt = ({
-  variant = 'clarifying',
+  variant = "clarifying",
   content,
   acceptLabel,
   rejectLabel,
@@ -89,10 +96,10 @@ export const AgentPrompt = ({
   return (
     <div
       className={clsx(
-        'rounded-xl border p-4',
+        "rounded-xl border p-4",
         config.bgClass,
         config.borderClass,
-        className
+        className,
       )}
       role="region"
       aria-label={`Agent ${variant} prompt`}
@@ -101,8 +108,8 @@ export const AgentPrompt = ({
       <div className="flex items-start gap-3">
         <div
           className={clsx(
-            'flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center',
-            config.bgClass
+            "flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center",
+            config.bgClass,
           )}
         >
           <Icon name={config.icon} size="md" className={config.iconClass} />
@@ -117,7 +124,7 @@ export const AgentPrompt = ({
             <div className="flex items-center gap-2 mt-4">
               {onAccept && (
                 <Button
-                  variant={variant === 'warning' ? 'danger' : 'primary'}
+                  variant={variant === "warning" ? "danger" : "primary"}
                   size="sm"
                   onClick={onAccept}
                   disabled={disabled}
@@ -143,7 +150,7 @@ export const AgentPrompt = ({
                   disabled={disabled}
                   leadingIcon={<Icon name="pencil" size="sm" />}
                 >
-                  {modifyLabel ?? 'Modify'}
+                  {modifyLabel ?? "Modify"}
                 </Button>
               )}
             </div>

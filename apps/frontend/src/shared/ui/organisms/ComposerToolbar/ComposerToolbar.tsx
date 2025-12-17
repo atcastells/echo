@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
-import { clsx } from 'clsx';
-import { Icon } from '../../atoms/Icon';
-import { Badge } from '../../atoms/Badge';
-import { Tooltip } from '../../atoms/Tooltip';
+import { useState, useRef, useEffect } from "react";
+import { clsx } from "clsx";
+import { Icon } from "../../atoms/Icon";
+import { Badge } from "../../atoms/Badge";
+import { Tooltip } from "../../atoms/Tooltip";
 
 export interface PersonaOption {
   id: string;
@@ -60,24 +60,30 @@ export const ComposerToolbar = ({
   // Close dropdowns on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (personaRef.current && !personaRef.current.contains(e.target as Node)) {
+      if (
+        personaRef.current &&
+        !personaRef.current.contains(e.target as Node)
+      ) {
         setShowPersonaDropdown(false);
       }
-      if (contextRef.current && !contextRef.current.contains(e.target as Node)) {
+      if (
+        contextRef.current &&
+        !contextRef.current.contains(e.target as Node)
+      ) {
         setShowContextDropdown(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
     <div
       className={clsx(
-        'flex items-center justify-between gap-4 px-3 py-2',
-        'bg-neutral-50 border-b border-neutral-200 rounded-t-xl',
-        className
+        "flex items-center justify-between gap-4 px-3 py-2",
+        "bg-neutral-50 border-b border-neutral-200 rounded-t-xl",
+        className,
       )}
     >
       {/* Left section: persona and context */}
@@ -89,15 +95,19 @@ export const ComposerToolbar = ({
               type="button"
               onClick={() => setShowPersonaDropdown(!showPersonaDropdown)}
               className={clsx(
-                'flex items-center gap-2 px-3 py-1.5 rounded-lg',
-                'text-sm text-neutral-700',
-                'hover:bg-neutral-100 transition-colors',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500'
+                "flex items-center gap-2 px-3 py-1.5 rounded-lg",
+                "text-sm text-neutral-700",
+                "hover:bg-neutral-100 transition-colors",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
               )}
             >
               <Icon name="user" size="sm" className="text-neutral-500" />
-              <span>{selectedPersona?.name ?? 'Select mode'}</span>
-              <Icon name="chevron-down" size="sm" className="text-neutral-400" />
+              <span>{selectedPersona?.name ?? "Select mode"}</span>
+              <Icon
+                name="chevron-down"
+                size="sm"
+                className="text-neutral-400"
+              />
             </button>
 
             {showPersonaDropdown && (
@@ -131,10 +141,10 @@ export const ComposerToolbar = ({
               type="button"
               onClick={() => setShowContextDropdown(!showContextDropdown)}
               className={clsx(
-                'flex items-center gap-2 px-3 py-1.5 rounded-lg',
-                'text-sm text-neutral-700',
-                'hover:bg-neutral-100 transition-colors',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500'
+                "flex items-center gap-2 px-3 py-1.5 rounded-lg",
+                "text-sm text-neutral-700",
+                "hover:bg-neutral-100 transition-colors",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
               )}
             >
               <Icon name="document" size="sm" className="text-neutral-500" />
@@ -144,7 +154,11 @@ export const ComposerToolbar = ({
                   {activeScopes.length}
                 </Badge>
               )}
-              <Icon name="chevron-down" size="sm" className="text-neutral-400" />
+              <Icon
+                name="chevron-down"
+                size="sm"
+                className="text-neutral-400"
+              />
             </button>
 
             {showContextDropdown && (
@@ -193,10 +207,10 @@ export const ComposerToolbar = ({
 const DropdownMenu = ({ children }: { children: React.ReactNode }) => (
   <div
     className={clsx(
-      'absolute left-0 top-full mt-1 z-20',
-      'min-w-[200px] py-1',
-      'bg-white rounded-lg shadow-lg border border-neutral-200',
-      'animate-in fade-in slide-in-from-top-1 duration-150'
+      "absolute left-0 top-full mt-1 z-20",
+      "min-w-[200px] py-1",
+      "bg-white rounded-lg shadow-lg border border-neutral-200",
+      "animate-in fade-in slide-in-from-top-1 duration-150",
     )}
   >
     {children}
@@ -220,23 +234,23 @@ const DropdownItem = ({
     type="button"
     onClick={onClick}
     className={clsx(
-      'w-full flex items-center gap-2 px-3 py-2 text-left text-sm',
-      'transition-colors duration-150',
-      isSelected ? 'bg-primary-50 text-primary-700' : 'text-neutral-700 hover:bg-neutral-100'
+      "w-full flex items-center gap-2 px-3 py-2 text-left text-sm",
+      "transition-colors duration-150",
+      isSelected
+        ? "bg-primary-50 text-primary-700"
+        : "text-neutral-700 hover:bg-neutral-100",
     )}
   >
     {showCheckbox && (
       <div
         className={clsx(
-          'w-4 h-4 rounded border flex items-center justify-center',
+          "w-4 h-4 rounded border flex items-center justify-center",
           isSelected
-            ? 'bg-primary-500 border-primary-500'
-            : 'border-neutral-300'
+            ? "bg-primary-500 border-primary-500"
+            : "border-neutral-300",
         )}
       >
-        {isSelected && (
-          <Icon name="check" size="sm" className="text-white" />
-        )}
+        {isSelected && <Icon name="check" size="sm" className="text-white" />}
       </div>
     )}
     <div className="flex-1">{children}</div>

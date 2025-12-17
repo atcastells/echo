@@ -145,7 +145,7 @@ for i in range(10):
 
 const longContent = Array.from(
   { length: 30 },
-  (_, i) => `Line ${i + 1}: This is a sample line of text in the message.`
+  (_, i) => `Line ${i + 1}: This is a sample line of text in the message.`,
 ).join("\n");
 
 export const LongContentCollapsed: Story = {

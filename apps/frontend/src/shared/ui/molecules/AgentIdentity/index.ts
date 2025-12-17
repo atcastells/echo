@@ -1,2 +1,2 @@
-export { AgentIdentity } from './AgentIdentity';
-export type { AgentIdentityProps, AgentStatus } from './AgentIdentity';
+export { AgentIdentity } from "./AgentIdentity";
+export type { AgentIdentityProps, AgentStatus } from "./AgentIdentity";

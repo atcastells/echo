@@ -1,15 +1,15 @@
-import { apiClient } from '@/shared';
+import { apiClient } from "@/shared";
 import type {
   Profile,
   UpdateProfileBasicsPayload,
   AddRolePayload,
   UpdateRolePayload,
   ProfileRole,
-} from '../types';
+} from "../types";
 
 const PROFILE_ENDPOINTS = {
-  me: '/api/v1/profile/me',
-  roles: '/api/v1/profile/me/roles',
+  me: "/api/v1/profile/me",
+  roles: "/api/v1/profile/me/roles",
   role: (roleId: string) => `/api/v1/profile/me/roles/${roleId}`,
 } as const;
 
@@ -24,7 +24,7 @@ export const getMyProfile = async (): Promise<Profile> => {
  * Update current user's profile basics
  */
 export const updateMyProfile = async (
-  payload: UpdateProfileBasicsPayload
+  payload: UpdateProfileBasicsPayload,
 ): Promise<Profile> => {
   return apiClient.patch<Profile>(PROFILE_ENDPOINTS.me, payload);
 };
@@ -32,7 +32,9 @@ export const updateMyProfile = async (
 /**
  * Add a new role to profile
  */
-export const addRole = async (payload: AddRolePayload): Promise<ProfileRole> => {
+export const addRole = async (
+  payload: AddRolePayload,
+): Promise<ProfileRole> => {
   return apiClient.post<ProfileRole>(PROFILE_ENDPOINTS.roles, payload);
 };
 
@@ -41,7 +43,7 @@ export const addRole = async (payload: AddRolePayload): Promise<ProfileRole> => 
  */
 export const updateRole = async (
   roleId: string,
-  payload: UpdateRolePayload
+  payload: UpdateRolePayload,
 ): Promise<ProfileRole> => {
   return apiClient.patch<ProfileRole>(PROFILE_ENDPOINTS.role(roleId), payload);
 };

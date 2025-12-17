@@ -1,9 +1,9 @@
-import { clsx } from 'clsx';
-import { Avatar, type AvatarSize } from '../../atoms/Avatar';
-import { Badge } from '../../atoms/Badge';
-import { Icon } from '../../atoms/Icon';
+import { clsx } from "clsx";
+import { Avatar, type AvatarSize } from "../../atoms/Avatar";
+import { Badge } from "../../atoms/Badge";
+import { Icon } from "../../atoms/Icon";
 
-export type AgentStatus = 'available' | 'busy' | 'restricted' | 'offline';
+export type AgentStatus = "available" | "busy" | "restricted" | "offline";
 
 export interface AgentIdentityProps {
   /** Agent display name */
@@ -15,7 +15,7 @@ export interface AgentIdentityProps {
   /** Current agent status */
   status?: AgentStatus;
   /** Size of the identity display */
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
   /** Whether the identity is clickable */
   clickable?: boolean;
   /** Callback when clicked */
@@ -27,7 +27,7 @@ export interface AgentIdentityProps {
 }
 
 const sizeConfig: Record<
-  NonNullable<AgentIdentityProps['size']>,
+  NonNullable<AgentIdentityProps["size"]>,
   {
     avatar: AvatarSize;
     nameClass: string;
@@ -36,45 +36,47 @@ const sizeConfig: Record<
   }
 > = {
   sm: {
-    avatar: 'sm',
-    nameClass: 'text-sm font-medium',
-    roleClass: 'text-xs',
-    gap: 'gap-2',
+    avatar: "sm",
+    nameClass: "text-sm font-medium",
+    roleClass: "text-xs",
+    gap: "gap-2",
   },
   md: {
-    avatar: 'md',
-    nameClass: 'text-base font-medium',
-    roleClass: 'text-sm',
-    gap: 'gap-3',
+    avatar: "md",
+    nameClass: "text-base font-medium",
+    roleClass: "text-sm",
+    gap: "gap-3",
   },
   lg: {
-    avatar: 'lg',
-    nameClass: 'text-lg font-semibold',
-    roleClass: 'text-base',
-    gap: 'gap-3',
+    avatar: "lg",
+    nameClass: "text-lg font-semibold",
+    roleClass: "text-base",
+    gap: "gap-3",
   },
 };
 
 const statusConfig: Record<
   AgentStatus,
-  { label: string; badgeVariant: 'default' | 'success' | 'warning' | 'error' }
+  { label: string; badgeVariant: "default" | "success" | "warning" | "error" }
 > = {
-  available: { label: 'Available', badgeVariant: 'success' },
-  busy: { label: 'Busy', badgeVariant: 'warning' },
-  restricted: { label: 'Restricted', badgeVariant: 'error' },
-  offline: { label: 'Offline', badgeVariant: 'default' },
+  available: { label: "Available", badgeVariant: "success" },
+  busy: { label: "Busy", badgeVariant: "warning" },
+  restricted: { label: "Restricted", badgeVariant: "error" },
+  offline: { label: "Offline", badgeVariant: "default" },
 };
 
-const statusToAvatarStatus = (status: AgentStatus): 'online' | 'busy' | 'away' | 'offline' => {
+const statusToAvatarStatus = (
+  status: AgentStatus,
+): "online" | "busy" | "away" | "offline" => {
   switch (status) {
-    case 'available':
-      return 'online';
-    case 'busy':
-      return 'busy';
-    case 'restricted':
-      return 'away';
-    case 'offline':
-      return 'offline';
+    case "available":
+      return "online";
+    case "busy":
+      return "busy";
+    case "restricted":
+      return "away";
+    case "offline":
+      return "offline";
   }
 };
 
@@ -89,7 +91,7 @@ export const AgentIdentity = ({
   role,
   avatarUrl,
   status,
-  size = 'md',
+  size = "md",
   clickable = false,
   onClick,
   showChevron = true,
@@ -109,17 +111,17 @@ export const AgentIdentity = ({
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className={clsx(config.nameClass, 'text-neutral-800 truncate')}>
+          <span className={clsx(config.nameClass, "text-neutral-800 truncate")}>
             {name}
           </span>
-          {statusInfo && size !== 'sm' && (
+          {statusInfo && size !== "sm" && (
             <Badge variant={statusInfo.badgeVariant} size="sm">
               {statusInfo.label}
             </Badge>
           )}
         </div>
         {role && (
-          <p className={clsx(config.roleClass, 'text-neutral-500 truncate')}>
+          <p className={clsx(config.roleClass, "text-neutral-500 truncate")}>
             {role}
           </p>
         )}
@@ -136,17 +138,17 @@ export const AgentIdentity = ({
   );
 
   const baseClasses = clsx(
-    'flex items-center',
+    "flex items-center",
     config.gap,
     clickable && [
-      'cursor-pointer rounded-lg transition-colors duration-150',
-      'hover:bg-neutral-100',
-      'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
-      size === 'sm' && 'p-1.5',
-      size === 'md' && 'p-2',
-      size === 'lg' && 'p-2.5',
+      "cursor-pointer rounded-lg transition-colors duration-150",
+      "hover:bg-neutral-100",
+      "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
+      size === "sm" && "p-1.5",
+      size === "md" && "p-2",
+      size === "lg" && "p-2.5",
     ],
-    className
+    className,
   );
 
   if (clickable) {

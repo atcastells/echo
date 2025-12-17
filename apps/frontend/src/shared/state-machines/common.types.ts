@@ -5,36 +5,40 @@
  */
 
 /** Standard async operation states */
-export type AsyncState = 'idle' | 'loading' | 'success' | 'error';
+export type AsyncState = "idle" | "loading" | "success" | "error";
 
 /** Streaming-specific states for AI responses */
-export type StreamingState = 'idle' | 'thinking' | 'streaming' | 'interrupted';
+export type StreamingState = "idle" | "thinking" | "streaming" | "interrupted";
 
 /** Composer-specific states */
 export type ComposerState =
-    | 'idle'
-    | 'typing'
-    | 'submitting'
-    | 'error'
-    | 'disabled'
-    | 'blocked';
+  | "idle"
+  | "typing"
+  | "submitting"
+  | "error"
+  | "disabled"
+  | "blocked";
 
 /** Message item states */
 export type MessageItemState =
-    | 'idle'
-    | 'streaming'
-    | 'failed'
-    | 'regenerating'
-    | 'interrupted';
+  | "idle"
+  | "streaming"
+  | "failed"
+  | "regenerating"
+  | "interrupted";
 
 /** Action surface states */
 export type ActionSurfaceState =
-    | 'idle'
-    | 'proposed'
-    | 'confirming'
-    | 'executing'
-    | 'success'
-    | 'failure';
+  | "idle"
+  | "proposed"
+  | "confirming"
+  | "executing"
+  | "success"
+  | "failure";
 
 /** Agent prompt states */
-export type AgentPromptState = 'visible' | 'accepted' | 'rejected' | 'dismissed';
+export type AgentPromptState =
+  | "visible"
+  | "accepted"
+  | "rejected"
+  | "dismissed";

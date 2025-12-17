@@ -1,16 +1,11 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { profileKeys } from '@/shared';
-import {
-  updateMyProfile,
-  addRole,
-  updateRole,
-  deleteRole,
-} from './profileApi';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { profileKeys } from "@/shared";
+import { updateMyProfile, addRole, updateRole, deleteRole } from "./profileApi";
 import type {
   UpdateProfileBasicsPayload,
   AddRolePayload,
   UpdateRolePayload,
-} from '../types';
+} from "../types";
 
 /**
  * Mutation hook to update profile basics
@@ -19,7 +14,8 @@ export const useUpdateProfileMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: UpdateProfileBasicsPayload) => updateMyProfile(payload),
+    mutationFn: (payload: UpdateProfileBasicsPayload) =>
+      updateMyProfile(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: profileKeys.me() });
     },
@@ -47,8 +43,13 @@ export const useUpdateRoleMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ roleId, payload }: { roleId: string; payload: UpdateRolePayload }) =>
-      updateRole(roleId, payload),
+    mutationFn: ({
+      roleId,
+      payload,
+    }: {
+      roleId: string;
+      payload: UpdateRolePayload;
+    }) => updateRole(roleId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: profileKeys.me() });
     },

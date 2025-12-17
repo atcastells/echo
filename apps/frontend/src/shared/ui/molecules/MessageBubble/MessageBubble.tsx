@@ -1,9 +1,9 @@
-import { type ReactNode, useState } from 'react';
-import { clsx } from 'clsx';
-import { Icon } from '../../atoms/Icon';
-import { MarkdownViewer } from '../../MarkdownViewer';
+import { type ReactNode, useState } from "react";
+import { clsx } from "clsx";
+import { Icon } from "../../atoms/Icon";
+import { MarkdownViewer } from "../../MarkdownViewer";
 
-export type MessageBubbleVariant = 'user' | 'agent' | 'system';
+export type MessageBubbleVariant = "user" | "agent" | "system";
 
 export interface MessageBubbleCitation {
   /** Unique identifier for the citation */
@@ -36,24 +36,18 @@ export interface MessageBubbleProps {
 }
 
 const variantStyles: Record<MessageBubbleVariant, string> = {
-  user: clsx(
-    'bg-primary-600 text-white',
-    'rounded-2xl rounded-br-md'
-  ),
-  agent: clsx(
-    'bg-neutral-100 text-neutral-800',
-    'rounded-2xl rounded-bl-md'
-  ),
+  user: clsx("bg-primary-600 text-white", "rounded-2xl rounded-br-md"),
+  agent: clsx("bg-neutral-100 text-neutral-800", "rounded-2xl rounded-bl-md"),
   system: clsx(
-    'bg-warning-50 text-warning-800 border border-warning-200',
-    'rounded-xl'
+    "bg-warning-50 text-warning-800 border border-warning-200",
+    "rounded-xl",
   ),
 };
 
 const codeBlockStyles = clsx(
-  'bg-neutral-900 text-neutral-100',
-  'font-mono text-sm',
-  'rounded-lg overflow-x-auto'
+  "bg-neutral-900 text-neutral-100",
+  "font-mono text-sm",
+  "rounded-lg overflow-x-auto",
 );
 
 /**
@@ -64,7 +58,7 @@ const codeBlockStyles = clsx(
  */
 export const MessageBubble = ({
   content,
-  variant = 'agent',
+  variant = "agent",
   isMarkdown = false,
   isCode = false,
   codeLanguage,
@@ -76,13 +70,13 @@ export const MessageBubble = ({
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Check if content is long enough to need expand/collapse
-  const lineCount = content.split('\n').length;
+  const lineCount = content.split("\n").length;
   const isLongContent = lineCount > maxLines;
   const shouldTruncate = isLongContent && !isExpanded;
 
   // Truncate content if needed
   const displayContent = shouldTruncate
-    ? content.split('\n').slice(0, maxLines).join('\n') + '\n...'
+    ? content.split("\n").slice(0, maxLines).join("\n") + "\n..."
     : content;
 
   const renderContent = () => {
@@ -107,24 +101,22 @@ export const MessageBubble = ({
 
     if (isMarkdown) {
       return (
-        <div className={variant === 'user' ? 'prose-invert' : ''}>
+        <div className={variant === "user" ? "prose-invert" : ""}>
           <MarkdownViewer content={displayContent} />
         </div>
       );
     }
 
-    return (
-      <p className="whitespace-pre-wrap break-words">{displayContent}</p>
-    );
+    return <p className="whitespace-pre-wrap break-words">{displayContent}</p>;
   };
 
   return (
     <div
       className={clsx(
-        'px-4 py-3 max-w-prose',
+        "px-4 py-3 max-w-prose",
         !isCode && variantStyles[variant],
-        isCode && 'p-0',
-        className
+        isCode && "p-0",
+        className,
       )}
     >
       {renderContent()}
@@ -134,18 +126,15 @@ export const MessageBubble = ({
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className={clsx(
-            'mt-2 flex items-center gap-1 text-sm font-medium',
-            'transition-colors duration-150',
-            variant === 'user'
-              ? 'text-primary-200 hover:text-white'
-              : 'text-primary-600 hover:text-primary-700'
+            "mt-2 flex items-center gap-1 text-sm font-medium",
+            "transition-colors duration-150",
+            variant === "user"
+              ? "text-primary-200 hover:text-white"
+              : "text-primary-600 hover:text-primary-700",
           )}
         >
-          <Icon
-            name={isExpanded ? 'chevron-up' : 'chevron-down'}
-            size="sm"
-          />
-          {isExpanded ? 'Show less' : 'Show more'}
+          <Icon name={isExpanded ? "chevron-up" : "chevron-down"} size="sm" />
+          {isExpanded ? "Show less" : "Show more"}
         </button>
       )}
 
@@ -171,11 +160,11 @@ const CitationBadge = ({ citation }: CitationBadgeProps) => {
   const content = (
     <span
       className={clsx(
-        'inline-flex items-center gap-1',
-        'px-2 py-0.5 rounded-full',
-        'bg-primary-100 text-primary-700',
-        'text-xs font-medium',
-        citation.url && 'hover:bg-primary-200 cursor-pointer'
+        "inline-flex items-center gap-1",
+        "px-2 py-0.5 rounded-full",
+        "bg-primary-100 text-primary-700",
+        "text-xs font-medium",
+        citation.url && "hover:bg-primary-200 cursor-pointer",
       )}
     >
       <Icon name="document" size="sm" />

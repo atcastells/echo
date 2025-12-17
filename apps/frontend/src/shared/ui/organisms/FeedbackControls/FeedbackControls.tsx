@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { clsx } from 'clsx';
-import { Button } from '../../atoms/Button';
-import { Icon } from '../../atoms/Icon';
-import { TextInput } from '../../atoms/TextInput';
+import { useState } from "react";
+import { clsx } from "clsx";
+import { Button } from "../../atoms/Button";
+import { Icon } from "../../atoms/Icon";
+import { TextInput } from "../../atoms/TextInput";
 
-export type FeedbackState = 'none' | 'positive' | 'negative';
+export type FeedbackState = "none" | "positive" | "negative";
 
 export interface FeedbackControlsProps {
   /** Current feedback state */
@@ -24,7 +24,7 @@ export interface FeedbackControlsProps {
   /** Placeholder for feedback input */
   feedbackPlaceholder?: string;
   /** Size variant */
-  size?: 'sm' | 'md';
+  size?: "sm" | "md";
   /** Additional CSS classes */
   className?: string;
 }
@@ -36,18 +36,18 @@ export interface FeedbackControlsProps {
  * and regenerate action for AI responses.
  */
 export const FeedbackControls = ({
-  feedback = 'none',
+  feedback = "none",
   showFeedbackInput = false,
   showRegenerate = true,
   onThumbsUp,
   onThumbsDown,
   onSubmitFeedback,
   onRegenerate,
-  feedbackPlaceholder = 'What could be improved?',
-  size = 'md',
+  feedbackPlaceholder = "What could be improved?",
+  size = "md",
   className,
 }: FeedbackControlsProps) => {
-  const [feedbackText, setFeedbackText] = useState('');
+  const [feedbackText, setFeedbackText] = useState("");
   const [isInputVisible, setIsInputVisible] = useState(showFeedbackInput);
 
   const handleThumbsDown = () => {
@@ -58,16 +58,16 @@ export const FeedbackControls = ({
   const handleSubmit = () => {
     if (feedbackText.trim()) {
       onSubmitFeedback?.(feedbackText.trim());
-      setFeedbackText('');
+      setFeedbackText("");
       setIsInputVisible(false);
     }
   };
 
-  const buttonSize = size === 'sm' ? 'p-1.5' : 'p-2';
-  const iconSize = size === 'sm' ? 'sm' : 'md';
+  const buttonSize = size === "sm" ? "p-1.5" : "p-2";
+  const iconSize = size === "sm" ? "sm" : "md";
 
   return (
-    <div className={clsx('space-y-3', className)}>
+    <div className={clsx("space-y-3", className)}>
       {/* Action buttons row */}
       <div className="flex items-center gap-2">
         {/* Thumbs up */}
@@ -76,14 +76,14 @@ export const FeedbackControls = ({
           onClick={onThumbsUp}
           className={clsx(
             buttonSize,
-            'rounded-lg transition-all duration-150',
-            'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
-            feedback === 'positive'
-              ? 'bg-success-100 text-success-600'
-              : 'text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100'
+            "rounded-lg transition-all duration-150",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
+            feedback === "positive"
+              ? "bg-success-100 text-success-600"
+              : "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100",
           )}
           aria-label="Good response"
-          aria-pressed={feedback === 'positive'}
+          aria-pressed={feedback === "positive"}
         >
           <Icon name="hand-thumb-up" size={iconSize} />
         </button>
@@ -94,14 +94,14 @@ export const FeedbackControls = ({
           onClick={handleThumbsDown}
           className={clsx(
             buttonSize,
-            'rounded-lg transition-all duration-150',
-            'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
-            feedback === 'negative'
-              ? 'bg-error-100 text-error-600'
-              : 'text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100'
+            "rounded-lg transition-all duration-150",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
+            feedback === "negative"
+              ? "bg-error-100 text-error-600"
+              : "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100",
           )}
           aria-label="Bad response"
-          aria-pressed={feedback === 'negative'}
+          aria-pressed={feedback === "negative"}
         >
           <Icon name="hand-thumb-down" size={iconSize} />
         </button>
@@ -115,9 +115,9 @@ export const FeedbackControls = ({
               onClick={onRegenerate}
               className={clsx(
                 buttonSize,
-                'rounded-lg transition-all duration-150',
-                'text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500'
+                "rounded-lg transition-all duration-150",
+                "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
               )}
               aria-label="Regenerate response"
             >
@@ -128,7 +128,7 @@ export const FeedbackControls = ({
       </div>
 
       {/* Feedback input (shown after thumbs down) */}
-      {isInputVisible && feedback === 'negative' && (
+      {isInputVisible && feedback === "negative" && (
         <div className="flex gap-2">
           <TextInput
             value={feedbackText}
@@ -136,7 +136,7 @@ export const FeedbackControls = ({
             placeholder={feedbackPlaceholder}
             className="flex-1"
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
+              if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 handleSubmit();
               }
@@ -154,7 +154,7 @@ export const FeedbackControls = ({
       )}
 
       {/* Thank you message for positive feedback */}
-      {feedback === 'positive' && (
+      {feedback === "positive" && (
         <p className="text-sm text-success-600 flex items-center gap-1">
           <Icon name="check-circle" size="sm" />
           Thanks for your feedback!

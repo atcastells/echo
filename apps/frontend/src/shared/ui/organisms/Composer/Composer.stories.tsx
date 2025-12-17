@@ -199,7 +199,7 @@ export const Interactive: Story = {
           name: file.name,
           size: file.size,
           type: file.type,
-        })
+        }),
       );
       setAttachments((prev) => [...prev, ...newAttachments]);
     };

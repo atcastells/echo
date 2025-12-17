@@ -61,7 +61,7 @@ export const Toast = ({ toast, onDismiss, className }: ToastProps) => {
         "flex items-start gap-3 p-4 rounded-lg border shadow-lg max-w-sm",
         "animate-in slide-in-from-right duration-300",
         variantStyles[variant],
-        className
+        className,
       )}
     >
       {/* Icon */}
@@ -82,7 +82,7 @@ export const Toast = ({ toast, onDismiss, className }: ToastProps) => {
             onClick={action.onClick}
             className={clsx(
               "mt-2 text-sm font-medium underline underline-offset-2",
-              "hover:opacity-80 transition-opacity"
+              "hover:opacity-80 transition-opacity",
             )}
           >
             {action.label}

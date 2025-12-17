@@ -1,36 +1,36 @@
-import type { Meta, StoryObj, Decorator } from '@storybook/react-vite';
-import type { ComponentProps } from 'react';
-import { AgentIdentity } from './AgentIdentity';
+import type { Meta, StoryObj, Decorator } from "@storybook/react-vite";
+import type { ComponentProps } from "react";
+import { AgentIdentity } from "./AgentIdentity";
 
 const meta = {
-  title: 'Molecules/AgentIdentity',
+  title: "Molecules/AgentIdentity",
   component: AgentIdentity,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     name: {
-      control: 'text',
-      description: 'Agent display name',
+      control: "text",
+      description: "Agent display name",
     },
     role: {
-      control: 'text',
-      description: 'Agent role or description',
+      control: "text",
+      description: "Agent role or description",
     },
     status: {
-      control: 'select',
-      options: ['available', 'busy', 'restricted', 'offline', undefined],
-      description: 'Current agent status',
+      control: "select",
+      options: ["available", "busy", "restricted", "offline", undefined],
+      description: "Current agent status",
     },
     size: {
-      control: 'select',
-      options: ['sm', 'md', 'lg'],
-      description: 'Size of the identity display',
+      control: "select",
+      options: ["sm", "md", "lg"],
+      description: "Size of the identity display",
     },
     clickable: {
-      control: 'boolean',
-      description: 'Whether the identity is clickable',
+      control: "boolean",
+      description: "Whether the identity is clickable",
     },
   },
   decorators: [
@@ -51,22 +51,22 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    name: 'Echo',
-    role: 'AI Career Agent',
+    name: "Echo",
+    role: "AI Career Agent",
   },
 };
 
 export const WithAvatar: Story = {
   args: {
-    name: 'Echo',
-    role: 'AI Career Agent',
-    avatarUrl: 'https://api.dicebear.com/7.x/bottts/svg?seed=echo',
+    name: "Echo",
+    role: "AI Career Agent",
+    avatarUrl: "https://api.dicebear.com/7.x/bottts/svg?seed=echo",
   },
 };
 
 export const NameOnly: Story = {
   args: {
-    name: 'Echo',
+    name: "Echo",
   },
 };
 
@@ -76,25 +76,25 @@ export const NameOnly: Story = {
 
 export const Small: Story = {
   args: {
-    name: 'Echo',
-    role: 'AI Agent',
-    size: 'sm',
+    name: "Echo",
+    role: "AI Agent",
+    size: "sm",
   },
 };
 
 export const Medium: Story = {
   args: {
-    name: 'Echo',
-    role: 'AI Career Agent',
-    size: 'md',
+    name: "Echo",
+    role: "AI Career Agent",
+    size: "md",
   },
 };
 
 export const Large: Story = {
   args: {
-    name: 'Echo',
-    role: 'Your AI Career Agent & Professional Assistant',
-    size: 'lg',
+    name: "Echo",
+    role: "Your AI Career Agent & Professional Assistant",
+    size: "lg",
   },
 };
 
@@ -104,33 +104,33 @@ export const Large: Story = {
 
 export const Available: Story = {
   args: {
-    name: 'Echo',
-    role: 'AI Career Agent',
-    status: 'available',
+    name: "Echo",
+    role: "AI Career Agent",
+    status: "available",
   },
 };
 
 export const Busy: Story = {
   args: {
-    name: 'Echo',
-    role: 'AI Career Agent',
-    status: 'busy',
+    name: "Echo",
+    role: "AI Career Agent",
+    status: "busy",
   },
 };
 
 export const Restricted: Story = {
   args: {
-    name: 'Echo',
-    role: 'AI Career Agent',
-    status: 'restricted',
+    name: "Echo",
+    role: "AI Career Agent",
+    status: "restricted",
   },
 };
 
 export const Offline: Story = {
   args: {
-    name: 'Echo',
-    role: 'AI Career Agent',
-    status: 'offline',
+    name: "Echo",
+    role: "AI Career Agent",
+    status: "offline",
   },
 };
 
@@ -140,15 +140,15 @@ export const Offline: Story = {
 
 export const Clickable: Story = {
   args: {
-    name: 'Echo',
-    role: 'AI Career Agent',
-    status: 'available',
+    name: "Echo",
+    role: "AI Career Agent",
+    status: "available",
     clickable: true,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Click to interact. Shows hover state and chevron indicator.',
+        story: "Click to interact. Shows hover state and chevron indicator.",
       },
     },
   },
@@ -156,9 +156,9 @@ export const Clickable: Story = {
 
 export const ClickableNoChevron: Story = {
   args: {
-    name: 'Echo',
-    role: 'AI Career Agent',
-    status: 'available',
+    name: "Echo",
+    role: "AI Career Agent",
+    status: "available",
     clickable: true,
     showChevron: false,
   },
@@ -166,16 +166,13 @@ export const ClickableNoChevron: Story = {
 
 export const ClickableWithCallback: Story = {
   args: {
-    name: 'Echo',
-    role: 'AI Career Agent',
-    status: 'available',
+    name: "Echo",
+    role: "AI Career Agent",
+    status: "available",
     clickable: true,
   },
   render: (args: ComponentProps<typeof AgentIdentity>) => (
-    <AgentIdentity
-      {...args}
-      onClick={() => alert('Agent profile clicked!')}
-    />
+    <AgentIdentity {...args} onClick={() => alert("Agent profile clicked!")} />
   ),
 };
 
@@ -185,7 +182,7 @@ export const ClickableWithCallback: Story = {
 
 export const AllSizes: Story = {
   args: {
-    name: 'Echo',
+    name: "Echo",
   },
   render: () => (
     <div className="space-y-4">
@@ -226,30 +223,14 @@ export const AllSizes: Story = {
 
 export const AllStatuses: Story = {
   args: {
-    name: 'Echo',
+    name: "Echo",
   },
   render: () => (
     <div className="space-y-3">
-      <AgentIdentity
-        name="Echo"
-        role="AI Career Agent"
-        status="available"
-      />
-      <AgentIdentity
-        name="Echo"
-        role="AI Career Agent"
-        status="busy"
-      />
-      <AgentIdentity
-        name="Echo"
-        role="AI Career Agent"
-        status="restricted"
-      />
-      <AgentIdentity
-        name="Echo"
-        role="AI Career Agent"
-        status="offline"
-      />
+      <AgentIdentity name="Echo" role="AI Career Agent" status="available" />
+      <AgentIdentity name="Echo" role="AI Career Agent" status="busy" />
+      <AgentIdentity name="Echo" role="AI Career Agent" status="restricted" />
+      <AgentIdentity name="Echo" role="AI Career Agent" status="offline" />
     </div>
   ),
 };
@@ -260,7 +241,7 @@ export const AllStatuses: Story = {
 
 export const InHeader: Story = {
   args: {
-    name: 'Echo',
+    name: "Echo",
   },
   render: () => (
     <div className="flex items-center justify-between p-4 bg-white border-b border-neutral-200 min-w-[400px]">
@@ -270,16 +251,14 @@ export const InHeader: Story = {
         status="available"
         clickable={true}
       />
-      <button className="text-neutral-500 hover:text-neutral-700">
-        ⚙️
-      </button>
+      <button className="text-neutral-500 hover:text-neutral-700">⚙️</button>
     </div>
   ),
 };
 
 export const InSidebar: Story = {
   args: {
-    name: 'Echo',
+    name: "Echo",
   },
   render: () => (
     <div className="p-3 bg-neutral-50 border-r border-neutral-200 w-64">

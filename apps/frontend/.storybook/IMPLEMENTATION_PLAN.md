@@ -884,5 +884,3 @@ If you want to proceed, the recommended order is:
 2. ~~Full MessageItem machine~~ ✅
 3. Storybook + XState testing setup
 4. Mapping machines to analytics events
-
-

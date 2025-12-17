@@ -1,6 +1,6 @@
-import { useRef, useEffect } from 'react';
-import { clsx } from 'clsx';
-import { MessageItem, type Message } from '../MessageItem';
+import { useRef, useEffect } from "react";
+import { clsx } from "clsx";
+import { MessageItem, type Message } from "../MessageItem";
 
 export interface MessageListProps {
   /** Array of messages to display */
@@ -10,7 +10,7 @@ export interface MessageListProps {
   /** Partial content for the streaming message */
   streamingContent?: string;
   /** Feedback state per message ID */
-  feedbackByMessageId?: Record<string, 'positive' | 'negative' | null>;
+  feedbackByMessageId?: Record<string, "positive" | "negative" | null>;
   /** Agent display name */
   agentName?: string;
   /** Agent avatar URL */
@@ -52,15 +52,15 @@ const formatDateSeparator = (date: Date): string => {
   yesterday.setDate(yesterday.getDate() - 1);
 
   if (date.toDateString() === today.toDateString()) {
-    return 'Today';
+    return "Today";
   }
   if (date.toDateString() === yesterday.toDateString()) {
-    return 'Yesterday';
+    return "Yesterday";
   }
   return date.toLocaleDateString(undefined, {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
+    weekday: "long",
+    month: "long",
+    day: "numeric",
   });
 };
 
@@ -82,9 +82,9 @@ export const MessageList = ({
   streamingMessageId,
   streamingContent,
   feedbackByMessageId = {},
-  agentName = 'Echo',
+  agentName = "Echo",
   agentAvatarUrl,
-  userName = 'You',
+  userName = "You",
   userAvatarUrl,
   autoScroll = true,
   showDateSeparators = true,
@@ -104,7 +104,7 @@ export const MessageList = ({
   // Auto-scroll to bottom on new messages
   useEffect(() => {
     if (autoScroll && bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: 'smooth' });
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages.length, streamingContent, autoScroll]);
 
@@ -115,14 +115,17 @@ export const MessageList = ({
 
     messages.forEach((message, index) => {
       const messageDate =
-        typeof message.timestamp === 'string'
+        typeof message.timestamp === "string"
           ? new Date(message.timestamp)
           : message.timestamp;
 
       // Date separator
-      if (showDateSeparators && (!lastDate || isDifferentDay(lastDate, messageDate))) {
+      if (
+        showDateSeparators &&
+        (!lastDate || isDifferentDay(lastDate, messageDate))
+      ) {
         elements.push(
-          <DateSeparator key={`date-${message.id}`} date={messageDate} />
+          <DateSeparator key={`date-${message.id}`} date={messageDate} />,
         );
       }
 
@@ -156,10 +159,10 @@ export const MessageList = ({
             message.id === streamingMessageId ? onStopStreaming : undefined
           }
           className={clsx(
-            isConsecutive && 'mt-1', // Tighter spacing for consecutive messages
-            !isConsecutive && index > 0 && 'mt-4' // Normal spacing
+            isConsecutive && "mt-1", // Tighter spacing for consecutive messages
+            !isConsecutive && index > 0 && "mt-4", // Normal spacing
           )}
-        />
+        />,
       );
 
       lastDate = messageDate;
@@ -170,15 +173,8 @@ export const MessageList = ({
   };
 
   return (
-    <div
-      ref={listRef}
-      className={clsx('flex flex-col', className)}
-    >
-      {messages.length === 0 ? (
-        <EmptyState />
-      ) : (
-        renderMessages()
-      )}
+    <div ref={listRef} className={clsx("flex flex-col", className)}>
+      {messages.length === 0 ? <EmptyState /> : renderMessages()}
       <div ref={bottomRef} />
     </div>
   );
@@ -209,7 +205,8 @@ const EmptyState = () => (
       Start a conversation
     </h3>
     <p className="text-sm text-neutral-500 max-w-sm">
-      Ask me anything about your career, resume, or job search. I'm here to help!
+      Ask me anything about your career, resume, or job search. I'm here to
+      help!
     </p>
   </div>
 );

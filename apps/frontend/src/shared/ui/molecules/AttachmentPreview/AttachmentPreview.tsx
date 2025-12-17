@@ -1,7 +1,7 @@
-import { clsx } from 'clsx';
-import { Icon, type IconName } from '../../atoms/Icon';
-import { Button } from '../../atoms/Button';
-import { Spinner } from '../../atoms/Spinner';
+import { clsx } from "clsx";
+import { Icon, type IconName } from "../../atoms/Icon";
+import { Button } from "../../atoms/Button";
+import { Spinner } from "../../atoms/Spinner";
 
 export interface AttachmentFile {
   /** Unique identifier */
@@ -28,7 +28,7 @@ export interface AttachmentPreviewProps {
   /** Callback when retry is clicked (for failed uploads) */
   onRetry?: (fileId: string) => void;
   /** Size variant */
-  size?: 'sm' | 'md';
+  size?: "sm" | "md";
   /** Additional CSS classes */
   className?: string;
 }
@@ -46,12 +46,12 @@ const formatFileSize = (bytes: number): string => {
  * Gets the appropriate icon for a file type.
  */
 const getFileIcon = (type: string): IconName => {
-  if (type.startsWith('image/')) return 'document';
-  if (type === 'application/pdf') return 'document';
-  if (type.includes('word') || type.includes('document')) return 'document';
-  if (type.includes('spreadsheet') || type.includes('excel')) return 'document';
-  if (type.includes('text/')) return 'document';
-  return 'paper-clip';
+  if (type.startsWith("image/")) return "document";
+  if (type === "application/pdf") return "document";
+  if (type.includes("word") || type.includes("document")) return "document";
+  if (type.includes("spreadsheet") || type.includes("excel")) return "document";
+  if (type.includes("text/")) return "document";
+  return "paper-clip";
 };
 
 /**
@@ -59,28 +59,28 @@ const getFileIcon = (type: string): IconName => {
  */
 const getFileTypeLabel = (type: string, name: string): string => {
   // Extract extension from name as fallback
-  const extension = name.split('.').pop()?.toUpperCase() || '';
-  
-  if (type === 'application/pdf') return 'PDF';
-  if (type.includes('word')) return 'DOC';
-  if (type.includes('spreadsheet') || type.includes('excel')) return 'XLS';
-  if (type.startsWith('image/')) return extension || 'IMG';
-  if (type.includes('text/')) return 'TXT';
-  return extension || 'FILE';
+  const extension = name.split(".").pop()?.toUpperCase() || "";
+
+  if (type === "application/pdf") return "PDF";
+  if (type.includes("word")) return "DOC";
+  if (type.includes("spreadsheet") || type.includes("excel")) return "XLS";
+  if (type.startsWith("image/")) return extension || "IMG";
+  if (type.includes("text/")) return "TXT";
+  return extension || "FILE";
 };
 
 const sizeConfig = {
   sm: {
-    container: 'p-2',
-    icon: 'sm' as const,
-    text: 'text-xs',
-    gap: 'gap-2',
+    container: "p-2",
+    icon: "sm" as const,
+    text: "text-xs",
+    gap: "gap-2",
   },
   md: {
-    container: 'p-3',
-    icon: 'md' as const,
-    text: 'text-sm',
-    gap: 'gap-3',
+    container: "p-3",
+    icon: "md" as const,
+    text: "text-sm",
+    gap: "gap-3",
   },
 };
 
@@ -95,32 +95,33 @@ export const AttachmentPreview = ({
   removable = true,
   onRemove,
   onRetry,
-  size = 'md',
+  size = "md",
   className,
 }: AttachmentPreviewProps) => {
   const config = sizeConfig[size];
   const isUploading = file.progress !== undefined && file.progress < 100;
   const hasError = !!file.error;
-  const isComplete = file.progress === 100 || (file.progress === undefined && !file.error);
+  const isComplete =
+    file.progress === 100 || (file.progress === undefined && !file.error);
 
   return (
     <div
       className={clsx(
-        'flex items-center rounded-lg border',
+        "flex items-center rounded-lg border",
         config.container,
         config.gap,
         hasError
-          ? 'bg-error-50 border-error-200'
-          : 'bg-neutral-50 border-neutral-200',
-        className
+          ? "bg-error-50 border-error-200"
+          : "bg-neutral-50 border-neutral-200",
+        className,
       )}
     >
       {/* File type icon */}
       <div
         className={clsx(
-          'flex-shrink-0 flex items-center justify-center',
-          'w-10 h-10 rounded-lg',
-          hasError ? 'bg-error-100' : 'bg-neutral-100'
+          "flex-shrink-0 flex items-center justify-center",
+          "w-10 h-10 rounded-lg",
+          hasError ? "bg-error-100" : "bg-neutral-100",
         )}
       >
         {isUploading ? (
@@ -145,8 +146,8 @@ export const AttachmentPreview = ({
         <p
           className={clsx(
             config.text,
-            'font-medium truncate',
-            hasError ? 'text-error-800' : 'text-neutral-800'
+            "font-medium truncate",
+            hasError ? "text-error-800" : "text-neutral-800",
           )}
           title={file.name}
         >
@@ -155,8 +156,8 @@ export const AttachmentPreview = ({
         <div className="flex items-center gap-2">
           <span
             className={clsx(
-              'text-xs',
-              hasError ? 'text-error-600' : 'text-neutral-500'
+              "text-xs",
+              hasError ? "text-error-600" : "text-neutral-500",
             )}
           >
             {hasError
@@ -194,17 +195,13 @@ export const AttachmentPreview = ({
             type="button"
             onClick={() => onRemove(file.id)}
             className={clsx(
-              'p-1 rounded-md transition-colors',
-              'hover:bg-neutral-200',
-              'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500'
+              "p-1 rounded-md transition-colors",
+              "hover:bg-neutral-200",
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
             )}
             aria-label={`Remove ${file.name}`}
           >
-            <Icon
-              name="x-mark"
-              size="sm"
-              className="text-neutral-500"
-            />
+            <Icon name="x-mark" size="sm" className="text-neutral-500" />
           </button>
         )}
       </div>

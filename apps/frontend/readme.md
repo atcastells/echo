@@ -9,6 +9,7 @@ Jura-Front is the user-facing application for Jura, an AI-powered career agent t
 Jura transforms the traditional resume experience into an intelligent, conversational career management platform. Job seekers interact with Jura through natural language Q&A, receiving context-aware career assistance that goes beyond simple CV parsing. The result is a comprehensive, recruiter-ready profile that can be shared, edited, and continuously improved with AI guidance.
 
 **Core Value Proposition:**
+
 - **AI Career Agent**: Intelligent assistant that understands your professional journey
 - **Personal Professional Assistant**: Context-aware guidance tailored to your career goals
 - **Recruiter-Ready Profiles**: Optimized output designed for hiring professionals
@@ -75,36 +76,42 @@ pnpm lint
 _Status: ✅ Complete | ⏳ In Progress / Planned_
 
 ### Phase 1: MVP UI (Q1 2025)
+
 - ✅ Core React + TypeScript + Vite setup
 - ⏳ CV upload interface with drag-and-drop
 - ⏳ Basic profile view/edit functionality
 - ⏳ Initial API integration with backend
 
 ### Phase 2: Q&A + Shareable Profiles (Q2 2025)
+
 - ⏳ Chat interface with AI-powered Q&A
 - ⏳ Shareable profile link generation
 - ⏳ Profile customization options
 - ⏳ Real-time parsing feedback
 
 ### Phase 3: Optimization & Accessibility (Q2 2025)
+
 - ⏳ Performance optimization (code splitting, lazy loading)
 - ⏳ WCAG 2.1 AA compliance
 - ⏳ Mobile-responsive design refinements
 - ⏳ Progressive Web App (PWA) features
 
 ### Phase 4: Observability & Testing (Q3 2025)
+
 - ⏳ Comprehensive unit and integration tests
 - ⏳ End-to-end testing with Playwright or Cypress
 - ⏳ Error tracking and analytics integration
 - ⏳ Performance monitoring
 
 ### Phase 5: Recruiter Experience (Q3 2025)
+
 - ⏳ Recruiter dashboard features
 - ⏳ Candidate search and filtering
 - ⏳ Profile comparison tools
 - ⏳ Communication features
 
 ### Phase 6: Localization & Security (Q4 2025)
+
 - ⏳ Multi-language support (i18n)
 - ⏳ Security hardening and penetration testing
 - ⏳ GDPR compliance features

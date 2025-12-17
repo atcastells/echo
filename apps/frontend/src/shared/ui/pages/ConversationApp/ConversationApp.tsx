@@ -1,12 +1,12 @@
-import { useState, useCallback, type ReactNode } from 'react';
-import { clsx } from 'clsx';
-import { Sidebar } from '../../organisms/Sidebar';
-import { MainPanel } from '../../templates/MainPanel';
-import type { Message } from '../../organisms/MessageItem';
-import type { ConversationData } from '../../molecules/ConversationListItem';
-import type { SuggestedPrompt } from '../../templates/ConversationEmptyState';
-import type { AttachmentFile } from '../../molecules/AttachmentPreview';
-import type { AgentStatus } from '../../molecules/AgentIdentity';
+import { useState, useCallback, type ReactNode } from "react";
+import { clsx } from "clsx";
+import { Sidebar } from "../../organisms/Sidebar";
+import { MainPanel } from "../../templates/MainPanel";
+import type { Message } from "../../organisms/MessageItem";
+import type { ConversationData } from "../../molecules/ConversationListItem";
+import type { SuggestedPrompt } from "../../templates/ConversationEmptyState";
+import type { AttachmentFile } from "../../molecules/AttachmentPreview";
+import type { AgentStatus } from "../../molecules/AgentIdentity";
 
 export interface ConversationAppProps {
   /** All conversations */
@@ -24,7 +24,7 @@ export interface ConversationAppProps {
   /** Streaming message content */
   streamingContent?: string;
   /** Feedback by message ID */
-  feedbackByMessageId?: Record<string, 'positive' | 'negative' | null>;
+  feedbackByMessageId?: Record<string, "positive" | "negative" | null>;
   /** Agent name */
   agentName?: string;
   /** Agent role */
@@ -94,15 +94,15 @@ export const ConversationApp = ({
   streamingMessageId,
   streamingContent,
   feedbackByMessageId,
-  agentName = 'Echo',
-  agentRole = 'AI Career Agent',
+  agentName = "Echo",
+  agentRole = "AI Career Agent",
   agentAvatarUrl,
-  agentStatus = 'available',
-  userName = 'You',
+  agentStatus = "available",
+  userName = "You",
   userAvatarUrl,
   memoryEnabled = true,
   contextUsagePercent = 0,
-  composerValue = '',
+  composerValue = "",
   attachments = [],
   suggestedPrompts,
   isMobile = false,
@@ -150,15 +150,15 @@ export const ConversationApp = ({
         setSidebarOpen(false);
       }
     },
-    [isMobile, onSelectConversation]
+    [isMobile, onSelectConversation],
   );
 
   const activeConversation = conversations.find(
-    (c) => c.id === activeConversationId
+    (c) => c.id === activeConversationId,
   );
 
   return (
-    <div className={clsx('flex h-screen bg-neutral-50', className)}>
+    <div className={clsx("flex h-screen bg-neutral-50", className)}>
       {/* Mobile overlay */}
       {isMobile && sidebarOpen && (
         <div
@@ -173,10 +173,10 @@ export const ConversationApp = ({
         className={clsx(
           isMobile
             ? clsx(
-                'fixed inset-y-0 left-0 z-50 transition-transform duration-300',
-                sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                "fixed inset-y-0 left-0 z-50 transition-transform duration-300",
+                sidebarOpen ? "translate-x-0" : "-translate-x-full",
               )
-            : 'relative flex-shrink-0'
+            : "relative flex-shrink-0",
         )}
       >
         <Sidebar

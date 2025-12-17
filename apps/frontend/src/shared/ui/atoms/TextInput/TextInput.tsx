@@ -97,7 +97,7 @@ export const TextInput = forwardRef<
   const id = useId();
   const inputId = props.id || id;
   const [internalValue, setInternalValue] = useState(
-    defaultValue?.toString() || ""
+    defaultValue?.toString() || "",
   );
 
   const currentValue = value !== undefined ? value.toString() : internalValue;
@@ -105,7 +105,7 @@ export const TextInput = forwardRef<
   const showClearButton = showClear && currentValue.length > 0 && !disabled;
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     if (value === undefined) {
       setInternalValue(e.target.value);
@@ -137,7 +137,7 @@ export const TextInput = forwardRef<
     // Icon padding
     leadingIcon && "pl-10",
     (trailingIcon || showClearButton) && "pr-10",
-    className
+    className,
   );
 
   const renderInput = () => {
@@ -170,7 +170,8 @@ export const TextInput = forwardRef<
       );
     }
 
-    const { multiline: _multiline, ...inputProps } = rest as SingleLineInputProps;
+    const { multiline: _multiline, ...inputProps } =
+      rest as SingleLineInputProps;
     return (
       <input
         ref={ref as React.Ref<HTMLInputElement>}
@@ -200,7 +201,7 @@ export const TextInput = forwardRef<
           htmlFor={inputId}
           className={clsx(
             "block font-medium text-neutral-700 mb-1.5",
-            labelSizeStyles[size]
+            labelSizeStyles[size],
           )}
         >
           {label}

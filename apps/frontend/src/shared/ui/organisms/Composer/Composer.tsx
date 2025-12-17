@@ -1,24 +1,24 @@
-import { useRef, useCallback, useEffect, type KeyboardEvent } from 'react';
-import { useMachine } from '@xstate/react';
-import { clsx } from 'clsx';
-import { Button } from '../../atoms/Button';
-import { Icon } from '../../atoms/Icon';
-import { TextInput } from '../../atoms/TextInput';
-import { Tooltip } from '../../atoms/Tooltip';
+import { useRef, useCallback, useEffect, type KeyboardEvent } from "react";
+import { useMachine } from "@xstate/react";
+import { clsx } from "clsx";
+import { Button } from "../../atoms/Button";
+import { Icon } from "../../atoms/Icon";
+import { TextInput } from "../../atoms/TextInput";
+import { Tooltip } from "../../atoms/Tooltip";
 import {
   AttachmentPreview,
   type AttachmentFile,
-} from '../../molecules/AttachmentPreview';
-import { composerMachine, type ComposerContext } from '../../../state-machines';
+} from "../../molecules/AttachmentPreview";
+import { composerMachine, type ComposerContext } from "../../../state-machines";
 
 /** Machine states for external control */
 export type ComposerMachineState =
-  | 'idle'
-  | 'typing'
-  | 'submitting'
-  | 'error'
-  | 'disabled'
-  | 'blocked';
+  | "idle"
+  | "typing"
+  | "submitting"
+  | "error"
+  | "disabled"
+  | "blocked";
 
 export interface ComposerProps {
   /** Current input value (controlled mode) */
@@ -92,13 +92,13 @@ export const Composer = ({
   onAttach,
   onRemoveAttachment,
   attachments = [],
-  placeholder = 'Type your message...',
+  placeholder = "Type your message...",
   maxLength = 4000,
   disabled = false,
   showAttachButton = true,
   showVoiceButton = false,
-  acceptedFileTypes = '.pdf,.doc,.docx,.txt,.md',
-  submitShortcut = '⌘ Enter',
+  acceptedFileTypes = ".pdf,.doc,.docx,.txt,.md",
+  submitShortcut = "⌘ Enter",
   initialMachineState,
   initialContext,
   className,
@@ -111,30 +111,30 @@ export const Composer = ({
 
   // Handle initial machine state for Storybook testing
   useEffect(() => {
-    if (!initialMachineState || initialMachineState === 'idle') return;
+    if (!initialMachineState || initialMachineState === "idle") return;
 
     // Transition to the requested initial state
     switch (initialMachineState) {
-      case 'typing':
-        send({ type: 'TYPE', value: value ?? '' });
+      case "typing":
+        send({ type: "TYPE", value: value ?? "" });
         break;
-      case 'submitting':
-        send({ type: 'TYPE', value: value ?? 'Submitting...' });
-        send({ type: 'SUBMIT' });
+      case "submitting":
+        send({ type: "TYPE", value: value ?? "Submitting..." });
+        send({ type: "SUBMIT" });
         break;
-      case 'error':
-        send({ type: 'TYPE', value: value ?? '' });
-        send({ type: 'SUBMIT' });
+      case "error":
+        send({ type: "TYPE", value: value ?? "" });
+        send({ type: "SUBMIT" });
         send({
-          type: 'SUBMIT_ERROR',
-          error: initialContext?.errorMessage ?? 'Submission failed',
+          type: "SUBMIT_ERROR",
+          error: initialContext?.errorMessage ?? "Submission failed",
         });
         break;
-      case 'disabled':
-        send({ type: 'DISABLE' });
+      case "disabled":
+        send({ type: "DISABLE" });
         break;
-      case 'blocked':
-        send({ type: 'BLOCK' });
+      case "blocked":
+        send({ type: "BLOCK" });
         break;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -145,10 +145,10 @@ export const Composer = ({
     // Skip if we're using initialMachineState
     if (initialMachineState) return;
 
-    if (disabled && !state.matches('disabled') && !state.matches('blocked')) {
-      send({ type: 'DISABLE' });
-    } else if (!disabled && state.matches('disabled')) {
-      send({ type: 'ENABLE' });
+    if (disabled && !state.matches("disabled") && !state.matches("blocked")) {
+      send({ type: "DISABLE" });
+    } else if (!disabled && state.matches("disabled")) {
+      send({ type: "ENABLE" });
     }
   }, [disabled, state, send, initialMachineState]);
 
@@ -156,44 +156,45 @@ export const Composer = ({
   useEffect(() => {
     // Skip initial sync if using initialMachineState
     if (value !== undefined && value !== state.context.inputValue) {
-      send({ type: 'TYPE', value });
+      send({ type: "TYPE", value });
     }
   }, [value, state.context.inputValue, send]);
 
   // Derive UI state from machine
-  const isDisabled = state.matches('disabled') || state.matches('blocked');
-  const isSubmitting = state.matches('submitting');
-  const isError = state.matches('error');
+  const isDisabled = state.matches("disabled") || state.matches("blocked");
+  const isSubmitting = state.matches("submitting");
+  const isError = state.matches("error");
   const inputValue = state.context.inputValue;
   const hasContent = inputValue.trim().length > 0;
   const hasAttachments = attachments.length > 0;
-  const canSubmit = (hasContent || hasAttachments) && !isDisabled && !isSubmitting;
+  const canSubmit =
+    (hasContent || hasAttachments) && !isDisabled && !isSubmitting;
   const characterCount = inputValue.length;
   const isNearLimit = characterCount > maxLength * 0.9;
   const isOverLimit = characterCount > maxLength;
 
   const handleChange = useCallback(
     (newValue: string) => {
-      send({ type: 'TYPE', value: newValue });
+      send({ type: "TYPE", value: newValue });
       onChange?.(newValue);
     },
-    [send, onChange]
+    [send, onChange],
   );
 
   const handleSubmit = useCallback(() => {
     if (!canSubmit) return;
 
     const message = inputValue.trim();
-    send({ type: 'SUBMIT' });
+    send({ type: "SUBMIT" });
 
     // Call onSubmit and handle success/error
     try {
       onSubmit?.(message, hasAttachments ? attachments : undefined);
-      send({ type: 'SUBMIT_SUCCESS' });
+      send({ type: "SUBMIT_SUCCESS" });
     } catch (error) {
       send({
-        type: 'SUBMIT_ERROR',
-        error: error instanceof Error ? error.message : 'Submission failed',
+        type: "SUBMIT_ERROR",
+        error: error instanceof Error ? error.message : "Submission failed",
       });
     }
 
@@ -202,19 +203,19 @@ export const Composer = ({
   }, [canSubmit, inputValue, attachments, hasAttachments, onSubmit, send]);
 
   const handleRetry = useCallback(() => {
-    send({ type: 'RETRY' });
+    send({ type: "RETRY" });
     handleSubmit();
   }, [send, handleSubmit]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLTextAreaElement>) => {
       // Submit on Cmd/Ctrl + Enter
-      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
         e.preventDefault();
         handleSubmit();
       }
     },
-    [handleSubmit]
+    [handleSubmit],
   );
 
   const handleAttachClick = () => {
@@ -227,25 +228,28 @@ export const Composer = ({
       onAttach?.(files);
     }
     // Reset input so same file can be selected again
-    e.target.value = '';
+    e.target.value = "";
   };
 
   return (
     <div
       className={clsx(
-        'bg-white border border-neutral-200 rounded-xl shadow-sm',
-        'focus-within:border-primary-400 focus-within:ring-2 focus-within:ring-primary-100',
-        'transition-all duration-150',
-        isDisabled && 'opacity-60',
-        isError && 'border-error-300 focus-within:border-error-400 focus-within:ring-error-100',
-        className
+        "bg-white border border-neutral-200 rounded-xl shadow-sm",
+        "focus-within:border-primary-400 focus-within:ring-2 focus-within:ring-primary-100",
+        "transition-all duration-150",
+        isDisabled && "opacity-60",
+        isError &&
+          "border-error-300 focus-within:border-error-400 focus-within:ring-error-100",
+        className,
       )}
       data-state={state.value}
     >
       {/* Error message */}
       {isError && state.context.errorMessage && (
         <div className="px-3 pt-3 flex items-center justify-between">
-          <span className="text-sm text-error-600">{state.context.errorMessage}</span>
+          <span className="text-sm text-error-600">
+            {state.context.errorMessage}
+          </span>
           <Button variant="ghost" size="sm" onClick={handleRetry}>
             Retry
           </Button>
@@ -303,10 +307,10 @@ export const Composer = ({
                   onClick={handleAttachClick}
                   disabled={isDisabled}
                   className={clsx(
-                    'p-2 rounded-lg transition-colors',
-                    'text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100',
-                    'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
-                    isDisabled && 'cursor-not-allowed opacity-50'
+                    "p-2 rounded-lg transition-colors",
+                    "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100",
+                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
+                    isDisabled && "cursor-not-allowed opacity-50",
                   )}
                   aria-label="Attach files"
                 >
@@ -322,10 +326,10 @@ export const Composer = ({
                 type="button"
                 disabled={isDisabled}
                 className={clsx(
-                  'p-2 rounded-lg transition-colors',
-                  'text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100',
-                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
-                  isDisabled && 'cursor-not-allowed opacity-50'
+                  "p-2 rounded-lg transition-colors",
+                  "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100",
+                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
+                  isDisabled && "cursor-not-allowed opacity-50",
                 )}
                 aria-label="Voice input"
               >
@@ -341,10 +345,10 @@ export const Composer = ({
           {maxLength && characterCount > 0 && (
             <span
               className={clsx(
-                'text-xs tabular-nums',
-                isOverLimit && 'text-error-600 font-medium',
-                isNearLimit && !isOverLimit && 'text-warning-600',
-                !isNearLimit && 'text-neutral-400'
+                "text-xs tabular-nums",
+                isOverLimit && "text-error-600 font-medium",
+                isNearLimit && !isOverLimit && "text-warning-600",
+                !isNearLimit && "text-neutral-400",
               )}
             >
               {characterCount}/{maxLength}
@@ -362,7 +366,7 @@ export const Composer = ({
               leadingIcon={<Icon name="paper-airplane" size="sm" />}
               className="px-4"
             >
-              {isSubmitting ? 'Sending...' : 'Send'}
+              {isSubmitting ? "Sending..." : "Send"}
             </Button>
           </Tooltip>
         </div>

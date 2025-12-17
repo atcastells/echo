@@ -1,7 +1,7 @@
-import { clsx } from 'clsx';
-import { Icon } from '../../atoms/Icon';
-import { Tooltip } from '../../atoms/Tooltip';
-import { Button } from '../../atoms/Button';
+import { clsx } from "clsx";
+import { Icon } from "../../atoms/Icon";
+import { Tooltip } from "../../atoms/Tooltip";
+import { Button } from "../../atoms/Button";
 
 export interface ContextIndicatorProps {
   /** Whether memory/context is enabled */
@@ -19,7 +19,7 @@ export interface ContextIndicatorProps {
   /** Callback when toggle is clicked */
   onToggle?: () => void;
   /** Size variant */
-  size?: 'sm' | 'md';
+  size?: "sm" | "md";
   /** Additional CSS classes */
   className?: string;
 }
@@ -30,32 +30,34 @@ const formatTokens = (tokens: number): string => {
   return `${(tokens / 1000000).toFixed(1)}m`;
 };
 
-const getUsageLevel = (percent: number): 'low' | 'medium' | 'high' | 'critical' => {
-  if (percent < 50) return 'low';
-  if (percent < 75) return 'medium';
-  if (percent < 90) return 'high';
-  return 'critical';
+const getUsageLevel = (
+  percent: number,
+): "low" | "medium" | "high" | "critical" => {
+  if (percent < 50) return "low";
+  if (percent < 75) return "medium";
+  if (percent < 90) return "high";
+  return "critical";
 };
 
 const usageLevelColors: Record<ReturnType<typeof getUsageLevel>, string> = {
-  low: 'bg-success-500',
-  medium: 'bg-warning-400',
-  high: 'bg-warning-500',
-  critical: 'bg-error-500',
+  low: "bg-success-500",
+  medium: "bg-warning-400",
+  high: "bg-warning-500",
+  critical: "bg-error-500",
 };
 
 const sizeConfig = {
   sm: {
-    container: 'px-2 py-1.5',
-    text: 'text-xs',
-    progressHeight: 'h-1',
-    gap: 'gap-1.5',
+    container: "px-2 py-1.5",
+    text: "text-xs",
+    progressHeight: "h-1",
+    gap: "gap-1.5",
   },
   md: {
-    container: 'px-3 py-2',
-    text: 'text-sm',
-    progressHeight: 'h-1.5',
-    gap: 'gap-2',
+    container: "px-3 py-2",
+    text: "text-sm",
+    progressHeight: "h-1.5",
+    gap: "gap-2",
   },
 };
 
@@ -81,7 +83,7 @@ export const ContextIndicator = ({
   showResetButton = true,
   onReset,
   onToggle,
-  size = 'md',
+  size = "md",
   className,
 }: ContextIndicatorProps) => {
   const config = sizeConfig[size];
@@ -90,11 +92,11 @@ export const ContextIndicator = ({
   return (
     <div
       className={clsx(
-        'inline-flex items-center rounded-lg',
-        'bg-neutral-50 border border-neutral-200',
+        "inline-flex items-center rounded-lg",
+        "bg-neutral-50 border border-neutral-200",
         config.container,
         config.gap,
-        className
+        className,
       )}
     >
       {/* Memory icon with toggle */}
@@ -104,24 +106,24 @@ export const ContextIndicator = ({
           onClick={onToggle}
           disabled={!onToggle}
           className={clsx(
-            'flex items-center gap-1.5 rounded-md transition-colors',
-            onToggle && 'hover:bg-neutral-100 cursor-pointer',
-            'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500'
+            "flex items-center gap-1.5 rounded-md transition-colors",
+            onToggle && "hover:bg-neutral-100 cursor-pointer",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
           )}
         >
           <Icon
-            name={isEnabled ? 'sparkles' : 'x-circle'}
+            name={isEnabled ? "sparkles" : "x-circle"}
             size="sm"
-            className={isEnabled ? 'text-primary-500' : 'text-neutral-400'}
+            className={isEnabled ? "text-primary-500" : "text-neutral-400"}
           />
           <span
             className={clsx(
               config.text,
-              'font-medium',
-              isEnabled ? 'text-neutral-700' : 'text-neutral-500'
+              "font-medium",
+              isEnabled ? "text-neutral-700" : "text-neutral-500",
             )}
           >
-            {isEnabled ? 'Memory on' : 'Memory off'}
+            {isEnabled ? "Memory on" : "Memory off"}
           </span>
         </button>
       </Tooltip>
@@ -143,14 +145,14 @@ export const ContextIndicator = ({
               {/* Progress bar */}
               <div
                 className={clsx(
-                  'w-16 rounded-full bg-neutral-200 overflow-hidden',
-                  config.progressHeight
+                  "w-16 rounded-full bg-neutral-200 overflow-hidden",
+                  config.progressHeight,
                 )}
               >
                 <div
                   className={clsx(
-                    'h-full rounded-full transition-all duration-300',
-                    usageLevelColors[usageLevel]
+                    "h-full rounded-full transition-all duration-300",
+                    usageLevelColors[usageLevel],
                   )}
                   style={{ width: `${Math.min(usagePercent, 100)}%` }}
                 />
@@ -160,8 +162,10 @@ export const ContextIndicator = ({
               <span
                 className={clsx(
                   config.text,
-                  'tabular-nums',
-                  usageLevel === 'critical' ? 'text-error-600 font-medium' : 'text-neutral-500'
+                  "tabular-nums",
+                  usageLevel === "critical"
+                    ? "text-error-600 font-medium"
+                    : "text-neutral-500",
                 )}
               >
                 {usagePercent}%

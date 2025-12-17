@@ -60,7 +60,7 @@ export const SignUpForm = ({ onSuccess, onSignInClick }: SignUpFormProps) => {
           className={cn(
             "mt-1 block w-full rounded-md border border-neutral-300 px-3 py-2",
             "shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500",
-            "disabled:bg-neutral-100 disabled:cursor-not-allowed"
+            "disabled:bg-neutral-100 disabled:cursor-not-allowed",
           )}
           disabled={isLoading}
         />
@@ -83,7 +83,7 @@ export const SignUpForm = ({ onSuccess, onSignInClick }: SignUpFormProps) => {
           className={cn(
             "mt-1 block w-full rounded-md border border-neutral-300 px-3 py-2",
             "shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500",
-            "disabled:bg-neutral-100 disabled:cursor-not-allowed"
+            "disabled:bg-neutral-100 disabled:cursor-not-allowed",
           )}
           disabled={isLoading}
           minLength={8}
@@ -107,7 +107,7 @@ export const SignUpForm = ({ onSuccess, onSignInClick }: SignUpFormProps) => {
           className={cn(
             "mt-1 block w-full rounded-md border border-neutral-300 px-3 py-2",
             "shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500",
-            "disabled:bg-neutral-100 disabled:cursor-not-allowed"
+            "disabled:bg-neutral-100 disabled:cursor-not-allowed",
           )}
           disabled={isLoading}
         />
@@ -128,7 +128,7 @@ export const SignUpForm = ({ onSuccess, onSignInClick }: SignUpFormProps) => {
         className={cn(
           "w-full rounded-md bg-primary-500 px-4 py-2 text-sm font-semibold text-white",
           "hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2",
-          "disabled:bg-primary-300 disabled:cursor-not-allowed"
+          "disabled:bg-primary-300 disabled:cursor-not-allowed",
         )}
       >
         {isLoading ? "Creating account..." : "Create account"}
