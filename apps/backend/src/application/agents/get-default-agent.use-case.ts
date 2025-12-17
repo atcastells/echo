@@ -20,11 +20,15 @@ export class GetDefaultAgentUseCase {
       // Given the robustness requirement, I'll simple throw 404 and let frontend handle or
       // return the first 'Career Assistant' named one if exists.
       // Let's stick to strict `isDefault` for now as we just added it.
-      
-      const legacyDefault = agents.find(a => a.name === "Career Assistant");
+
+      const legacyDefault = agents.find((a) => a.name === "Career Assistant");
       if (legacyDefault) return legacyDefault;
 
-      throw new HttpError(404, "Default agent not found for user", "DEFAULT_AGENT_MISSING");
+      throw new HttpError(
+        404,
+        "Default agent not found for user",
+        "DEFAULT_AGENT_MISSING",
+      );
     }
 
     return defaultAgent;
