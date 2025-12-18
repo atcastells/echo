@@ -390,6 +390,8 @@ export const ChatPage = () => {
     refetchConversations();
   }, [refetchConversations]);
 
+  // Async function to properly await interrupt before starting new stream,
+  // preventing race conditions when user sends messages in quick succession
   const handleComposerSubmit = useCallback(
     async (message: string) => {
       if (!conversationId || !message.trim()) return;

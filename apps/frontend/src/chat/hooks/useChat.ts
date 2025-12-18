@@ -156,7 +156,7 @@ export const useChat = ({
         chatStream({
           conversationId,
           agentId: "default", // Can be dynamic
-          message: content.map(b => b.value).join("\n"),
+          message: content.map((b) => b.value).join("\n"),
           onEvent: handleStreamEvent,
           signal: controller.signal,
         });
@@ -179,24 +179,24 @@ export const useChat = ({
 
   const interrupt = useCallback(
     async (messageId?: string) => {
-    // Abort the fetch request locally
-    abortControllerRef.current?.abort();
-    abortControllerRef.current = null;
+      // Abort the fetch request locally
+      abortControllerRef.current?.abort();
+      abortControllerRef.current = null;
 
-    // Send interrupt command to backend
-    if (conversationId) {
-      try {
-        await chatApi.interrupt(conversationId, messageId);
-      } catch (error) {
-        console.error("Failed to send interrupt command:", error);
+      // Send interrupt command to backend
+      if (conversationId) {
+        try {
+          await chatApi.interrupt(conversationId, messageId);
+        } catch (error) {
+          console.error("Failed to send interrupt command:", error);
+        }
       }
-    }
 
-    // Explicitly transition to idle (or completed/interrupted if we had that state)
-    // SPARK says "Abort transitions message to streaming: false"
-    setStatus("idle");
-    setIsThinking(false);
-    // Note: streamingContent is preserved as per SPARK ("Abort does NOT remove partial content")
+      // Explicitly transition to idle (or completed/interrupted if we had that state)
+      // SPARK says "Abort transitions message to streaming: false"
+      setStatus("idle");
+      setIsThinking(false);
+      // Note: streamingContent is preserved as per SPARK ("Abort does NOT remove partial content")
     },
     [conversationId],
   );
