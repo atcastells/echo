@@ -121,7 +121,7 @@ export const MessageItem = ({
       className={clsx(
         "flex gap-3",
         isUser ? "flex-row-reverse" : "flex-row",
-        className
+        className,
       )}
     >
       {/* Avatar */}
@@ -137,7 +137,7 @@ export const MessageItem = ({
       <div
         className={clsx(
           "flex flex-col gap-1 max-w-[75%]",
-          isUser ? "items-end" : "items-start"
+          isUser ? "items-end" : "items-start",
         )}
       >
         {/* Sender name */}
@@ -193,7 +193,7 @@ export const MessageItem = ({
           <div
             className={clsx(
               "flex items-center gap-2",
-              isUser ? "flex-row-reverse" : "flex-row"
+              isUser ? "flex-row-reverse" : "flex-row",
             )}
           >
             <MessageMeta

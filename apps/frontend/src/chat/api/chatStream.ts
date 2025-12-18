@@ -1,6 +1,6 @@
 /**
  * Chat Streaming Abstraction
- * 
+ *
  * Provides a normalized interface for streaming chat events.
  * Fire-and-forget: Caller provides callbacks and an AbortSignal.
  */
@@ -26,7 +26,7 @@ const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 /**
  * Initiates a chat stream.
- * 
+ *
  * Normalizes backend SSE events into ChatStreamEvents.
  * Handles cleanup via the provided AbortSignal.
  */

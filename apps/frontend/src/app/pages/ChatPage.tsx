@@ -64,7 +64,7 @@ export const ChatPage = () => {
     Record<string, "positive" | "negative" | null>
   >({});
   const [optimisticMessages, setOptimisticMessages] = useState<ChatMessage[]>(
-    []
+    [],
   );
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -147,8 +147,8 @@ export const ChatPage = () => {
                 ...msg,
                 id: serverMessageId,
               }
-            : msg
-        )
+            : msg,
+        ),
       );
 
       activeStreamMessageIdRef.current = serverMessageId;
@@ -213,8 +213,8 @@ export const ChatPage = () => {
                   ...msg,
                   status: "complete",
                 }
-              : msg
-          )
+              : msg,
+          ),
         );
       }
 
@@ -237,8 +237,8 @@ export const ChatPage = () => {
                   ...msg,
                   status: "failed",
                 }
-              : msg
-          )
+              : msg,
+          ),
         );
       }
     },
@@ -280,12 +280,12 @@ export const ChatPage = () => {
   // Filter optimistic messages that are already persisted (prevents duplicates).
   const persistedMessageIds = useMemo(
     () => new Set(messages.map((m: ChatMessage) => m.id)),
-    [messages]
+    [messages],
   );
 
   const visibleOptimisticMessages = useMemo(
     () => optimisticMessages.filter((m) => !persistedMessageIds.has(m.id)),
-    [optimisticMessages, persistedMessageIds]
+    [optimisticMessages, persistedMessageIds],
   );
 
   // Transform backend messages to Storybook format (canonical: streaming is a message)
@@ -339,7 +339,7 @@ export const ChatPage = () => {
 
   const activeConversation = useMemo(
     () => transformedConversations.find((conv) => conv.id === conversationId),
-    [conversationId, transformedConversations]
+    [conversationId, transformedConversations],
   );
 
   const toErrorMessage = (error: unknown): string | undefined => {
@@ -360,7 +360,7 @@ export const ChatPage = () => {
         setSidebarOpen(false);
       }
     },
-    [navigate, isMobile]
+    [navigate, isMobile],
   );
 
   const handleDeleteConversation = useCallback((id: string) => {
@@ -403,8 +403,8 @@ export const ChatPage = () => {
           prev.map((m) =>
             m.id === activeId && m.status === "streaming"
               ? { ...m, status: "complete" }
-              : m
-          )
+              : m,
+          ),
         );
         // Wait for interrupt to complete before starting new stream
         await interrupt(activeId);
@@ -449,12 +449,12 @@ export const ChatPage = () => {
         setOptimisticMessages((prev) =>
           prev.filter(
             (msg) =>
-              msg.id !== optimisticMessage.id && msg.id !== assistantTempId
-          )
+              msg.id !== optimisticMessage.id && msg.id !== assistantTempId,
+          ),
         );
       });
     },
-    [conversationId, sendMessage, interrupt]
+    [conversationId, sendMessage, interrupt],
   );
 
   const handlePromptClick = useCallback(
@@ -468,20 +468,20 @@ export const ChatPage = () => {
         setComposerValue(prompt.text);
       }
     },
-    [conversationId, handleNewConversation]
+    [conversationId, handleNewConversation],
   );
 
   const handleCopy = useCallback(
     (messageId: string) => {
       const message = [...messages, ...visibleOptimisticMessages].find(
-        (m: ChatMessage) => m.id === messageId
+        (m: ChatMessage) => m.id === messageId,
       );
       if (message) {
         const content = message.content.map((block) => block.value).join("\n");
         navigator.clipboard.writeText(content);
       }
     },
-    [messages, visibleOptimisticMessages]
+    [messages, visibleOptimisticMessages],
   );
 
   const handleThumbsUp = useCallback((messageId: string) => {
@@ -505,7 +505,7 @@ export const ChatPage = () => {
       // Find the user message before this assistant message and resend
       const combined = [...messages, ...visibleOptimisticMessages];
       const messageIndex = combined.findIndex(
-        (m: ChatMessage) => m.id === messageId
+        (m: ChatMessage) => m.id === messageId,
       );
       if (messageIndex > 0) {
         const prevMessage = combined[messageIndex - 1];
@@ -515,7 +515,7 @@ export const ChatPage = () => {
         }
       }
     },
-    [messages, visibleOptimisticMessages, sendMessage]
+    [messages, visibleOptimisticMessages, sendMessage],
   );
 
   const handleConfirmAction = useCallback(() => {
@@ -542,9 +542,9 @@ export const ChatPage = () => {
   const hasStreamingMessage = useMemo(
     () =>
       [...messages, ...visibleOptimisticMessages].some(
-        (m: ChatMessage) => m.status === "streaming"
+        (m: ChatMessage) => m.status === "streaming",
       ),
-    [messages, visibleOptimisticMessages]
+    [messages, visibleOptimisticMessages],
   );
 
   const agentStatus = isThinking || hasStreamingMessage ? "busy" : "available";
@@ -570,7 +570,7 @@ export const ChatPage = () => {
           isMobile
             ? "fixed inset-y-0 left-0 z-50 transition-transform duration-300"
             : "relative shrink-0",
-          isMobile && (sidebarOpen ? "translate-x-0" : "-translate-x-full")
+          isMobile && (sidebarOpen ? "translate-x-0" : "-translate-x-full"),
         )}
       >
         <Sidebar
