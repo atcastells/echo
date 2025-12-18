@@ -22,6 +22,8 @@ import {
   useCreateConversation,
   useInvalidateMessages,
   useChat,
+  type ContentBlockType,
+  type MessageStatus,
 } from "@/chat";
 import type { ChatMessage } from "@/chat";
 
@@ -132,8 +134,8 @@ export const ChatPage = () => {
             id: serverMessageId,
             conversationId: conversationId || "",
             role: "assistant",
-            content: [{ type: "text", value: "" }],
-            status: "streaming",
+            content: [{ type: "text" as ContentBlockType, value: "" }],
+            status: "streaming" as MessageStatus,
             createdAt: new Date().toISOString(),
           } as ChatMessage,
         ]);
@@ -181,8 +183,8 @@ export const ChatPage = () => {
           found = true;
           return {
             ...msg,
-            content: [{ type: "text", value: existingText + delta }],
-            status: "streaming",
+            content: [{ type: "text" as ContentBlockType, value: existingText + delta }],
+            status: "streaming" as MessageStatus,
           };
         });
 
@@ -192,8 +194,8 @@ export const ChatPage = () => {
             id: targetId,
             conversationId: conversationId || "",
             role: "assistant",
-            content: [{ type: "text", value: delta }],
-            status: "streaming",
+            content: [{ type: "text" as ContentBlockType, value: delta }],
+            status: "streaming" as MessageStatus,
             createdAt: new Date().toISOString(),
           };
 
@@ -213,7 +215,7 @@ export const ChatPage = () => {
             msg.id === targetId
               ? {
                   ...msg,
-                  status: "complete",
+                  status: "complete" as MessageStatus,
                 }
               : msg,
           ),
@@ -237,7 +239,7 @@ export const ChatPage = () => {
             msg.id === targetId
               ? {
                   ...msg,
-                  status: "failed",
+                  status: "failed" as MessageStatus,
                 }
               : msg,
           ),
@@ -404,7 +406,7 @@ export const ChatPage = () => {
         setOptimisticMessages((prev) =>
           prev.map((m) =>
             m.id === activeId && m.status === "streaming"
-              ? { ...m, status: "complete" }
+              ? { ...m, status: "complete" as MessageStatus }
               : m,
           ),
         );
@@ -419,8 +421,8 @@ export const ChatPage = () => {
         id: `temp-${now}`,
         conversationId,
         role: "user",
-        content: [{ type: "text", value: message }],
-        status: "complete",
+        content: [{ type: "text" as ContentBlockType, value: message }],
+        status: "complete" as MessageStatus,
         createdAt: now,
       };
 
@@ -431,8 +433,8 @@ export const ChatPage = () => {
         id: assistantTempId,
         conversationId,
         role: "assistant",
-        content: [{ type: "text", value: "" }],
-        status: "streaming",
+        content: [{ type: "text" as ContentBlockType, value: "" }],
+        status: "streaming" as MessageStatus,
         createdAt: now,
       };
 
@@ -644,7 +646,7 @@ export const ChatPage = () => {
             // Find the streaming message directly from state for better reliability
             setOptimisticMessages((prev) =>
               prev.map((m) =>
-                m.status === "streaming" ? { ...m, status: "complete" } : m,
+                m.status === "streaming" ? { ...m, status: "complete" as MessageStatus } : m,
               ),
             );
 
