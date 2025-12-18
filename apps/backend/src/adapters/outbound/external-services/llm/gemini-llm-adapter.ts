@@ -27,7 +27,7 @@ interface ToolCall {
  */
 @Service()
 export class GeminiLLMAdapter extends LLMAdapter {
-  private readonly chatModel: ChatGoogleGenerativeAI | null = null;
+  private readonly chatModel: ChatGoogleGenerativeAI | undefined = undefined;
   private readonly modelId: string;
   private readonly adapterConfig: Required<LLMAdapterConfig>;
 
@@ -69,7 +69,7 @@ export class GeminiLLMAdapter extends LLMAdapter {
   }
 
   isConfigured(): boolean {
-    return this.chatModel !== null;
+    return this.chatModel !== undefined;
   }
 
   async generateResponse(prompt: string): Promise<string> {

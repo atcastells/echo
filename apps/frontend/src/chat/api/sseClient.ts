@@ -28,6 +28,9 @@ export const createSSEStream = async (
 ): Promise<AbortController> => {
   const controller = new AbortController();
 
+  let currentEventType: string | null = null;
+  const currentDataLines: string[] = [];
+
   const startStream = async () => {
     try {
       const response = await fetch(url, {
@@ -54,6 +57,9 @@ export const createSSEStream = async (
       }
 
       // Parse SSE stream
+      // Supports:
+      // - Standard SSE: `event: <type>` + `data: <json>` + blank line
+      // - Data-only SSE (backend-embedded event): `data: {"event":"...", ...}` + blank line
       let buffer = "";
 
       while (true) {
@@ -68,31 +74,49 @@ export const createSSEStream = async (
         const lines = buffer.split("\n");
         buffer = lines.pop() || "";
 
-        let currentEventType = "";
-        let currentEventData = "";
-
         for (const line of lines) {
           if (line.startsWith("event:")) {
             currentEventType = line.slice(6).trim();
-          } else if (line.startsWith("data:")) {
-            currentEventData = line.slice(5).trim();
-          } else if (line === "" && currentEventType && currentEventData) {
-            // Empty line signals end of event
+            continue;
+          }
+
+          if (line.startsWith("data:")) {
+            currentDataLines.push(line.slice(5).trim());
+            continue;
+          }
+
+          // Empty line signals end of event
+          if (line === "" && currentDataLines.length > 0) {
+            const json = currentDataLines.join("\n");
             try {
-              const parsed = JSON.parse(currentEventData) as Omit<
-                SSEEvent,
-                "event"
-              >;
-              const event: SSEEvent = {
-                ...parsed,
-                event: currentEventType as SSEEventType,
+              const parsed = JSON.parse(json) as Partial<SSEEvent> & {
+                event?: string;
               };
+
+              const embeddedEvent = parsed.event;
+              const eventType = (currentEventType || embeddedEvent) as
+                | SSEEventType
+                | undefined;
+
+              if (!eventType) {
+                // If no event type, ignore.
+                currentEventType = null;
+                currentDataLines.length = 0;
+                continue;
+              }
+
+              const event: SSEEvent = {
+                ...(parsed as Omit<SSEEvent, "event">),
+                event: eventType,
+              };
+
               options.onEvent(event);
             } catch (parseError) {
               console.error("Failed to parse SSE event data:", parseError);
             }
-            currentEventType = "";
-            currentEventData = "";
+
+            currentEventType = null;
+            currentDataLines.length = 0;
           }
         }
       }

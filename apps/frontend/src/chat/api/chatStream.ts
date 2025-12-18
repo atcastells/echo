@@ -1,6 +1,6 @@
 /**
  * Chat Streaming Abstraction
- * 
+ *
  * Provides a normalized interface for streaming chat events.
  * Fire-and-forget: Caller provides callbacks and an AbortSignal.
  */
@@ -26,7 +26,7 @@ const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 /**
  * Initiates a chat stream.
- * 
+ *
  * Normalizes backend SSE events into ChatStreamEvents.
  * Handles cleanup via the provided AbortSignal.
  */
@@ -49,17 +49,52 @@ export const chatStream = (params: ChatStreamParams): void => {
 
       switch (sseEvent.event) {
         case "chat.started":
-          onEvent({
-            type: "assistant.start",
-            messageId: sseEvent.message_id || (sseEvent.payload as { message_id: string }).message_id || "",
-          });
+          {
+            const payload =
+              sseEvent.payload && typeof sseEvent.payload === "object"
+                ? (sseEvent.payload as Record<string, unknown>)
+                : undefined;
+
+            const messageIdFromPayload = payload?.message_id;
+
+            onEvent({
+              type: "assistant.start",
+              messageId:
+                sseEvent.message_id ||
+                (typeof messageIdFromPayload === "string"
+                  ? messageIdFromPayload
+                  : ""),
+            });
+          }
           break;
 
         case "message.delta":
-          onEvent({
-            type: "assistant.delta",
-            delta: (sseEvent.payload as any).delta || "",
-          });
+          {
+            // Backend SSE contract: message chunks may be sent as either
+            // { delta: string } (preferred, standardized field) or
+            // { value: string } (kept for compatibility with legacy emitters).
+            // Example observed from legacy backend: payload: { type: "text", value: "¡" }
+            // Once all backends emit `delta`, the `value` fallback can be removed.
+            const payload =
+              sseEvent.payload && typeof sseEvent.payload === "object"
+                ? (sseEvent.payload as Record<string, unknown>)
+                : undefined;
+
+            const maybeDelta = payload?.delta;
+            const maybeValue = payload?.value;
+
+            const delta =
+              typeof maybeDelta === "string"
+                ? maybeDelta
+                : typeof maybeValue === "string"
+                  ? maybeValue
+                  : "";
+
+            onEvent({
+              type: "assistant.delta",
+              delta,
+            });
+          }
           break;
 
         case "message.completed":
@@ -69,11 +104,24 @@ export const chatStream = (params: ChatStreamParams): void => {
           break;
 
         case "chat.failed":
-          onEvent({
-            type: "error",
-            code: (sseEvent.payload as any).code || "STREAM_ERROR",
-            message: (sseEvent.payload as any).error || "Unknown stream error",
-          });
+          {
+            const payload =
+              sseEvent.payload && typeof sseEvent.payload === "object"
+                ? (sseEvent.payload as Record<string, unknown>)
+                : undefined;
+
+            const code = payload?.code;
+            const errorMessage = payload?.error;
+
+            onEvent({
+              type: "error",
+              code: typeof code === "string" ? code : "STREAM_ERROR",
+              message:
+                typeof errorMessage === "string"
+                  ? errorMessage
+                  : "Unknown stream error",
+            });
+          }
           break;
 
         default:

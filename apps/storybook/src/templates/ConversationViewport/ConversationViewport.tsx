@@ -142,17 +142,40 @@ export const ConversationViewport = ({
     previousMessageCount.current = messages.length;
   }, [messages.length, isAtBottom, autoScroll, scrollToBottom]);
 
-  // Auto-scroll during streaming
+  // Auto-scroll on streaming deltas ONLY if user is near bottom.
+  // Canonical model: deltas are message.content growth, not separate state.
+  const streamingMessage = messages.find((m) => m.status === "streaming");
+  const canonicalStreamingLength = streamingMessage?.content.length ?? 0;
+  const legacyStreamingLength = streamingMessageId
+    ? (streamingContent?.length ?? 0)
+    : 0;
+  const effectiveStreamingLength =
+    canonicalStreamingLength > 0
+      ? canonicalStreamingLength
+      : legacyStreamingLength;
+
   useEffect(() => {
-    if (streamingContent && isAtBottom && autoScroll) {
+    if (!autoScroll) return;
+    if (effectiveStreamingLength === 0) return;
+
+    if (isAtBottom) {
       if (containerRef.current) {
         containerRef.current.scrollTo({
           top: containerRef.current.scrollHeight,
           behavior: "smooth",
         });
       }
+    } else {
+      // Only set hasNewMessages if not already set to avoid redundant re-renders
+      // Use queueMicrotask to avoid setState directly in effect
+      if (!hasNewMessagesRef.current) {
+        hasNewMessagesRef.current = true;
+        queueMicrotask(() => {
+          setHasNewMessages(true);
+        });
+      }
     }
-  }, [streamingContent, isAtBottom, autoScroll]);
+  }, [effectiveStreamingLength, isAtBottom, autoScroll]);
 
   // Auto-scroll when thinking starts
   useEffect(() => {

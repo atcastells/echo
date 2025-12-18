@@ -35,7 +35,7 @@ interface ToolCall {
 @Service()
 export class OpenRouterLLMAdapter extends LLMAdapter {
   private static readonly BASE_URL = "https://openrouter.ai/api/v1";
-  private readonly chatModel: ChatOpenAI | null = null;
+  private readonly chatModel: ChatOpenAI | undefined = undefined;
   private readonly modelId: string;
   private readonly adapterConfig: Required<LLMAdapterConfig>;
 
@@ -88,7 +88,7 @@ export class OpenRouterLLMAdapter extends LLMAdapter {
   }
 
   isConfigured(): boolean {
-    return this.chatModel !== null;
+    return this.chatModel !== undefined;
   }
 
   async generateResponse(prompt: string): Promise<string> {
