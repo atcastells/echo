@@ -172,7 +172,7 @@ export const ChatPage = () => {
               ? msg.content[0].value
               : (msg.content ?? [])
                   .map((part: { value?: unknown }) =>
-                    typeof part.value === "string" ? part.value : ""
+                    typeof part.value === "string" ? part.value : "",
                   )
                   .join("");
 
@@ -320,7 +320,7 @@ export const ChatPage = () => {
         if (persistedMessageIds.size === 0) return prev;
 
         return prev.filter(
-          (m) => m.status === "streaming" || !persistedMessageIds.has(m.id)
+          (m) => m.status === "streaming" || !persistedMessageIds.has(m.id),
         );
       });
     });
@@ -609,8 +609,8 @@ export const ChatPage = () => {
             // Find the streaming message directly from state for better reliability
             setOptimisticMessages((prev) =>
               prev.map((m) =>
-                m.status === "streaming" ? { ...m, status: "complete" } : m
-              )
+                m.status === "streaming" ? { ...m, status: "complete" } : m,
+              ),
             );
 
             const activeId = activeStreamMessageIdRef.current;
