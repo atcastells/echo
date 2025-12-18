@@ -28,6 +28,7 @@ export class CreateAgentUseCase {
       type: input.type,
       status: AgentStatus.ACTIVE,
       configuration: input.configuration,
+      isDefault: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
