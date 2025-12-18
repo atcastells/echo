@@ -19,6 +19,9 @@ export const createChatRouter = (): Router => {
   router.get("/conversations/:id/messages", (request, response, next) =>
     controller.getConversationHistory(request, response, next),
   );
+  router.delete("/conversations/:id/messages", (request, response, next) =>
+    controller.deleteHistory(request, response, next),
+  );
 
   // Chat endpoints
   router.post("/chat", (request, response, next) =>

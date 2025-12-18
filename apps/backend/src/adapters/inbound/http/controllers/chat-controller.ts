@@ -7,6 +7,7 @@ import { ConfirmActionUseCase } from "../../../../application/chat/confirm-actio
 import { CreateConversationUseCase } from "../../../../application/chat/create-conversation.use-case.js";
 import { ListConversationsUseCase } from "../../../../application/chat/list-conversations.use-case.js";
 import { GetConversationHistoryUseCase } from "../../../../application/chat/get-conversation-history.use-case.js";
+import { ClearConversationUseCase } from "../../../../application/chat/clear-conversation.use-case.js";
 import { AuthenticatedRequest } from "../middlewares/auth-middleware.js";
 import { HttpError } from "../errors/http-error.js";
 
@@ -338,6 +339,30 @@ export class ChatController {
         400,
         "Invalid control request: must specify either command or action_id with decision",
       );
+    } catch (error) {
+      next(error);
+    }
+  }
+  /**
+   * DELETE /v1/conversations/:id/messages
+   * Clear conversation history
+   */
+  async deleteHistory(
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const authRequest = request as AuthenticatedRequest;
+      if (!authRequest.user) {
+        throw new HttpError(401, "Unauthorized");
+      }
+
+      const conversationId = request.params.id;
+      const clearConversationUseCase = Container.get(ClearConversationUseCase);
+      await clearConversationUseCase.execute(conversationId);
+
+      response.status(204).send();
     } catch (error) {
       next(error);
     }

@@ -117,6 +117,8 @@ export const ChatPage = () => {
     cancelAction,
     isThinking,
     pendingAction,
+    clearConversation,
+    isStreaming,
   } = useChat({
     conversationId: conversationId || "",
     onStreamStart: (serverMessageId) => {
@@ -555,6 +557,39 @@ export const ChatPage = () => {
   const isLoading =
     isLoadingAgent || isLoadingConversations || isLoadingMessages;
 
+  // Clear Conversation Logic
+  const [isClearModalOpen, setIsClearModalOpen] = useState(false);
+
+  const handleClearClick = useCallback(() => {
+    setIsClearModalOpen(true);
+  }, []);
+
+  const handleConfirmClear = useCallback(async () => {
+    if (!conversationId) return;
+    try {
+      if (isStreaming) {
+        // Guardrail: abort stream before clearing
+        await interrupt();
+        activeStreamMessageIdRef.current = null;
+        activeStreamTempIdRef.current = null;
+      }
+
+      await clearConversation();
+      invalidateMessages(conversationId);
+      setIsClearModalOpen(false);
+    } catch (error) {
+      console.error("Failed to clear conversation", error);
+      // TODO: Show toast
+      setIsClearModalOpen(false);
+    }
+  }, [
+    conversationId,
+    clearConversation,
+    invalidateMessages,
+    isStreaming,
+    interrupt,
+  ]);
+
   return (
     <div className="relative flex h-screen bg-neutral-50">
       {isMobile && sidebarOpen && (
@@ -623,6 +658,7 @@ export const ChatPage = () => {
           onRegenerate={handleRegenerate}
           onThumbsUp={handleThumbsUp}
           onThumbsDown={handleThumbsDown}
+          onClear={handleClearClick}
         />
       </div>
 
@@ -636,6 +672,23 @@ export const ChatPage = () => {
           confirmLabel="Confirm"
           cancelLabel="Cancel"
           variant="default"
+        />
+      )}
+
+      {isClearModalOpen && (
+        <ConfirmModal
+          isOpen={true}
+          onClose={() => setIsClearModalOpen(false)}
+          onConfirm={handleConfirmClear}
+          title="Clear conversation?"
+          message={
+            isStreaming
+              ? "This will stop the current response and clear the conversation."
+              : "This will remove all messages and reset the agent’s context. This action can’t be undone."
+          }
+          confirmLabel="Clear"
+          cancelLabel="Cancel"
+          variant="danger"
         />
       )}
     </div>

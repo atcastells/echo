@@ -23,4 +23,6 @@ export interface ChatRepository {
     messageId: string,
     status: ChatMessage["status"],
   ): Promise<void>;
+
+  deleteMessages(conversationId: string): Promise<void>;
 }
