@@ -144,10 +144,8 @@ export const ConversationViewport = ({
 
   // Auto-scroll on streaming deltas ONLY if user is near bottom.
   // Canonical model: deltas are message.content growth, not separate state.
-  const canonicalStreamingLength = messages.reduce((acc, m) => {
-    if (m.status === "streaming") return m.content.length;
-    return acc;
-  }, 0);
+  const streamingMessage = messages.find((m) => m.status === "streaming");
+  const canonicalStreamingLength = streamingMessage?.content.length ?? 0;
   const legacyStreamingLength = streamingMessageId
     ? (streamingContent?.length ?? 0)
     : 0;
@@ -168,10 +166,14 @@ export const ConversationViewport = ({
         });
       }
     } else {
-      queueMicrotask(() => {
+      // Only set hasNewMessages if not already set to avoid redundant re-renders
+      // Use queueMicrotask to avoid setState directly in effect
+      if (!hasNewMessagesRef.current) {
         hasNewMessagesRef.current = true;
-        setHasNewMessages(true);
-      });
+        queueMicrotask(() => {
+          setHasNewMessages(true);
+        });
+      }
     }
   }, [effectiveStreamingLength, isAtBottom, autoScroll]);
 

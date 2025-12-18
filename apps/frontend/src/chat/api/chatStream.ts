@@ -70,9 +70,11 @@ export const chatStream = (params: ChatStreamParams): void => {
 
         case "message.delta":
           {
-            // Backend may send either { delta: string } or { value: string }
-            // depending on implementation.
-            // Example observed: payload: { type: "text", value: "¡" }
+            // Backend SSE contract: message chunks may be sent as either
+            // { delta: string } (preferred, standardized field) or
+            // { value: string } (kept for compatibility with legacy emitters).
+            // Example observed from legacy backend: payload: { type: "text", value: "¡" }
+            // Once all backends emit `delta`, the `value` fallback can be removed.
             const payload =
               sseEvent.payload && typeof sseEvent.payload === "object"
                 ? (sseEvent.payload as Record<string, unknown>)

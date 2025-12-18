@@ -148,6 +148,9 @@ export const MessageItem = ({
         {/* Message bubble */}
         {isStreamingMessage ? (
           <div className="bg-neutral-100 rounded-2xl rounded-bl-md px-4 py-3 max-w-prose">
+            {/* In canonical streaming model, message.content is the source of truth
+                for streaming messages. The streamingContent prop is kept for backward
+                compatibility with legacy streaming approaches. */}
             <StreamingIndicator
               partialContent={message.content || streamingContent}
               showTyping={true}

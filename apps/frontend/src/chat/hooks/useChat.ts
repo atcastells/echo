@@ -15,6 +15,13 @@ import type {
 } from "../types/chat.types";
 
 /**
+ * Delay in milliseconds before transitioning from "completed" to "idle" state.
+ * This grace period allows downstream components to process the completion event
+ * before state transitions.
+ */
+const COMPLETION_TRANSITION_DELAY_MS = 50;
+
+/**
  * Streaming status transitions:
  * idle -> connecting -> streaming -> completed
  * idle -> connecting -> streaming -> error
@@ -113,7 +120,7 @@ export const useChat = ({
           // Return to idle shortly after completion.
           setTimeout(() => {
             setStatus("idle");
-          }, 50);
+          }, COMPLETION_TRANSITION_DELAY_MS);
           break;
 
         case "error":

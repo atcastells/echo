@@ -122,6 +122,19 @@ export const ChatPage = () => {
     onStreamStart: (serverMessageId) => {
       const tempId = activeStreamTempIdRef.current;
       if (!tempId) {
+        // No optimistic placeholder was created beforehand; create one now
+        // so that streaming deltas can append content to this assistant message.
+        setOptimisticMessages((prev) => [
+          ...prev,
+          {
+            id: serverMessageId,
+            conversationId: conversationId || "",
+            role: "assistant",
+            content: [{ type: "text", value: "" }],
+            status: "streaming",
+            createdAt: new Date().toISOString(),
+          } as ChatMessage,
+        ]);
         activeStreamMessageIdRef.current = serverMessageId;
         return;
       }
@@ -146,20 +159,47 @@ export const ChatPage = () => {
         activeStreamMessageIdRef.current || activeStreamTempIdRef.current;
       if (!targetId) return;
 
-      setOptimisticMessages((prev) =>
-        prev.map((msg) => {
+      setOptimisticMessages((prev) => {
+        let found = false;
+
+        const updatedMessages = prev.map((msg) => {
           if (msg.id !== targetId) return msg;
           if (msg.role !== "assistant") return msg;
 
-          const existingText = msg.content[0]?.value ?? "";
+          // Robustly access message content, handling potential missing or malformed data
+          const existingText =
+            typeof msg.content?.[0]?.value === "string"
+              ? msg.content[0].value
+              : (msg.content ?? [])
+                  .map((part: { value?: unknown }) =>
+                    typeof part.value === "string" ? part.value : ""
+                  )
+                  .join("");
 
+          found = true;
           return {
             ...msg,
             content: [{ type: "text", value: existingText + delta }],
             status: "streaming",
           };
-        })
-      );
+        });
+
+        // If the message doesn't exist yet, create it
+        if (!found) {
+          const newMessage: ChatMessage = {
+            id: targetId,
+            conversationId: conversationId || "",
+            role: "assistant",
+            content: [{ type: "text", value: delta }],
+            status: "streaming",
+            createdAt: new Date().toISOString(),
+          };
+
+          return [...updatedMessages, newMessage];
+        }
+
+        return updatedMessages;
+      });
     },
     onStreamComplete: () => {
       const targetId =
@@ -274,15 +314,16 @@ export const ChatPage = () => {
 
   // Prune optimistic messages that are now persisted (keeps memory bounded)
   useEffect(() => {
-    if (optimisticMessages.length === 0) return;
-    if (persistedMessageIds.size === 0) return;
+    queueMicrotask(() => {
+      setOptimisticMessages((prev) => {
+        if (prev.length === 0) return prev;
+        if (persistedMessageIds.size === 0) return prev;
 
-    setOptimisticMessages((prev) =>
-      prev.filter(
-        (m) => m.status === "streaming" || !persistedMessageIds.has(m.id)
-      )
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        return prev.filter(
+          (m) => m.status === "streaming" || !persistedMessageIds.has(m.id)
+        );
+      });
+    });
   }, [persistedMessageIds]);
 
   // Transform conversations to Storybook format
@@ -350,7 +391,7 @@ export const ChatPage = () => {
   }, [refetchConversations]);
 
   const handleComposerSubmit = useCallback(
-    (message: string) => {
+    async (message: string) => {
       if (!conversationId || !message.trim()) return;
 
       // If something is currently streaming, finalize partial content and abort.
@@ -363,7 +404,8 @@ export const ChatPage = () => {
               : m
           )
         );
-        void interrupt(activeId);
+        // Wait for interrupt to complete before starting new stream
+        await interrupt(activeId);
         activeStreamMessageIdRef.current = null;
         activeStreamTempIdRef.current = null;
       }
@@ -378,6 +420,8 @@ export const ChatPage = () => {
         createdAt: now,
       };
 
+      // Pre-create empty assistant message for streaming to provide UI layout stability
+      // and ensure a placeholder exists before first delta arrives
       const assistantTempId = `temp-assistant-${now}`;
       const optimisticAssistant: ChatMessage = {
         id: assistantTempId,
@@ -388,8 +432,8 @@ export const ChatPage = () => {
         createdAt: now,
       };
 
+      // Only set temp ID ref; messageIdRef will be set when server confirms ID
       activeStreamTempIdRef.current = assistantTempId;
-      activeStreamMessageIdRef.current = assistantTempId;
 
       setOptimisticMessages((prev) => [
         ...prev,
@@ -560,16 +604,14 @@ export const ChatPage = () => {
           onComposerChange={setComposerValue}
           onComposerSubmit={handleComposerSubmit}
           onStopStreaming={() => {
+            // Find the streaming message directly from state for better reliability
+            setOptimisticMessages((prev) =>
+              prev.map((m) =>
+                m.status === "streaming" ? { ...m, status: "complete" } : m
+              )
+            );
+
             const activeId = activeStreamMessageIdRef.current;
-            if (activeId) {
-              setOptimisticMessages((prev) =>
-                prev.map((m) =>
-                  m.id === activeId && m.status === "streaming"
-                    ? { ...m, status: "complete" }
-                    : m
-                )
-              );
-            }
             void interrupt(activeId || undefined);
             activeStreamMessageIdRef.current = null;
             activeStreamTempIdRef.current = null;
