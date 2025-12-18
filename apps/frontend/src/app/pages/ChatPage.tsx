@@ -183,7 +183,9 @@ export const ChatPage = () => {
           found = true;
           return {
             ...msg,
-            content: [{ type: "text" as ContentBlockType, value: existingText + delta }],
+            content: [
+              { type: "text" as ContentBlockType, value: existingText + delta },
+            ],
             status: "streaming" as MessageStatus,
           };
         });
@@ -646,7 +648,9 @@ export const ChatPage = () => {
             // Find the streaming message directly from state for better reliability
             setOptimisticMessages((prev) =>
               prev.map((m) =>
-                m.status === "streaming" ? { ...m, status: "complete" as MessageStatus } : m,
+                m.status === "streaming"
+                  ? { ...m, status: "complete" as MessageStatus }
+                  : m,
               ),
             );
 
