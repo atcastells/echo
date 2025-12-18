@@ -65,6 +65,8 @@ export interface UseChatReturn {
   ) => Promise<void>;
   /** Cancel a proposed action */
   cancelAction: (actionId: string) => Promise<void>;
+  /** Clear conversation history */
+  clearConversation: () => Promise<void>;
   /** Whether a message is currently streaming (connecting or streaming) */
   isStreaming: boolean;
   /** Explicit streaming status */
@@ -239,12 +241,22 @@ export const useChat = ({
     [conversationId, onError],
   );
 
+  const clearConversation = useCallback(async () => {
+    if (!conversationId) return;
+    try {
+      await chatApi.clearConversation(conversationId);
+    } catch (error) {
+      onError?.(error as Error);
+    }
+  }, [conversationId, onError]);
+
   return {
     sendMessage,
     sendMessageBlocks,
     interrupt,
     confirmAction,
     cancelAction,
+    clearConversation,
     isStreaming: status === "connecting" || status === "streaming",
     status,
     isThinking,

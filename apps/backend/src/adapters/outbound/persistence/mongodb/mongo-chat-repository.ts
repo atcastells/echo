@@ -146,6 +146,11 @@ export class MongoChatRepository implements ChatRepository {
     );
   }
 
+  async deleteMessages(conversationId: string): Promise<void> {
+    if (!ObjectId.isValid(conversationId)) return;
+    await this.messageCollection.deleteMany({ conversationId });
+  }
+
   // ===========================================================================
   // Mappers
   // ===========================================================================

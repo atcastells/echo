@@ -60,6 +60,7 @@ export const Default: Story = {
     contextUsagePercent: 35,
     showSidebarToggle: true,
     sidebarOpen: true,
+    onClear: () => console.log("Clear conversation"),
   },
 };
 

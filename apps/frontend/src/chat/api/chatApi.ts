@@ -48,6 +48,12 @@ export const chatApi = {
       `/v1/conversations/${conversationId}/messages`,
     ),
 
+  /**
+   * Clear all messages in a conversation.
+   */
+  clearConversation: (conversationId: string): Promise<void> =>
+    apiClient.delete(`/v1/conversations/${conversationId}/messages`),
+
   // ============================================================================
   // Chat Operations
   // ============================================================================

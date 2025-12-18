@@ -22,6 +22,8 @@ import {
   useCreateConversation,
   useInvalidateMessages,
   useChat,
+  type ContentBlockType,
+  type MessageStatus,
 } from "@/chat";
 import type { ChatMessage } from "@/chat";
 
@@ -117,6 +119,8 @@ export const ChatPage = () => {
     cancelAction,
     isThinking,
     pendingAction,
+    clearConversation,
+    isStreaming,
   } = useChat({
     conversationId: conversationId || "",
     onStreamStart: (serverMessageId) => {
@@ -130,8 +134,8 @@ export const ChatPage = () => {
             id: serverMessageId,
             conversationId: conversationId || "",
             role: "assistant",
-            content: [{ type: "text", value: "" }],
-            status: "streaming",
+            content: [{ type: "text" as ContentBlockType, value: "" }],
+            status: "streaming" as MessageStatus,
             createdAt: new Date().toISOString(),
           } as ChatMessage,
         ]);
@@ -179,8 +183,10 @@ export const ChatPage = () => {
           found = true;
           return {
             ...msg,
-            content: [{ type: "text", value: existingText + delta }],
-            status: "streaming",
+            content: [
+              { type: "text" as ContentBlockType, value: existingText + delta },
+            ],
+            status: "streaming" as MessageStatus,
           };
         });
 
@@ -190,8 +196,8 @@ export const ChatPage = () => {
             id: targetId,
             conversationId: conversationId || "",
             role: "assistant",
-            content: [{ type: "text", value: delta }],
-            status: "streaming",
+            content: [{ type: "text" as ContentBlockType, value: delta }],
+            status: "streaming" as MessageStatus,
             createdAt: new Date().toISOString(),
           };
 
@@ -211,7 +217,7 @@ export const ChatPage = () => {
             msg.id === targetId
               ? {
                   ...msg,
-                  status: "complete",
+                  status: "complete" as MessageStatus,
                 }
               : msg,
           ),
@@ -235,7 +241,7 @@ export const ChatPage = () => {
             msg.id === targetId
               ? {
                   ...msg,
-                  status: "failed",
+                  status: "failed" as MessageStatus,
                 }
               : msg,
           ),
@@ -402,7 +408,7 @@ export const ChatPage = () => {
         setOptimisticMessages((prev) =>
           prev.map((m) =>
             m.id === activeId && m.status === "streaming"
-              ? { ...m, status: "complete" }
+              ? { ...m, status: "complete" as MessageStatus }
               : m,
           ),
         );
@@ -417,8 +423,8 @@ export const ChatPage = () => {
         id: `temp-${now}`,
         conversationId,
         role: "user",
-        content: [{ type: "text", value: message }],
-        status: "complete",
+        content: [{ type: "text" as ContentBlockType, value: message }],
+        status: "complete" as MessageStatus,
         createdAt: now,
       };
 
@@ -429,8 +435,8 @@ export const ChatPage = () => {
         id: assistantTempId,
         conversationId,
         role: "assistant",
-        content: [{ type: "text", value: "" }],
-        status: "streaming",
+        content: [{ type: "text" as ContentBlockType, value: "" }],
+        status: "streaming" as MessageStatus,
         createdAt: now,
       };
 
@@ -555,6 +561,39 @@ export const ChatPage = () => {
   const isLoading =
     isLoadingAgent || isLoadingConversations || isLoadingMessages;
 
+  // Clear Conversation Logic
+  const [isClearModalOpen, setIsClearModalOpen] = useState(false);
+
+  const handleClearClick = useCallback(() => {
+    setIsClearModalOpen(true);
+  }, []);
+
+  const handleConfirmClear = useCallback(async () => {
+    if (!conversationId) return;
+    try {
+      if (isStreaming) {
+        // Guardrail: abort stream before clearing
+        await interrupt();
+        activeStreamMessageIdRef.current = null;
+        activeStreamTempIdRef.current = null;
+      }
+
+      await clearConversation();
+      invalidateMessages(conversationId);
+      setIsClearModalOpen(false);
+    } catch (error) {
+      console.error("Failed to clear conversation", error);
+      // TODO: Show toast
+      setIsClearModalOpen(false);
+    }
+  }, [
+    conversationId,
+    clearConversation,
+    invalidateMessages,
+    isStreaming,
+    interrupt,
+  ]);
+
   return (
     <div className="relative flex h-screen bg-neutral-50">
       {isMobile && sidebarOpen && (
@@ -609,7 +648,9 @@ export const ChatPage = () => {
             // Find the streaming message directly from state for better reliability
             setOptimisticMessages((prev) =>
               prev.map((m) =>
-                m.status === "streaming" ? { ...m, status: "complete" } : m,
+                m.status === "streaming"
+                  ? { ...m, status: "complete" as MessageStatus }
+                  : m,
               ),
             );
 
@@ -623,6 +664,7 @@ export const ChatPage = () => {
           onRegenerate={handleRegenerate}
           onThumbsUp={handleThumbsUp}
           onThumbsDown={handleThumbsDown}
+          onClear={handleClearClick}
         />
       </div>
 
@@ -636,6 +678,23 @@ export const ChatPage = () => {
           confirmLabel="Confirm"
           cancelLabel="Cancel"
           variant="default"
+        />
+      )}
+
+      {isClearModalOpen && (
+        <ConfirmModal
+          isOpen={true}
+          onClose={() => setIsClearModalOpen(false)}
+          onConfirm={handleConfirmClear}
+          title="Clear conversation?"
+          message={
+            isStreaming
+              ? "This will stop the current response and clear the conversation."
+              : "This will remove all messages and reset the agent’s context. This action can’t be undone."
+          }
+          confirmLabel="Clear"
+          cancelLabel="Cancel"
+          variant="danger"
         />
       )}
     </div>
