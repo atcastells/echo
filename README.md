@@ -1,37 +1,55 @@
 # Echo
 
-**AI Career Agent & Personal Professional Assistant**
+**Personal AI Professional Growth Agent**
 
-Echo is an AI-powered career management platform that transforms the traditional resume experience into an intelligent, conversational assistant. Job seekers interact through natural language, receive context-aware career assistance, and generate recruiter-ready profiles that can be shared with hiring professionals.
+Echo is an AI-powered professional growth assistant that helps users develop their careers through continuous, context-aware conversation. Unlike generic chat assistants, Echo maintains continuity across conversations, understands your professional context, and adapts to your current goals.
 
 ## 🎯 Product Vision
 
-Echo provides professionals with a personal AI agent that encapsulates their entire career history. Users can upload CVs or provide conversational updates, generating public links with customizable context and tone. Recruiters can query the agent in natural language, receiving precise, role- or company-specific answers.
+Echo transforms career development from form-filling and document management into an intelligent, ongoing dialogue. The experience is **conversation-first**: users can start interacting immediately without onboarding flows or mandatory profile setup.
+
+### Core Question
+
+> **"What should I do next to move forward professionally — given who I am and what I'm trying to achieve right now?"**
 
 ### Core Value Proposition
 
-- **🤖 AI Career Agent**: Intelligent assistant that understands your professional journey
-- **👤 Personal Professional Assistant**: Context-aware guidance tailored to your career goals
-- **📋 Recruiter-Ready Profiles**: Optimized output designed for hiring professionals
-- **💬 Natural Interaction**: Conversational interface replaces tedious form-filling
-- **🔒 Privacy Control**: Full control over what is shared
+- **🎯 Intent-First**: Prioritizes what you're trying to achieve over collecting profile data
+- **🔄 Continuous Context**: Maintains understanding across conversations over time
+- **💬 Conversation as Interface**: All interaction happens naturally through dialogue
+- **📈 Goal-Aware Guidance**: Adapts advice based on your current professional objectives
+- **🔒 Progressive Privacy**: You control what to share, when to share it
+
+## 🧠 Design Principles
+
+### 1. Intent Before Identity
+
+The agent prioritizes **what you're trying to achieve** over who you are. Profile data is optional, incremental, and only requested when it improves the response.
+
+### 2. Progressive Context, Not Forms
+
+User context is built **over time** through conversation — no upfront data entry, no required profile completeness. Past information is treated as evidence, not absolute truth.
+
+### 3. Streaming-First UX
+
+All responses stream token-by-token, enabling fast feedback and a "thinking-with-you" experience. Users can abort, retry, and recover gracefully.
 
 ## ✨ Features
 
-### Frontend
+### Conversation & Agent
 
-- **📤 CV Upload & Smart Parsing**: Upload PDFs with real-time feedback and intelligent extraction
-- **✏️ Interactive Profile Editor**: Edit and view your recruiter-ready profile
-- **💬 Natural Language Q&A**: Chat interface powered by AI to refine your professional narrative
-- **🔗 Shareable Profile Links**: Generate unique URLs to share with recruiters
-- **♿ Accessibility Focus**: WCAG-compliant design with keyboard navigation
+- **🤖 Personal AI Agent**: Each user has a default agent that learns their context
+- **💬 Real-Time Streaming**: Token-by-token response streaming via SSE
+- **🎯 Goal Tracking**: Explicit tracking of your current professional intent
+- **🔄 Conversation History**: Persistent conversations you can continue anytime
+- **⚡ Abort & Recover**: Stop responses mid-stream, retry on errors
 
-### Backend
+### Knowledge & Context
 
-- **📚 Knowledge Base**: Upload CVs and documents to build your agent's knowledge
-- **🎭 Contextual Adaptation**: Generate public links with customizable context and personalities
-- **❓ Recruiter Q&A**: Natural-language Q&A interface for recruiters
-- **📊 Professional Presentation**: Ensures accurate and consistent representation
+- **📚 Document Upload**: Add CVs and career documents to build agent knowledge
+- **🔍 RAG Pipeline**: Semantic retrieval for relevant context injection
+- **📊 Profile Building**: Incremental, confidence-scored professional facts
+- **🧠 Memory**: Long-term understanding that grows with you
 
 ## 🛠 Tech Stack
 
@@ -44,6 +62,7 @@ Echo provides professionals with a personal AI agent that encapsulates their ent
 | Styling          | Tailwind CSS          |
 | State Management | TanStack Query        |
 | Routing          | React Router          |
+| Architecture     | Screaming Architecture (domain-first) |
 
 ### Backend (`apps/backend`)
 
@@ -57,28 +76,43 @@ Echo provides professionals with a personal AI agent that encapsulates their ent
 | Document Store | MongoDB Atlas                |
 | Authentication | Supabase Auth                |
 | DI Container   | TypeDI                       |
+| Streaming      | Server-Sent Events (SSE)     |
 | API Docs       | Scalar + OpenAPI 3.1         |
 | Testing        | Jest                         |
+
+### Component Library (`apps/storybook`)
+
+| Category   | Technology     |
+| ---------- | -------------- |
+| Framework  | Storybook 10   |
+| Components | Atomic Design  |
+| Styling    | Tailwind CSS   |
 
 ## 📁 Project Structure
 
 ```
 echo/
+├── .tasks/                # Development task board & roadmap
 ├── apps/
 │   ├── frontend/          # React + Vite frontend application
 │   │   └── src/
-│   │       ├── agents/    # Agent-related features
+│   │       ├── agents/    # Agent management
 │   │       ├── auth/      # Authentication
-│   │       ├── chat/      # Chat interface
-│   │       ├── profile/   # Profile management
+│   │       ├── chat/      # Conversation interface
 │   │       └── shared/    # Shared utilities & components
 │   │
-│   └── backend/           # Express API server
+│   ├── backend/           # Express API server
+│   │   └── src/
+│   │       ├── adapters/  # Inbound (controllers) / Outbound (services)
+│   │       ├── domain/    # Business logic & entities
+│   │       ├── application/ # Use cases (agents, chat, documents)
+│   │       └── infrastructure/ # Config, streaming, telemetry
+│   │
+│   └── storybook/         # Component library & documentation
 │       └── src/
-│           ├── adapters/  # Inbound/Outbound adapters
-│           ├── domain/    # Business logic & entities
-│           ├── application/ # Use cases
-│           └── infrastructure/ # Config & setup
+│           ├── atoms/     # Button, Badge, Spinner, etc.
+│           ├── molecules/ # MessageBubble, ThinkingIndicator, etc.
+│           └── organisms/ # Composer, MessageList, ConversationHeader
 │
 ├── package.json           # Root workspace config
 ├── pnpm-workspace.yaml    # pnpm workspace definition
@@ -179,34 +213,34 @@ VITE_API_URL=http://localhost:3000
 
 ## 🗺 Roadmap
 
-### Phase 1: MVP (Current)
+See [.tasks/](.tasks/) for the detailed task board.
 
-- ✅ Core architecture setup (Hexagonal backend, React frontend)
+### Current Focus: Core Agent Experience
+
+- ✅ Hexagonal architecture (backend)
+- ✅ Screaming architecture (frontend)
 - ✅ Authentication (Supabase)
-- ✅ Document ingestion (PDF upload)
-- ✅ Vector store integration
-- ⏳ RAG Pipeline implementation
-- ⏳ Contextual chat endpoint
+- ✅ Agent CRUD & default agent
+- ✅ Conversation persistence
+- ✅ SSE streaming foundation
+- ✅ Document upload
+- 🚧 RAG pipeline completion
+- 🚧 Goal/intent tracking
+- 🚧 Streaming reliability & abort
 
-### Phase 2: Enhanced Features
+### Next: Context & Intelligence
 
-- ⏳ Chat interface with AI-powered Q&A
-- ⏳ Shareable profile link generation
-- ⏳ Profile customization options
-- ⏳ Real-time parsing feedback
+- ⏳ Progressive profile building
+- ⏳ Goal-aware agent responses
+- ⏳ Multi-conversation management
+- ⏳ Context window optimization
 
-### Phase 3: Optimization
+### Future: Polish & Scale
 
-- ⏳ Performance optimization
 - ⏳ WCAG 2.1 AA compliance
-- ⏳ Mobile-responsive design
-- ⏳ PWA features
-
-### Phase 4: Production Ready
-
-- ⏳ Comprehensive testing suite
-- ⏳ Error tracking & analytics
-- ⏳ Performance monitoring
+- ⏳ Performance optimization
+- ⏳ Comprehensive test coverage
+- ⏳ Production observability
 
 ## 🤝 Contributing
 

@@ -1,20 +1,19 @@
-# Personal AI Career Agent (Backend API)
+# Echo Backend API
 
-A personal AI agent that presents your professional history, answers recruiters’ questions, and adapts to context and style.
-
-> **Note**: This is the backend repository for the Jura project.
+Personal AI Professional Growth Agent — Backend Service
 
 ## 📖 Description
 
-This project provides professionals with a personal AI agent that encapsulates their entire career history. Users can upload CVs or provide conversational updates, generating public links with customizable context and tone. Recruiters can query the agent in natural language, receiving precise, role- or company-specific answers. The agent ensures consistent, accurate, and professional presentation while giving users full control over what is shared.
+The Echo backend provides the AI agent infrastructure, conversation management, and knowledge retrieval services. It implements a hexagonal architecture that separates business logic from external concerns, enabling flexible integration with LLMs, databases, and authentication providers.
 
 ## ✨ Features
 
-- **Knowledge Base**: Upload CVs and documents to build your agent’s knowledge.
-- **Contextual Adaptation**: Generate public links with customizable context and personalities.
-- **Recruiter Q&A**: Natural-language Q&A interface for recruiters (API support).
-- **Privacy Control**: Full control over what is shared.
-- **Professional Presentation**: Ensures accurate and consistent representation of your career.
+- **🤖 Agent System**: Configurable AI agents with LangChain integration
+- **💬 Streaming Chat**: Real-time responses via Server-Sent Events (SSE)
+- **📚 Knowledge Base**: Upload documents to build agent context (RAG)
+- **🎯 Goal Tracking**: Track user's active professional intent
+- **🔐 Authentication**: Supabase Auth integration
+- **📊 Context Management**: Profile and conversation persistence
 
 ## 🛠 Tech Stack
 
@@ -22,9 +21,11 @@ This project provides professionals with a personal AI agent that encapsulates t
 - **Framework**: Express 5
 - **Architecture**: Hexagonal (Ports & Adapters)
 - **AI / LLMs**: Gemini, LangChain
-- **Vector Store**: Supabase (pgvector), MongoDB Atlas (Document Store)
+- **Vector Store**: Supabase (pgvector)
+- **Document Store**: MongoDB Atlas
 - **Authentication**: Supabase Auth
 - **DI Container**: TypeDI
+- **Streaming**: Server-Sent Events (SSE)
 - **API Docs**: Scalar + OpenAPI 3.1
 - **Testing**: Jest
 
@@ -53,43 +54,69 @@ Server runs at `http://localhost:3000`
 
 ## 📡 Key Endpoints
 
-### Core Capabilities
+### Agents
 
-| Method | Endpoint          | Description                                      |
-| ------ | ----------------- | ------------------------------------------------ |
-| POST   | `/api/v1/ingest`  | Upload and vectorize career documents (PDF/Text) |
-| POST   | `/api/v1/chat`    | Main interface for recruiters to ask questions   |
-| GET    | `/api/v1/context` | View what the AI "knows" about your career       |
+| Method | Endpoint                | Description                |
+| ------ | ----------------------- | -------------------------- |
+| GET    | `/api/v1/agents`        | List user's agents         |
+| GET    | `/api/v1/agents/default`| Get default agent          |
+| POST   | `/api/v1/agents`        | Create new agent           |
+
+### Chat & Conversations
+
+| Method | Endpoint                          | Description                    |
+| ------ | --------------------------------- | ------------------------------ |
+| POST   | `/api/v1/conversations`           | Create conversation            |
+| GET    | `/api/v1/conversations`           | List conversations             |
+| POST   | `/api/v1/chat/stream`             | Stream chat response (SSE)     |
+| POST   | `/api/v1/chat/interrupt`          | Abort streaming response       |
+| DELETE | `/api/v1/conversations/:id/clear` | Clear conversation messages    |
+
+### Documents
+
+| Method | Endpoint           | Description                    |
+| ------ | ------------------ | ------------------------------ |
+| POST   | `/api/v1/ingest`   | Upload and vectorize documents |
+| GET    | `/api/v1/context`  | View agent's knowledge         |
 
 _(See `/docs` for the full OpenAPI specification)_
-
-## 🗺 Roadmap (MVP)
-
-- **Focus**: Personal career representation and recruiter interaction.
-- **Exclusions**: Job application automation, recruiter dashboards, skill testing, social networking, team accounts, payments.
-
-### Implementation Status
-
-- [x] Express server & Architecture setup
-- [x] Authentication (Supabase)
-- [x] Document Ingestion (PDF upload)
-- [x] Vector Store integration (Supabase)
-- [ ] Text extraction & Chunking
-- [ ] RAG Pipeline implementation
-- [ ] Contextual Chat Endpoint
-- [ ] Recruiter Analytics
 
 ## 📁 Project Structure
 
 ```
 src/
 ├── adapters/
-│   ├── inbound/        # API Controllers (Express)
+│   ├── inbound/        # API Controllers (Express routes)
 │   └── outbound/       # External services (Supabase, Gemini, MongoDB)
-├── domain/             # Business logic & entities
-├── application/        # Use cases (Orchestration)
-└── infrastructure/     # Configuration & Setup
+├── domain/
+│   ├── entities/       # Core business entities
+│   ├── ports/          # Interface definitions
+│   └── services/       # Domain services
+├── application/
+│   ├── agents/         # Agent use cases
+│   ├── chat/           # Chat & conversation use cases
+│   ├── documents/      # Document ingestion use cases
+│   └── profile/        # Profile management use cases
+└── infrastructure/
+    ├── config.ts       # Environment configuration
+    ├── server.ts       # Express server setup
+    ├── telemetry.ts    # Logging & observability
+    └── langchain/      # LangChain adapter
 ```
+
+## 🗺 Implementation Status
+
+- [x] Express server & hexagonal architecture
+- [x] Authentication (Supabase)
+- [x] Agent CRUD & default agent
+- [x] Conversation management
+- [x] SSE streaming foundation
+- [x] Document upload
+- [x] Vector store integration (Supabase pgvector)
+- [ ] RAG pipeline completion
+- [ ] Goal/intent entity & tracking
+- [ ] Streaming reliability & reconnection
+- [ ] Profile progressive building
 
 ## 🔐 Environment Variables
 
@@ -98,9 +125,11 @@ See `.env.example` for required variables:
 - `MONGO_URI` - MongoDB Atlas connection string
 - `GEMINI_API_KEY` - Google Gemini API key
 - `SUPABASE_URL` - Supabase project URL
-- `SUPABASE_SERVICE_ROLE_KEY` - Supabase service key (for admin tasks)
+- `SUPABASE_ANON_KEY` - Supabase anonymous key
+- `SUPABASE_SERVICE_ROLE_KEY` - Supabase service key
+- `JWT_SECRET` - JWT signing secret
 - `PORT` - Server port (default: 3000)
 
 ## 📄 License
 
-[Specify license here]
+MIT

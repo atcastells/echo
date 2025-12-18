@@ -1,64 +1,121 @@
-# Jura-Front
+# Echo Frontend
 
-**Frontend for Jura: Your AI Career Agent & Personal Professional Assistant**
+Personal AI Professional Growth Agent — Frontend Application
 
-Jura-Front is the user-facing application for Jura, an AI-powered career agent that helps job seekers create recruiter-ready profiles through natural language conversations. Upload your CV, chat with the AI to refine your professional story, and generate a shareable career profile optimized for recruiters and hiring managers.
+## 📖 Description
 
-## Product Vision
+The Echo frontend is a React application that provides the conversational interface for interacting with your personal AI career agent. Built with a conversation-first philosophy, it enables immediate, streaming interactions without onboarding flows or mandatory setup.
 
-Jura transforms the traditional resume experience into an intelligent, conversational career management platform. Job seekers interact with Jura through natural language Q&A, receiving context-aware career assistance that goes beyond simple CV parsing. The result is a comprehensive, recruiter-ready profile that can be shared, edited, and continuously improved with AI guidance.
+## 🎯 Product Philosophy
 
-**Core Value Proposition:**
+- **Conversation is the Interface**: All interaction happens through natural dialogue
+- **Intent Before Identity**: Focus on what you're trying to achieve, not profile completeness
+- **Streaming-First UX**: Token-by-token responses for fast feedback loops
+- **Progressive Context**: Build your professional profile through conversation over time
 
-- **AI Career Agent**: Intelligent assistant that understands your professional journey
-- **Personal Professional Assistant**: Context-aware guidance tailored to your career goals
-- **Recruiter-Ready Profiles**: Optimized output designed for hiring professionals
-- **Natural Interaction**: Conversational interface replaces tedious form-filling
+## ✨ Features
 
-## Key Features
+- **💬 Real-Time Chat**: Streaming responses with abort/retry capabilities
+- **🔄 Conversation History**: Persistent conversations you can continue anytime
+- **📤 Document Upload**: Add career documents to enhance agent context
+- **⚡ Optimistic UI**: Immediate feedback with graceful error handling
+- **♿ Accessibility**: WCAG-compliant design with keyboard navigation
 
-### User Experience & Frontend Capabilities
+## 🛠 Tech Stack
 
-- **📤 CV Upload & Smart Parsing**: Upload PDFs or documents with real-time feedback and intelligent extraction
-- **✏️ Interactive Profile Editor**: Edit and view your recruiter-ready profile with intuitive controls
-- **💬 Natural Language Q&A**: Chat interface powered by AI to refine and enhance your professional narrative
-- **🔗 Shareable Profile Links**: Generate unique URLs to share your career profile with recruiters
-- **⚡ Loading & Error States**: Polished UX with skeleton loaders, progress indicators, and graceful error handling
-- **♿ Accessibility Focus**: WCAG-compliant design with keyboard navigation and screen reader support
-- **🚀 Performance Optimized**: Fast load times, code splitting, and efficient rendering
+| Category         | Technology                  |
+| ---------------- | --------------------------- |
+| Framework        | React 19 + TypeScript       |
+| Build Tool       | Vite                        |
+| Styling          | Tailwind CSS                |
+| State Management | TanStack Query + XState     |
+| Routing          | React Router v7             |
+| Architecture     | Screaming Architecture      |
 
-## Tech Stack
-
-### Frontend Architecture
-
-- **Runtime & Build Tools**: Node.js with TypeScript for type-safe development
-- **Framework**: React 19 with Vite for fast builds and hot module replacement
-- **UI Components**: Modern component library with design tokens for consistent theming
-- **State Management**: React hooks and context for application state
-- **API Integration**: RESTful/GraphQL client calls to backend services
-
-### Backend Integration (via API)
-
-- **LLM Services**: Integration with Gemini AI and other language models via backend endpoints
-- **Vector Database**: Supabase for semantic search and context retrieval
-- **Data Storage**: Backend leverages MongoDB for document storage and PostgreSQL for relational data
-- **CV Parsing**: Server-side document processing with frontend feedback
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ (recommended: Node.js 20 LTS)
-- pnpm 9.0+
-- Backend API endpoint (configure via environment variables)
-
-### Installation
+## 🚀 Quick Start
 
 ```bash
 # Install dependencies
 pnpm install
 
+# Set up environment variables
+cp .env.example .env
+
 # Start development server
+pnpm dev
+```
+
+App runs at `http://localhost:5173`
+
+## 📁 Project Structure
+
+This project follows **Screaming Architecture** — folders represent business domains, not technical concerns.
+
+```
+src/
+├── agents/              # 🤖 Agent management
+│   ├── api/             # Agent API calls
+│   ├── hooks/           # useAgent, useAgents
+│   └── types/           # Agent types
+│
+├── auth/                # 🔐 Authentication
+│   ├── api/             # Auth API calls
+│   ├── components/      # LoginForm, SignupForm
+│   ├── context/         # AuthProvider
+│   ├── hooks/           # useAuth, useCurrentUser
+│   └── types/           # Auth types
+│
+├── chat/                # 💬 Conversation interface
+│   ├── api/             # Chat streaming API
+│   ├── hooks/           # useChat, useConversation
+│   ├── machines/        # XState chat machine
+│   └── types/           # Message, Conversation types
+│
+├── shared/              # 🔧 Shared utilities
+│   ├── api/             # API client, error handling
+│   ├── errors/          # Error types and boundaries
+│   ├── types/           # Common types
+│   ├── ui/              # Shared UI components
+│   └── utils/           # Helper functions
+│
+└── app/                 # 🏠 App shell
+    ├── App.tsx          # Root component
+    ├── Router.tsx       # Route definitions
+    ├── pages/           # Page components
+    └── providers/       # Context providers
+```
+
+### Why Screaming Architecture?
+
+1. **Domain-First**: Top-level folders represent business capabilities
+2. **Feature Isolation**: Each feature is self-contained
+3. **Discoverability**: New developers understand the app from folder structure
+4. **Scalability**: Features can evolve independently
+
+## 🗺 Implementation Status
+
+- [x] Core React + TypeScript + Vite setup
+- [x] Screaming architecture structure
+- [x] Authentication (Supabase)
+- [x] Chat state machine (XState)
+- [x] Streaming integration (SSE)
+- [ ] Full conversation UI integration
+- [ ] Goal/intent capture flow
+- [ ] Profile view
+- [ ] Document upload UI
+
+## 🔐 Environment Variables
+
+```env
+VITE_API_URL=http://localhost:3000
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+```
+
+## 🧪 Development
+
+```bash
+# Start dev server
 pnpm dev
 
 # Build for production
@@ -69,68 +126,11 @@ pnpm preview
 
 # Run linter
 pnpm lint
+
+# Fix lint issues
+pnpm lint:fix
 ```
 
-## Roadmap
+## 📄 License
 
-_Status: ✅ Complete | ⏳ In Progress / Planned_
-
-### Phase 1: MVP UI (Q1 2025)
-
-- ✅ Core React + TypeScript + Vite setup
-- ⏳ CV upload interface with drag-and-drop
-- ⏳ Basic profile view/edit functionality
-- ⏳ Initial API integration with backend
-
-### Phase 2: Q&A + Shareable Profiles (Q2 2025)
-
-- ⏳ Chat interface with AI-powered Q&A
-- ⏳ Shareable profile link generation
-- ⏳ Profile customization options
-- ⏳ Real-time parsing feedback
-
-### Phase 3: Optimization & Accessibility (Q2 2025)
-
-- ⏳ Performance optimization (code splitting, lazy loading)
-- ⏳ WCAG 2.1 AA compliance
-- ⏳ Mobile-responsive design refinements
-- ⏳ Progressive Web App (PWA) features
-
-### Phase 4: Observability & Testing (Q3 2025)
-
-- ⏳ Comprehensive unit and integration tests
-- ⏳ End-to-end testing with Playwright or Cypress
-- ⏳ Error tracking and analytics integration
-- ⏳ Performance monitoring
-
-### Phase 5: Recruiter Experience (Q3 2025)
-
-- ⏳ Recruiter dashboard features
-- ⏳ Candidate search and filtering
-- ⏳ Profile comparison tools
-- ⏳ Communication features
-
-### Phase 6: Localization & Security (Q4 2025)
-
-- ⏳ Multi-language support (i18n)
-- ⏳ Security hardening and penetration testing
-- ⏳ GDPR compliance features
-- ⏳ Advanced privacy controls
-
-## Contributing
-
-Contributions are welcome! Please read our contributing guidelines and code of conduct before submitting pull requests.
-
-## License
-
-[Include appropriate license information]
-
----
-
-### SEO Keywords
-
-**Primary**: AI career agent, personal professional assistant, recruiter-ready profile, job seeker AI, career management AI
-
-**Secondary**: CV parser, natural language Q&A, shareable career profile, context-aware career assistant, personalized professional AI
-
-**Technology**: LLM, vector database, Supabase, Gemini AI, Node.js, TypeScript, MongoDB, PostgreSQL, React, Vite
+MIT
