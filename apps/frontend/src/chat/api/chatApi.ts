@@ -43,9 +43,6 @@ export const chatApi = {
   /**
    * Get all messages for a conversation.
    */
-  /**
-   * Get all messages for a conversation.
-   */
   getConversationMessages: (conversationId: string): Promise<ChatMessage[]> =>
     apiClient.get<ChatMessage[]>(
       `/v1/conversations/${conversationId}/messages`,
