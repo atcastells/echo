@@ -135,7 +135,7 @@ export const MessageList = ({
         (!lastDate || isDifferentDay(lastDate, messageDate))
       ) {
         elements.push(
-          <DateSeparator key={`date-${message.id}`} date={messageDate} />
+          <DateSeparator key={`date-${message.id}`} date={messageDate} />,
         );
       }
 
@@ -171,9 +171,9 @@ export const MessageList = ({
           onStopStreaming={isStreamingMessage ? onStopStreaming : undefined}
           className={clsx(
             isConsecutive && "mt-1", // Tighter spacing for consecutive messages
-            !isConsecutive && index > 0 && "mt-4" // Normal spacing
+            !isConsecutive && index > 0 && "mt-4", // Normal spacing
           )}
-        />
+        />,
       );
 
       lastDate = messageDate;
@@ -203,7 +203,7 @@ export const MessageList = ({
               <ThinkingIndicator label={`${agentName} is thinking`} />
             </div>
           </div>
-        </div>
+        </div>,
       );
     }
 

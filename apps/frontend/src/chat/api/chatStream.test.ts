@@ -16,7 +16,7 @@ describe("chatStream", () => {
 
   it("should normalize chat.started event", async () => {
     const mockCreateStream = vi.mocked(sseClient.createSSEStream);
-    
+
     chatStream({
       conversationId: "conv-1",
       agentId: "agent-1",
@@ -26,7 +26,7 @@ describe("chatStream", () => {
     });
 
     const handlers = mockCreateStream.mock.calls[0][3];
-    
+
     handlers.onEvent({
       event: "chat.started",
       conversation_id: "conv-1",
@@ -42,7 +42,7 @@ describe("chatStream", () => {
 
   it("should normalize message.delta event", () => {
     const mockCreateStream = vi.mocked(sseClient.createSSEStream);
-    
+
     chatStream({
       conversationId: "conv-1",
       agentId: "agent-1",
@@ -52,7 +52,7 @@ describe("chatStream", () => {
     });
 
     const handlers = mockCreateStream.mock.calls[0][3];
-    
+
     handlers.onEvent({
       event: "message.delta",
       conversation_id: "conv-1",
@@ -67,7 +67,7 @@ describe("chatStream", () => {
 
   it("should handle reach assistant.end via onComplete", () => {
     const mockCreateStream = vi.mocked(sseClient.createSSEStream);
-    
+
     chatStream({
       conversationId: "conv-1",
       agentId: "agent-1",
@@ -84,7 +84,7 @@ describe("chatStream", () => {
 
   it("should handle error event", () => {
     const mockCreateStream = vi.mocked(sseClient.createSSEStream);
-    
+
     chatStream({
       conversationId: "conv-1",
       agentId: "agent-1",
@@ -110,7 +110,7 @@ describe("chatStream", () => {
   it("should not emit events after signal is aborted", () => {
     const mockCreateStream = vi.mocked(sseClient.createSSEStream);
     const abortController = new AbortController();
-    
+
     chatStream({
       conversationId: "conv-1",
       agentId: "agent-1",
@@ -120,9 +120,9 @@ describe("chatStream", () => {
     });
 
     const handlers = mockCreateStream.mock.calls[0][3];
-    
+
     abortController.abort();
-    
+
     handlers.onEvent({
       event: "message.delta",
       conversation_id: "conv-1",
