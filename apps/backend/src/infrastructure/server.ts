@@ -18,12 +18,14 @@ import { MongoDocumentRepository } from "../adapters/outbound/persistence/mongod
 import { MongoAgentRepository } from "../adapters/outbound/persistence/mongodb/mongo-agent-repository.js";
 import { MongoChatRepository } from "../adapters/outbound/persistence/mongodb/mongo-chat-repository.js";
 import { MongoProfileRepository } from "../adapters/outbound/persistence/mongodb/mongo-profile-repository.js";
+import { MongoGoalRepository } from "../adapters/outbound/persistence/mongodb/mongo-goal-repository.js";
 import {
   AUTH_REPOSITORY,
   DOCUMENT_REPOSITORY,
   AGENT_REPOSITORY,
   CHAT_REPOSITORY,
   PROFILE_REPOSITORY,
+  GOAL_REPOSITORY,
   SUPABASE_CLIENT,
   LLM_ADAPTER_FACTORY,
 } from "./constants.js";
@@ -107,6 +109,10 @@ try {
   // Register Profile Repository
   const mongoProfileRepository = Container.get(MongoProfileRepository);
   Container.set(PROFILE_REPOSITORY, mongoProfileRepository);
+
+  // Register Goal Repository
+  const mongoGoalRepository = Container.get(MongoGoalRepository);
+  Container.set(GOAL_REPOSITORY, mongoGoalRepository);
 
   // Create Express app
   const app = await createApp();

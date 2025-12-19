@@ -9,6 +9,7 @@ import { createAuthRouter } from "./routes/auth-routes.js";
 import { createIngestRouter } from "./routes/ingest-route.js";
 import { createAgentRouter } from "./routes/agent-route.js";
 import { createProfileRouter } from "./routes/profile-route.js";
+import { createGoalRouter } from "./routes/goal-route.js";
 import { createChatRouter } from "./routes/chat-route.js";
 import { otelLoggingMiddleware } from "./middlewares/otel-logging-middleware.js";
 
@@ -59,6 +60,7 @@ export const createApp = async (): Promise<Application> => {
   app.use("/api/v1", createIngestRouter());
   app.use("/api/v1/agents", createAgentRouter());
   app.use("/api/v1/profile", createProfileRouter());
+  app.use("/api/v1/users", createGoalRouter());
   // New Chat API v1
   app.use("/v1", createChatRouter());
 
