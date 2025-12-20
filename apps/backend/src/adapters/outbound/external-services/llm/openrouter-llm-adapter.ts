@@ -45,7 +45,8 @@ export class OpenRouterLLMAdapter extends LLMAdapter {
 
     const apiKey = process.env.OPENROUTER_API_KEY;
     this.modelId =
-      process.env.OPENROUTER_MODEL || "anthropic/claude-3.5-sonnet";
+      process.env.OPENROUTER_MODEL_CONVERSATION ||
+      "anthropic/claude-3.5-sonnet";
 
     if (apiKey) {
       this.chatModel = new ChatOpenAI({

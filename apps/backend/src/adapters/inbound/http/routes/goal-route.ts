@@ -8,13 +8,8 @@ export const createGoalRouter = (): Router => {
 
   router.use(authMiddleware.authenticate());
 
-  router.post("/:userId/goal", (req, res, next) =>
-    goalsController.setGoal(req, res, next)
-  );
+  router.post("/:userId/goal", goalsController.setGoal);
 
-  router.get("/:userId/goal", (req, res, next) =>
-    goalsController.getGoal(req, res, next)
-  );
-
+  router.get("/:userId/goal", goalsController.getGoal);
   return router;
 };

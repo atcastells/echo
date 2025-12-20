@@ -5,6 +5,7 @@ import { AgentRepository } from "../../domain/ports/outbound/agent-repository.js
 import { ChatRepository } from "../../domain/ports/outbound/chat-repository.js";
 import { ConversationAgentFactory } from "../../adapters/inbound/primary/agents/conversation-agent-factory.js";
 import { AIMessage } from "@langchain/core/messages";
+import { GetUserGoalUseCase } from "../goals/get-user-goal.use-case.js";
 
 // Mocks
 const mockAgentRepository = {
@@ -20,6 +21,9 @@ const mockChatRepository = {
 const mockConversationAgentFactory = {
   buildWithSystemPrompt: jest.fn(),
 };
+const mockGetUserGoalUseCase = {
+  execute: jest.fn(),
+};
 
 describe("Chat With Agent", () => {
   let chatWithAgentUseCase: ChatWithAgentUseCase;
@@ -30,6 +34,7 @@ describe("Chat With Agent", () => {
       mockAgentRepository as unknown as AgentRepository,
       mockChatRepository as unknown as ChatRepository,
       mockConversationAgentFactory as unknown as ConversationAgentFactory,
+      mockGetUserGoalUseCase as unknown as GetUserGoalUseCase,
     );
   });
 
@@ -39,7 +44,7 @@ describe("Chat With Agent", () => {
     const userId = "user-123";
     const message = "How do I create a user?";
     const instructions = "You are a helpful pirate.";
-    const tone = "Pirate";
+    const tone = "pirate";
 
     const mockAgent: Agent = {
       id: agentId,
@@ -48,6 +53,7 @@ describe("Chat With Agent", () => {
       type: AgentType.PRIVATE,
       status: "ACTIVE" as any,
       configuration: { systemPrompt: instructions, tone, enableThreads: false },
+      isDefault: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -61,6 +67,8 @@ describe("Chat With Agent", () => {
     mockConversationAgentFactory.buildWithSystemPrompt.mockReturnValue({
       invoke: mockInvoke,
     });
+    // eslint-disable-next-line unicorn/no-null
+    mockGetUserGoalUseCase.execute.mockResolvedValue(null);
 
     // Execute
     const response = await chatWithAgentUseCase.execute({
@@ -82,6 +90,13 @@ describe("Chat With Agent", () => {
     const buildArguments =
       mockConversationAgentFactory.buildWithSystemPrompt.mock.calls[0][0];
     expect(buildArguments.systemPrompt).toContain(instructions);
+    expect(buildArguments.systemPrompt).toContain("USER CURRENT GOAL");
+    expect(buildArguments.systemPrompt).toContain("None set.");
+    expect(buildArguments.systemPrompt).toContain("STRATEGY AXES");
+    expect(buildArguments.systemPrompt).toContain("- Positioning");
+    expect(buildArguments.systemPrompt).toContain("- Market Readiness");
+    expect(buildArguments.systemPrompt).toContain("- Opportunity Flow");
+    expect(buildArguments.systemPrompt).toContain("- Performance");
     expect(buildArguments.systemPrompt).toContain(tone);
     expect(buildArguments.tools).toHaveLength(1);
 
@@ -116,6 +131,7 @@ describe("Chat With Agent", () => {
         tone: "test",
         enableThreads: false,
       },
+      isDefault: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -128,5 +144,65 @@ describe("Chat With Agent", () => {
         message: "hello",
       }),
     ).rejects.toThrow("Unauthorized access to private agent");
+  });
+
+  it("should inject active goal into system prompt", async () => {
+    // Setup Data
+    const agentId = "agent-1";
+    const userId = "user-123";
+    const message = "How do I create a user?";
+    const instructions = "You are a helpful pirate.";
+
+    const mockAgent: Agent = {
+      id: agentId,
+      userId,
+      name: "Pirate Bot",
+      type: AgentType.PRIVATE,
+      status: "ACTIVE" as any,
+      configuration: {
+        systemPrompt: instructions,
+        tone: "Pirate",
+        enableThreads: false,
+      },
+      isDefault: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    // Setup Mocks
+    mockAgentRepository.findById.mockResolvedValue(mockAgent);
+    mockGetUserGoalUseCase.execute.mockResolvedValue({
+      objective: "Win the treasure hunt",
+      status: "active",
+    });
+
+    const mockInvoke = jest.fn().mockResolvedValue({
+      messages: [new AIMessage("Arrr!")],
+    });
+    mockConversationAgentFactory.buildWithSystemPrompt.mockReturnValue({
+      invoke: mockInvoke,
+    });
+
+    // Execute
+    await chatWithAgentUseCase.execute({
+      agentId,
+      userId,
+      message,
+    });
+
+    // Verify
+    const buildArguments =
+      mockConversationAgentFactory.buildWithSystemPrompt.mock.calls[0][0];
+    expect(buildArguments.systemPrompt).toContain("USER CURRENT GOAL");
+    expect(buildArguments.systemPrompt).toContain(
+      "Objective: Win the treasure hunt",
+    );
+    expect(buildArguments.systemPrompt).toContain("Status: Active");
+    expect(buildArguments.systemPrompt).toContain("STRATEGY AXES");
+    expect(buildArguments.systemPrompt).toContain("- Positioning");
+    expect(buildArguments.systemPrompt).toContain("- Market Readiness");
+    expect(buildArguments.systemPrompt).toContain("- Opportunity Flow");
+    expect(buildArguments.systemPrompt).toContain("- Performance");
+    expect(buildArguments.systemPrompt).toContain(instructions);
   });
 });

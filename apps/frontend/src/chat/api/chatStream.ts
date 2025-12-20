@@ -9,7 +9,7 @@ import { createSSEStream } from "./sseClient";
 import type { SSEEvent } from "../types/chat.types";
 
 export type ChatStreamEvent =
-  | { type: "assistant.start"; messageId: string }
+  | { type: "assistant.start"; messageId: string; userMessageId?: string }
   | { type: "assistant.delta"; delta: string }
   | { type: "assistant.end" }
   | { type: "error"; code: string; message: string };
@@ -56,6 +56,7 @@ export const chatStream = (params: ChatStreamParams): void => {
                 : undefined;
 
             const messageIdFromPayload = payload?.message_id;
+            const userMessageId = payload?.user_message_id;
 
             onEvent({
               type: "assistant.start",
@@ -64,6 +65,7 @@ export const chatStream = (params: ChatStreamParams): void => {
                 (typeof messageIdFromPayload === "string"
                   ? messageIdFromPayload
                   : ""),
+              userMessageId: typeof userMessageId === "string" ? userMessageId : undefined,
             });
           }
           break;

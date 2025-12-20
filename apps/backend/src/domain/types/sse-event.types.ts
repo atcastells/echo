@@ -38,6 +38,9 @@ export interface BaseSSEEvent {
 
 export interface ChatStartedEvent extends BaseSSEEvent {
   event: "chat.started";
+  payload?: {
+    user_message_id: string;
+  };
 }
 
 export interface ChatCompletedEvent extends BaseSSEEvent {

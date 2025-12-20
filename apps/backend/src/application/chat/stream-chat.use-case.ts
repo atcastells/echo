@@ -29,6 +29,7 @@ import {
   SystemMessage,
   BaseMessage,
 } from "@langchain/core/messages";
+import { GetUserGoalUseCase } from "../goals/get-user-goal.use-case.js";
 
 export interface StreamChatInput {
   conversation_id: string;
@@ -54,12 +55,14 @@ export interface StreamChatInput {
 @Service()
 export class StreamChatUseCase {
   private static readonly INVOKE_TIMEOUT_MS = 60_000;
+
   private readonly chatRepository: ChatRepository =
     Container.get(CHAT_REPOSITORY);
   private readonly agentRepository: AgentRepository =
     Container.get(AGENT_REPOSITORY);
   private readonly llmAdapterFactory: LLMAdapterFactory =
     Container.get(LLM_ADAPTER_FACTORY);
+  private readonly getUserGoalUseCase = Container.get(GetUserGoalUseCase);
 
   // Track active streams for interrupt support
   private static activeStreams = new Map<
@@ -120,10 +123,14 @@ export class StreamChatUseCase {
       }
 
       // 2. Emit chat.started
+      const userMessageId = randomUUID();
       yield {
         event: "chat.started",
         conversation_id: input.conversation_id,
         message_id: messageId,
+        payload: {
+          user_message_id: userMessageId,
+        },
       };
 
       // 3. Save user message
@@ -136,7 +143,7 @@ export class StreamChatUseCase {
 
       await this.chatRepository.saveMessage(
         createChatMessage({
-          id: randomUUID(),
+          id: userMessageId,
           conversationId: input.conversation_id,
           role: ChatRole.USER,
           content: userMessageContent,
@@ -161,9 +168,42 @@ export class StreamChatUseCase {
       // 5. Load conversation history
       const chatHistory = await this.loadChatHistory(input.conversation_id);
 
+      // 5.1 Get User Goal
+      const userGoal = await this.getUserGoalUseCase.execute(userId);
+      let goalBlock = "";
+
+      goalBlock = userGoal
+        ? `USER CURRENT GOAL
+Objective: ${userGoal.objective}
+Status: Active
+
+Instruction:
+All advice should prioritize progress toward this objective.
+
+`
+        : `USER CURRENT GOAL
+None set.
+
+Instruction:
+If appropriate, help the user clarify a concrete professional goal.
+Do not force goal setting.
+
+`;
+
+      const axesBlock = `STRATEGY AXES
+- Positioning
+- Market Readiness
+- Opportunity Flow
+- Performance
+
+Instruction:
+Frame advice in terms of these axes when relevant.
+
+`;
+
       // 6. Get LLM adapter and prepare messages
       const llmAdapter = this.llmAdapterFactory.getDefaultAdapter();
-      const systemMessage = this.buildSystemMessage(agent);
+      const systemMessage = this.buildSystemMessage(agent, goalBlock, axesBlock);
       const tools = [createRetrieveContextTool(userId)];
 
       if (!llmAdapter.isConfigured()) {
@@ -175,6 +215,13 @@ export class StreamChatUseCase {
       console.log(
         `[chat] invoking streaming agent conversation=${input.conversation_id} messageId=${messageId} provider=${llmAdapter.getProviderName()} model=${llmAdapter.getModelId()}`,
       );
+
+      console.log({
+        agentId: agent.id,
+        agentVersion: agent.configuration.version,
+        msg: "Invoking streaming agent executor",
+        prompt: systemMessage.content,
+      });
 
       // Emit planning thinking
       yield {
@@ -418,14 +465,61 @@ export class StreamChatUseCase {
     return history;
   }
 
-  private buildSystemMessage(agent: Agent): SystemMessage {
-    return new SystemMessage(`
+  private buildSystemMessage(
+    agent: Agent,
+    goalBlock: string,
+    axesBlock: string,
+  ): SystemMessage {
+    return new SystemMessage(`${goalBlock}${axesBlock}
 You are an AI assistant named "${agent.name}".
-Your instructions are:
-${agent.configuration.systemPrompt}
 
-Tone: ${agent.configuration.tone}
+Operating Principle:
+You operate in a goal-aware mode.
+Early interactions should prioritize sense-making over task selection.
 
+If a USER CURRENT GOAL is provided:
+- Treat it as the primary reason the user is interacting with you.
+- Frame advice, explanations, and questions to support progress toward that goal.
+- Avoid generic or unrelated career advice.
+
+If no USER CURRENT GOAL is set:
+- Do not assume intent.
+- Help clarify a concrete professional goal only when appropriate.
+- Do not force goal setting.
+- Continue to provide useful, low-commitment guidance.
+
+Your role:
+You are a professional career assistant.
+Your purpose is to help the user succeed professionally over time through clear, grounded, and practical guidance.
+
+Behavior rules:
+- Be clear, calm, and supportive
+- When the user expresses a broad or early-stage intent (e.g. “changing jobs”), do not respond with a list of services or options. First help the user articulate the underlying motivation or situation.
+- When intent is unclear, prefer offering structured options over asking multiple direct questions
+- When offering options early, frame them as ways of thinking about the situation, not as a list of services or features.
+- Ask clarifying questions sparingly and one at a time
+- Prefer actionable guidance over theory
+- Avoid assumptions about the user's background or emotional state
+- Do not execute actions unless explicitly requested
+- Do not provide legal, medical, or financial advice
+- If uncertain, say so
+
+Focus areas:
+- Career planning
+- CV and resume improvement
+- Interview preparation
+- Skill assessment
+- Professional communication
+
+Quality bar:
+- Prioritize correctness and user trust
+- Avoid overconfidence
+- Explain reasoning when it improves clarity
+
+Tone:
+${agent.configuration.tone}
+
+Context usage:
 If you need factual details from the user's uploaded documents, call the tool "retrieve_context" with an appropriate query.
 The tool returns JSON with relevant snippets and metadata. Use it to ground your answer.
 `);

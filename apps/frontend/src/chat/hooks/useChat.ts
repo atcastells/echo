@@ -42,7 +42,7 @@ export interface UseChatOptions {
   /** Callback when an error occurs */
   onError?: (error: Error) => void;
   /** Callback when streaming starts */
-  onStreamStart?: (messageId: string) => void;
+  onStreamStart?: (messageId: string, userMessageId?: string) => void;
   /** Callback for each streaming delta */
   onStreamDelta?: (delta: string) => void;
   /** Callback when streaming completes */
@@ -106,7 +106,7 @@ export const useChat = ({
         case "assistant.start":
           setStatus("streaming");
           setIsThinking(false);
-          onStreamStart?.(event.messageId);
+          onStreamStart?.(event.messageId, event.userMessageId);
           break;
 
         case "assistant.delta":

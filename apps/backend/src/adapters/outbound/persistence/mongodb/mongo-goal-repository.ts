@@ -1,17 +1,13 @@
-import { Service, Container, Inject } from "typedi";
+import { Service, Container } from "typedi";
 import { UserGoal } from "../../../../domain/entities/user-goal.js";
 import { GoalRepository } from "../../../../domain/ports/outbound/goal-repository.js";
 import { MongoDBAdapter } from "./mongo-database-adapter.js";
-import {
-  GoalSchema,
-  userGoalSchema,
-} from "./schemas/goal.schema.js";
+import { GoalSchema, userGoalSchema } from "./schemas/goal.schema.js";
 
 @Service()
 export class MongoGoalRepository implements GoalRepository {
-  constructor(
-    @Inject("DatabaseConnection") private databaseConnection: MongoDBAdapter
-  ) {}
+  private readonly databaseConnection: MongoDBAdapter =
+    Container.get(MongoDBAdapter);
 
   private get collection() {
     return this.databaseConnection.getDb().collection<GoalSchema>("goals");
@@ -27,11 +23,11 @@ export class MongoGoalRepository implements GoalRepository {
     delete mongoData._id;
 
     await this.collection.updateOne(
-        { userId: goal.userId },
-        { $set: mongoData },
-        { upsert: true }
+      { userId: goal.userId },
+      { $set: mongoData },
+      { upsert: true },
     );
-    
+
     return goal;
   }
 

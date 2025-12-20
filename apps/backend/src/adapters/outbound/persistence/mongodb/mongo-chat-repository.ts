@@ -101,13 +101,18 @@ export class MongoChatRepository implements ChatRepository {
   // ===========================================================================
 
   async saveMessage(message: ChatMessage): Promise<ChatMessage> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...messageData } = message;
 
     // Validate with Zod
     const validatedData = chatMessageSchema.parse(messageData);
 
-    const result = await this.messageCollection.insertOne(validatedData);
+    // Use provided ID as _id if possible, otherwise let MongoDB generate one
+    const messageDocument = {
+      ...validatedData,
+      _id: id && ObjectId.isValid(id) ? new ObjectId(id) : id || new ObjectId(),
+    };
+
+    await this.messageCollection.insertOne(messageDocument as any);
 
     // Update conversation updatedAt
     if (ObjectId.isValid(message.conversationId)) {
@@ -121,7 +126,7 @@ export class MongoChatRepository implements ChatRepository {
 
     return {
       ...validatedData,
-      id: result.insertedId.toString(),
+      id: messageDocument._id.toString(),
     };
   }
 

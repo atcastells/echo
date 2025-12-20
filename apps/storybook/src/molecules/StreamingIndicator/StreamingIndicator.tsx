@@ -1,10 +1,13 @@
 import { clsx } from "clsx";
 import { Icon } from "../../atoms/Icon";
 import { Button } from "../../atoms/Button";
+import { MarkdownViewer } from "../../MarkdownViewer";
 
 export interface StreamingIndicatorProps {
   /** Partial content being streamed */
   partialContent?: string;
+  /** Whether to render content as Markdown */
+  isMarkdown?: boolean;
   /** Whether to show the typing animation */
   showTyping?: boolean;
   /** Whether to show the stop button */
@@ -25,6 +28,7 @@ export interface StreamingIndicatorProps {
  */
 export const StreamingIndicator = ({
   partialContent,
+  isMarkdown = false,
   showTyping = true,
   showStopButton = true,
   onStop,
@@ -35,9 +39,18 @@ export const StreamingIndicator = ({
     <div className={clsx("flex flex-col gap-2", className)}>
       {/* Partial content display */}
       {partialContent && (
-        <div className="text-neutral-800 whitespace-pre-wrap">
-          {partialContent}
-          {showTyping && <BlinkingCursor />}
+        <div className="text-neutral-800">
+          {isMarkdown ? (
+            <div className="inline">
+              <MarkdownViewer content={partialContent} />
+              {showTyping && <BlinkingCursor />}
+            </div>
+          ) : (
+            <span className="whitespace-pre-wrap">
+              {partialContent}
+              {showTyping && <BlinkingCursor />}
+            </span>
+          )}
         </div>
       )}
 
@@ -76,7 +89,7 @@ const TypingDots = () => (
         key={i}
         className={clsx(
           "w-2 h-2 rounded-full bg-neutral-400",
-          "animate-bounce",
+          "animate-bounce"
         )}
         style={{
           animationDelay: `${i * 0.15}s`,
@@ -97,7 +110,7 @@ const TypingDotsInline = () => (
         key={i}
         className={clsx(
           "w-1 h-1 rounded-full bg-neutral-400",
-          "animate-bounce",
+          "animate-bounce"
         )}
         style={{
           animationDelay: `${i * 0.15}s`,

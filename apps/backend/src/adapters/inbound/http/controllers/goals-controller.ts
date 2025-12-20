@@ -11,13 +11,15 @@ const setGoalSchema = z.object({
 });
 
 export class GoalsController {
-  private readonly setUserGoalUseCase: SetUserGoalUseCase = Container.get(SetUserGoalUseCase);
-  private readonly getUserGoalUseCase: GetUserGoalUseCase = Container.get(GetUserGoalUseCase);
+  private readonly setUserGoalUseCase: SetUserGoalUseCase =
+    Container.get(SetUserGoalUseCase);
+  private readonly getUserGoalUseCase: GetUserGoalUseCase =
+    Container.get(GetUserGoalUseCase);
 
   async setGoal(
     request: Request,
     response: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const authRequest = request as AuthenticatedRequest;
@@ -26,7 +28,10 @@ export class GoalsController {
       }
 
       const input = setGoalSchema.parse(request.body);
-      const goal = await this.setUserGoalUseCase.execute(authRequest.user.id, input.objective);
+      const goal = await this.setUserGoalUseCase.execute(
+        authRequest.user.id,
+        input.objective,
+      );
 
       response.status(201).json(goal);
     } catch (error) {
@@ -37,7 +42,7 @@ export class GoalsController {
   async getGoal(
     request: Request,
     response: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const authRequest = request as AuthenticatedRequest;

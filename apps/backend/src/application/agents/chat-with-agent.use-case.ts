@@ -1,4 +1,4 @@
-import { Service, Container } from "typedi";
+import { Service, Inject } from "typedi";
 import { AgentRepository } from "../../domain/ports/outbound/agent-repository.js";
 import { ChatRepository } from "../../domain/ports/outbound/chat-repository.js";
 import { ConversationAgentFactory } from "../../adapters/inbound/primary/agents/conversation-agent-factory.js";
@@ -21,6 +21,7 @@ import {
   buildLangChainAgent,
   validateInputScope,
 } from "../../infrastructure/langchain/langchain-agent.adapter.js";
+import { GetUserGoalUseCase } from "../goals/get-user-goal.use-case.js";
 
 export interface ChatWithAgentInput {
   agentId: string;
@@ -31,14 +32,17 @@ export interface ChatWithAgentInput {
   conversationId?: string;
 }
 
+/**
+ * @deprecated Use StreamChatWithAgentUseCase instead for better performance and user experience.
+ */
 @Service()
 export class ChatWithAgentUseCase {
-  private readonly agentRepository: AgentRepository =
-    Container.get(AGENT_REPOSITORY);
-  private readonly chatRepository: ChatRepository =
-    Container.get(CHAT_REPOSITORY);
-  private readonly conversationAgentFactory: ConversationAgentFactory =
-    Container.get(ConversationAgentFactory);
+  constructor(
+    @Inject(AGENT_REPOSITORY) private readonly agentRepository: AgentRepository,
+    @Inject(CHAT_REPOSITORY) private readonly chatRepository: ChatRepository,
+    private readonly conversationAgentFactory: ConversationAgentFactory,
+    private readonly getUserGoalUseCase: GetUserGoalUseCase,
+  ) {}
 
   async execute(input: ChatWithAgentInput): Promise<string> {
     const { agentId, userId, message } = input;
@@ -73,6 +77,41 @@ export class ChatWithAgentUseCase {
     // 2. Construct Runtime Configuration
     const runtimeAgent = buildLangChainAgent(agent.configuration);
 
+    // 2.1 Inject Goal Context
+    const userGoal = await this.getUserGoalUseCase.execute(userId);
+    let goalBlock = "";
+
+    goalBlock = userGoal
+      ? `USER CURRENT GOAL
+Objective: ${userGoal.objective}
+Status: Active
+
+Instruction:
+All advice should prioritize progress toward this objective.
+
+`
+      : `USER CURRENT GOAL
+None set.
+
+Instruction:
+If appropriate, help the user clarify a concrete professional goal.
+Do not force goal setting.
+
+`;
+
+    const axesBlock = `STRATEGY AXES
+- Positioning
+- Market Readiness
+- Opportunity Flow
+- Performance
+
+Instruction:
+Frame advice in terms of these axes when relevant.
+
+`;
+
+    const systemPromptWithGoal = `${goalBlock}${axesBlock}${runtimeAgent.systemPrompt}`;
+
     const chatHistory: BaseMessage[] = [];
 
     // Load History if using conversation
@@ -91,9 +130,16 @@ export class ChatWithAgentUseCase {
     // 3. Generate Response via tool-capable agent
     const tools = [createRetrieveContextTool(userId)];
     const agentExecutor = this.conversationAgentFactory.buildWithSystemPrompt({
-      systemPrompt: runtimeAgent.systemPrompt,
+      systemPrompt: systemPromptWithGoal,
       tools,
       temperature: runtimeAgent.temperature,
+    });
+
+    console.log({
+      agentId: agent.id,
+      agentVersion: agent.configuration.version,
+      msg: "Invoking agent executor",
+      prompt: systemPromptWithGoal,
     });
 
     const result = await agentExecutor.invoke({
